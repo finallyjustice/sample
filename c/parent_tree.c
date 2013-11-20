@@ -10,6 +10,59 @@ typedef struct node_t
 	struct node_t *right;
 }node;
 
+typedef struct qnode_t
+{
+	node *elem;
+	struct qnode_t *next;	
+}qnode;
+
+typedef struct queue_t
+{
+	qnode *head;
+	qnode *tail;
+}queue;
+
+queue* init_queue()
+{
+	queue *q = (queue*)malloc(sizeof(queue));
+	q->head = NULL;
+	q->tail = NULL;
+	return q;
+}
+
+int is_queue_empty(queue *q)
+{
+	return (q->head==NULL && q->head==NULL);
+}
+
+void enqueue(queue *q, node *n)
+{
+	qnode *qn = (qnode *)malloc(sizeof(qnode));
+	qn->elem = n;
+	qn->next = NULL;
+	
+	if(is_queue_empty(q))
+	{
+		q->head = qn;
+		q->tail = qn;
+		return;
+	}
+
+	q->tail->next = qn;
+	q->tail = qn;
+}
+
+node* dequeue(queue *q)
+{
+	if(is_queue_empty(q)) return NULL;
+	qnode *tmp = q->head;
+	q->head = q->head->next;
+	if(q->head == NULL) q->tail = NULL;
+	node *ret = tmp->elem;
+	free(tmp);
+	return ret;
+}
+
 void insert_tree_node(node **root, node *n)
 {
 	n->left = NULL;
@@ -156,6 +209,17 @@ void dfs_tree(node *root)
 void bfs_tree(node *root)
 {
 	if(root == NULL) return;
+	queue *q = init_queue();
+	enqueue(q, root);
+	while(is_queue_empty(q) == 0)
+	{
+		node *tmp = dequeue(q);
+		printf("Value: %d\n", tmp->val);
+		if(tmp->left != NULL) 
+			enqueue(q, tmp->left);
+		if(tmp->right != NULL )
+			enqueue(q, tmp->right);
+	}
 }
 
 int tree_height(node *root)
@@ -219,6 +283,8 @@ int main(int argc, char **argv)
 	n = (node *)malloc(sizeof(node));
 	n->val = 9;
 	insert_tree_node(&root, n);
+
+	bfs_tree(root);
 }
 
 
