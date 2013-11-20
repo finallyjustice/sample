@@ -231,6 +231,18 @@ int tree_height(node *root)
 	return max+1;
 }
 
+int is_bst(node *root)
+{
+	if(root == NULL) return 1;	
+	if(is_bst(root->left)==0 || is_bst(root->right)==0)
+		return 0;
+	if(root->left && root->left->val>root->val)
+		return 0;
+	if(root->right && root->right->val<=root->val)
+		return 0;
+	return 1;
+}
+
 int main(int argc, char **argv)
 {
 	node *root = NULL;
@@ -283,8 +295,6 @@ int main(int argc, char **argv)
 	n = (node *)malloc(sizeof(node));
 	n->val = 9;
 	insert_tree_node(&root, n);
-
-	bfs_tree(root);
 }
 
 
