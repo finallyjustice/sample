@@ -14,7 +14,8 @@
 #define SERV_PORT			8001
 #define PEND_CONNECTIONS	100
 
-const static char http_error_hdr[]	= "HTTP/1.1 404 Not Found\r\nContent-type: text/html\r\n\r\n";  
+const static char http_error_hdr[]	= "HTTP/1.1 404 Not Found\r\nContent-type: text/html\r\n\r\n"; 
+const static char http_error_html[] = "<html><body><h1>FILE NOT FOUND</h1></body></html>";
 const static char http_html_hdr[]	= "HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\n"; 
 const static char http_image_hdr[]  = "HTTP/1.1 200 OK\r\nContent-Type: image/gif\r\n\r\n"; 
 const static char http_index_html[] = "<html><head><title>Congrats!</title></head><body><h1>Welcome to our HTTP server demo!</h1><p>This is a just small test page.</body></html>";  
@@ -29,6 +30,7 @@ int http_send_file(char *filename, int sockfd)
 	{
 		printf("File %s not found - sending an HTTP 404\n", filename);
 		write(sockfd, http_error_hdr, strlen(http_error_hdr));
+		write(sockfd, http_error_html, strlen(http_error_html));
 	}
 	else
 	{
