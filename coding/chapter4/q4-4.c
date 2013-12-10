@@ -1,4 +1,4 @@
-/** File:       q4-7.c
+/** File:       q4-4.c
  ** Author:     Dongli Zhang
  ** Contact:    dongli.zhang0129@gmail.com
  **
@@ -19,8 +19,7 @@
  ** Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/*  Q4.7. Find the first common ancester of two abitrary nodes in a binary
- *  tree. (Not a Binary Search Tree!)
+/*  Q4.4. Create linked list of all nodes at each depth in a BST.
  */
 
 /* usage: gcc q2-7.c -o q2-7 */
@@ -321,6 +320,79 @@ void bst_bfs(node_t *root)
 	}
 }
 
+// Define Linked List
+typedef struct lnode
+{
+	node_t *nd;
+	struct lnode *next;
+}lnode_t;
+
+#define MAX_NODE 20
+
+void insert_list(lnode_t **list, node_t *n)
+{
+	lnode_t *nn = (lnode_t *)malloc(sizeof(lnode_t));
+	nn->nd = n;
+	nn->next = NULL;
+	lnode_t *tmp = *list;
+	if(tmp == NULL) 
+	{
+		*list = nn;
+		return;
+	}
+	while(tmp->next)
+		tmp = tmp->next;
+	tmp->next = nn;
+}
+
+void print_list(lnode_t *list)
+{
+	while(list)
+	{
+		printf("%d ", list->nd->val);
+		list = list->next;
+	}
+	printf("\n");
+}
+
+void print_bst_layer(node_t *root)
+{
+	// define linked list
+	lnode_t* ll[MAX_NODE];
+	int c;
+	for(c=0; c<MAX_NODE; c++)
+		ll[c] = NULL;
+	
+	queue_t* q[2];
+	q[0] = init_queue();
+	q[1] = init_queue();
+
+	enqueue(q[0], root);
+	c = 0;
+	while(is_empty_queue(q[0]) == 0)
+	{
+		node_t *n = dequeue(q[0]);
+		insert_list(&(ll[c]), n);
+		if(n->ln)
+			enqueue(q[1], n->ln);
+		if(n->rn)
+			enqueue(q[1], n->rn);
+
+		if(is_empty_queue(q[0]) == 1)
+		{
+			// Swap two queues
+			queue_t *qt = q[0];
+			q[0] = q[1];
+			q[1] = qt;
+			c++;
+		}
+	}
+
+	int i;
+	for(i=0; i<c; i++)
+		print_list(ll[i]);
+}
+
 int main(int argc, char **argv)
 {
 	node_t *root = NULL;
@@ -338,14 +410,7 @@ int main(int argc, char **argv)
 	bst_insert_val(&root, 9);
 	bst_insert_val(&root, 11);
 
-	node_t *n1 = bst_search(root, 11);
-	node_t *n2 = bst_search(root, 6);
-	node_t *ret = tree_lca(root, n1, n2);
-	if(ret == NULL)
-		printf("NULL\n");
-	else
-		printf("%d\n", ret->val);
-
+	print_bst_layer(root);
 
 	return 1;
 }
