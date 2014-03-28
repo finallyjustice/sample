@@ -1,4 +1,4 @@
-/** File:		single_server.c
+/** File:		http_server.c
  ** Author:		Dongli Zhang
  ** Contact:	dongli.zhang0129@gmail.com
  **
