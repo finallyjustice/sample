@@ -22,8 +22,8 @@
 /* This is the program running SSL client */
 
 // usage: g++ ssl_client.cc -o ssl_client -lssl -lcrypto
-// openssl genrsa -out privkey.pem 2048
-// openssl req -new -x509 -key privkey.pem -out cacert.pem -days 1095
+// openssl genrsa -out prv.pem 2048
+// openssl req -new -x509 -key prv.pem -out cert.pem -days 1095
 
 #include <stdio.h>
 #include <string.h>
