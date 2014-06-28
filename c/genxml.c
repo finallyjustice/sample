@@ -11,6 +11,8 @@ int main(int argc, char **argv)
 {
 	xmlDocPtr doc = NULL;
 	xmlNodePtr root = NULL;
+	xmlNodePtr node3 = NULL;
+	xmlNodePtr node4 = NULL;
 
 	// create new XML document
 	doc = xmlNewDoc(BAD_CAST "1.0"); 
@@ -18,6 +20,17 @@ int main(int argc, char **argv)
 	root = xmlNewNode(NULL, BAD_CAST "root"); 
 	xmlDocSetRootElement(doc, root);
 
+	xmlNewChild(root, NULL, BAD_CAST "node1", BAD_CAST "content of node1");
+	xmlNewChild(root, NULL, BAD_CAST "node2", BAD_CAST "content of node2");
+	node3 = xmlNewChild(root, NULL, BAD_CAST "node3", BAD_CAST "content of node3");
+	xmlNewProp(node3, BAD_CAST "type", BAD_CAST "student");
+
+	node4 = xmlNewNode(NULL, BAD_CAST "node4");
+	xmlAddChild(root, node4);
+
+	xmlNewChild(node4, NULL, BAD_CAST "final", BAD_CAST "final node");
+
+	// output the xml to file
 	xmlSaveFormatFileEnc(TMP_XML_FILE, doc, "UTF-8", 1);
 
 	// free the document
