@@ -12,13 +12,13 @@ start:
   mov %ax, %es
   mov %ax, %ss
   
-  mov $output, %ax
+  mov $output1, %ax
   mov %ax, %bp      # address of string
   mov $9, %cx       # length of string
   mov $0x1301, %ax  # ah=0x13 al=0x01
   mov $0x000c, %bx  # bh=0x0 bl=0x0c
   mov $12, %dh      # row
-  mov $2, %dl       # column
+  mov $0, %dl       # column
 
   int $0x10
 
@@ -47,48 +47,44 @@ seta20.2:
 
 .code32
 start32:
-#movw    $(SEG_KDATA<<3), %ax    # Our data segment selector
-# movw    %ax, %ds                # -> DS: Data Segment
-# movw    %ax, %es                # -> ES: Extra Segment
-# movw    %ax, %ss                # -> SS: Stack Segment
-# movw    $0, %ax                 # Zero segments not ready for use
-# movw    %ax, %fs                # -> FS
-# movw    %ax, %gs                # -> GS
+  movw    $(SEG_KDATA<<3), %ax    # Our data segment selector
+  movw    %ax, %ds                # -> DS: Data Segment
+  movw    %ax, %es                # -> ES: Extra Segment
+  movw    %ax, %ss                # -> SS: Stack Segment
+  movw    $0, %ax                 # Zero segments not ready for use
+  movw    %ax, %fs                # -> FS
 
-  
+  movw    $(SEG_KVIDEO<<3), %ax
+  movw    %ax, %gs                # -> GS
+
+  mov     $((80*15+0)*2), %edi
+  movb    $0xc, %ah
+  mov     $14, %ecx
+  mov     $0, %edx
+echo:
+  movb    output2(, %edx, 0x1), %al   #base(base, index, step)
+  movb    $0xc, %ah
+  movw    %ax, %gs:(%edi)
+  inc     %edx
+  inc     %edi
+  inc     %edi
+  loop echo                           # dec ecx reg
 
 spin:
   jmp spin
 
-# %edi, %ax, %ecx, %esi
-_echo:
-  xorl %ebx, %ebx
-  movl %ebx, %edi
-  movb $0x0c, %ah
-start_echo:
-  movb %ds:(%esi), %al
-  movw %ax, %es:(%edi)
-	
-  inc %ebx
-  movl %ebx, %edi
-  shll %edi
-  inc %esi
-  loop start_echo
-		
-  ret
+output1:
+  .ascii "Real Mode"       # length is 9
+output2:
+  .ascii "Protected Mode"  # length is 14
 
-output:
-  .ascii "Real Mode"
 
 .p2align 2 
 gdt:
   SEG_NULLASM                            # null seg
   SEG_ASM(STA_X|STA_R, 0x0, 0xffffffff)  # code seg
   SEG_ASM(STA_W, 0x0, 0xffffffff)        # data seg
-vedio_descriptor:
-  .quad 0x00cf920b8000ffff
-stack_descriptor:
-  .quad 0x00cf92007000ffff
+  SEG_ASM(STA_W|STA_R, 0xb8000, 0xfffff) # video seg
 
 gdtdesc:                                 # param for lgdt ins
   .word (gdtdesc - gdt - 1)	             # max index (not size) of gdt table

@@ -1,1 +1,2 @@
-This is an example of a bootloader of OS.
+This is an example of a bootloader of OS. 
+It will boot into protected mode.
