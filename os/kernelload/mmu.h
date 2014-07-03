@@ -41,6 +41,7 @@
 
 #define SEG_KCODE   1  // kernel code
 #define SEG_KDATA   2  // kernel data+stack
+#define SEG_KVIDEO  3  // video buffer
 
 //PAGEBREAK!
 #ifndef __ASSEMBLER__
