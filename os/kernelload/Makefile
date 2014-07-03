@@ -12,7 +12,7 @@ LDFLAGS += -melf_i386
 kernel.img: bootblock kernel
 	dd if=/dev/zero of=kernel.img count=10000
 	dd if=bootblock of=kernel.img conv=notrunc
-	dd if=kernel of=xv6.img seek=1 conv=notrunc
+	dd if=kernel of=kernel.img seek=1 conv=notrunc
 
 bootblock: bootasm.S bootmain.c
 	${CC} ${CFLAGS} -fno-pic -O -nostdinc -I. -c bootmain.c
