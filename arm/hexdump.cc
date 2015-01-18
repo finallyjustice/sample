@@ -7,6 +7,29 @@ using namespace std;
 void hexdump(vector<unsigned char> &v)
 {
 	int len = v.size();
+	int i = 0;
+
+	while(i < len)
+	{
+		printf("%08x ", i);
+		for(int j=0; j<16; j++)
+		{
+			printf("%02x ", v[i+j]);
+		}
+		printf("  ");
+		for(int j=0; j<16; j++)
+		{
+			if(isprint(v[i+j]))
+				printf("%c", v[i+j]);
+			else
+				printf(".");
+		}
+		printf("\n");
+
+		i += 16;
+	}
+
+	/*int len = v.size();
 
 	for(int i=0; i<len; i++)
 	{
@@ -17,7 +40,7 @@ void hexdump(vector<unsigned char> &v)
 			printf(" ");
 	}
 
-	printf("\n");
+	printf("\n");*/
 }
 
 int main(int argc, char **argv)
@@ -47,12 +70,12 @@ int main(int argc, char **argv)
 		v.push_back(c);
 		cnt++;
 
-		if(cnt%2==0 && cnt>0)
+		/*if(cnt%2==0 && cnt>0)
 		{
 			unsigned char buf = v[cnt-2];
 			v[cnt-2] = v[cnt-1];
 			v[cnt-1] = buf;
-		}
+		}*/
 
 		tmp = fgetc(fp);
 	}
