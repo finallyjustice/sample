@@ -1,0 +1,2 @@
+This is an example of init of kernel. 
+It will boot into protected mode and load a tiny kernel.
