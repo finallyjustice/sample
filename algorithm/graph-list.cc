@@ -43,7 +43,6 @@ void bfs_graph(vector<node> &vert, int nv, int start)
 void dfs_recv(vector<node> &vert, int *color, int idx)
 {
 	color[idx] = 1;
-	printf("%d ", idx);
 
 	int sc = vert[idx].nl.size();
 	for(int i=0; i<sc; i++) {
@@ -51,6 +50,7 @@ void dfs_recv(vector<node> &vert, int *color, int idx)
 		if(color[ni] == -1)
 			dfs_recv(vert, color, ni);
 	}
+	printf("%d ", idx);
 }
 
 void dfs_graph(vector<node> &vert, int nv, int start)
