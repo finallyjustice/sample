@@ -3,29 +3,23 @@
 class Solution {
 public:
     int strStr(string haystack, string needle) {
-        int n1 = haystack.size(); 
-        int n2 = needle.size();
-        const char *s1 = haystack.c_str();
-        const char *s2 = needle.c_str();
+        int l1 = haystack.size();
+        int l2 = needle.size();
         
-        if(n2 > n1)
+        if(l1 < l2)
             return -1;
-        
+            
         int idx = -1;
-        int flag;
-        for(int i=0; i<=n1-n2; i++)
-        {
-            flag = 0;
-            for(int j=0; j<n2; j++)
-            {
-                if(s1[i+j] != s2[j])
-                {
-                    flag = 1;
+        for(int i=0; i<=l1-l2; i++) {
+            int found = 1;
+            for(int j=0; j<l2; j++) {
+                if(haystack[i+j] != needle[j]) {
+                    found = 0;
                     break;
                 }
             }
-            if(flag == 0)
-            {
+            
+            if(found == 1) {
                 idx = i;
                 break;
             }
