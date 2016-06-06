@@ -1,6 +1,6 @@
-commit 15a7ed94d94d06afe321ecb4849aeaf7162800d2
+commit eb695153f141634fedf411329b1eecf6003732b1
 Author: Dongli Zhang <dongli.zhang@oracle.com>
-Date:   Fri May 27 15:41:21 2016 +0800
+Date:   Mon Jun 6 15:26:33 2016 +0800
 
     xen: add printk to grant table
 

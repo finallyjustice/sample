@@ -1,28 +1,46 @@
-commit a039b60312ac7d5a55e434bb1a2b749529db2c56
+commit ad4cc0389da357285324e420569784147c3cc18f
 Author: Dongli Zhang <dongli.zhang@oracle.com>
-Date:   Fri May 27 16:00:58 2016 +0800
+Date:   Mon Jun 6 15:42:17 2016 +0800
 
     xen: simplify grant table
 
 diff --git a/xen/common/grant_table.c b/xen/common/grant_table.c
-index b08a38b..22339e4 100644
+index b08a38b..7914efa 100644
 --- a/xen/common/grant_table.c
 +++ b/xen/common/grant_table.c
-@@ -3439,15 +3439,8 @@ void grant_table_init_vcpu(struct vcpu *v)
+@@ -3437,17 +3437,27 @@ void grant_table_init_vcpu(struct vcpu *v)
+     v->maptrack_tail = MAPTRACK_TAIL;
+ }
  
- void my_old_func(struct domain *rd)
+-void my_old_func(struct domain *rd)
++int mg_data = 10;
++static int ml_data = 20;
++
++void my_global_domain(void)
  {
 -	printk("We are in function my_old_func\n");
 -	if (rd->domain_id == 0)
 -		printk("message for dom 0\n");
--
++	printk("printk for dom 0: %d\n", ml_data);
++}
+ 
 -	if (rd->domain_id == 1)
 -		printk("message for dom 1\n");
--
++static void my_local_domain(void)
++{
++	printk("printk for other dom: %d\n", mg_data);
++}
+ 
 -	if (rd->domain_id > 1)
 -		printk("message for other dom\n");
++void my_old_func(struct domain *rd)
++{
 +	printk("We are in function my_new_func\n");
 +	printk("always same for doms\n");
++	if (rd->domain_id == 0)
++		my_global_domain();
++	else
++		my_local_domain();
  }
  
  static void gnttab_usage_print(struct domain *rd)
