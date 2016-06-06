@@ -1,0 +1,49 @@
+# Demo: how to use livepatch(xsplice)
+
+http://wiki.xenproject.org/wiki/XSplice
+
+This is a demo about how to use (LivePatch)xsplice. The commit id of xen
+upstream that I use is 84787c572d402644dca4874aba73324d9f8e3948.  The commit id
+of livepatch-build-tools I use is 63e438f9325fc2897efac0a7dc21dbaf11d1033c.
+
+1. Download code of Xen and livepatch-build-tools:
+$ git clone http://xenbits.xen.org/git-http/xen.git mainline-xen 
+$ git://xenbits.xen.org/people/konradwilk/livepatch-build-tools.git
+
+2. Apply old.patch to mainline-xen, compile and install.
+
+3. We will livepatch new.patch to the running xen hypervisor. Obtain the
+build-id of running Xen with the following command:
+
+root@linux:/soft/img# xl debug-keys x
+root@linux:/soft/img# xl dmesg
+(XEN) 'x' pressed - Dumping all livepatch patches
+(XEN) build-id: 674705b0395c1a8551be889963e372af0f0229de
+root@linux:/soft/img#
+
+4. Run make in livepatch-build-tools to compile the tool.
+
+5. Run:
+$ ./livepatch-build -s /home/zhang/test/mainline-xen -p /home/zhang/test/new.patch \
+		-o out1 -d --xen-debug --depends 674705b0395c1a8551be889963e372af0f0229de
+The output "new.livepatch" is in folder out1.
+
+6. Upload the patch to xen hypervisor:
+
+root@linux:/soft/img# xen-livepatch upload test1 new.livepatch
+Uploading new.livepatch (357080 bytes)
+
+7. Apply the new.livepatch
+
+root@linux:/soft/img# xen-livepatch apply test1
+Performing apply:. completed
+
+8. Play with the new xen hypervisor and finally revert:
+
+root@linux:/soft/img# xen-livepatch revert test1
+Performing revert:. completed
+
+9. Unload new.livepatch:
+
+root@linux:/soft/img# xen-livepatch unload test1
+Performing unload: completed

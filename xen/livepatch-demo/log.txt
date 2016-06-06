@@ -1,0 +1,23 @@
+zhang@linux:~/test/livepatch-build-tools$ ./livepatch-build -s /home/zhang/test/mainline-xen -p /home/zhang/test/new.patch -o out1 -d --xen-debug --depends 674705b0395c1a8551be889963e372af0f0229de
+Building LivePatch patch: new
+
+Xen directory: /home/zhang/test/mainline-xen
+Patch file: /home/zhang/test/new.patch
+Output directory: /home/zhang/test/livepatch-build-tools/out1
+================================================
+
+Testing patch file...
+Perform full initial build with 8 CPU(s)...
+Apply patch and build with 8 CPU(s)...
+Unapply patch and build with 8 CPU(s)...
+Extracting new and modified ELF sections...
+Processing xen/common/grant_table.o
+Processing xen/arch/x86/home/zhang/test/mainline-xen/xen/home/zhang/test/mainline-xen/xen/.xen.efi.0s.o
+Processing xen/arch/x86/home/zhang/test/mainline-xen/xen/home/zhang/test/mainline-xen/xen/.xen.efi.1s.o
+Processing xen/arch/x86/home/zhang/test/mainline-xen/xen/home/zhang/test/mainline-xen/xen/.xen.efi.0r.o
+Processing xen/arch/x86/home/zhang/test/mainline-xen/xen/home/zhang/test/mainline-xen/xen/.xen.efi.1r.o
+Processing xen/arch/x86/efi/boot.o
+Processing xen/arch/x86/efi/stub.o
+Creating patch module...
+new.livepatch created successfully
+zhang@linux:~/test/livepatch-build-tools$ 674705b0395c1a8551be889963e372af0f0229de
