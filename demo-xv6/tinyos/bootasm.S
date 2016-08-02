@@ -39,6 +39,7 @@ seta20.2:
   # Switch from real to protected mode.  Use a bootstrap GDT that makes
   # virtual addresses map directly to physical addresses so that the
   # effective memory map doesn't change during the transition.
+  # Protection Enable (bit 0 of CR0) — Enables protected mode when set.
   lgdt    gdtdesc
   movl    %cr0, %eax
   orl     $CR0_PE, %eax
@@ -49,6 +50,19 @@ seta20.2:
   # to reload %cs and %eip.  The segment descriptors are set up with no
   # translation, so that the mapping is still the identity mapping.
   ljmp    $(SEG_KCODE<<3), $start32
+
+# bytes - 8 bits
+# words - 16 bits
+# double words - 32 bits
+# quad words - 64 bits
+# When referencing a register, the register needs to be prefixed with a 
+# "%". Constant numbers need to be prefixed with a "$".
+# b = byte (8 bit)
+# s = short (16 bit integer) or single (32-bit floating point)
+# w = word (16 bit)
+# l = long (32 bit integer or 64-bit floating point)
+# q = quad (64 bit)
+# t = ten bytes (80-bit floating point)
 
 .code32  # Tell assembler to generate 32-bit code now.
 start32:

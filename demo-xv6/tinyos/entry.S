@@ -49,22 +49,39 @@ mboot_entry:
   rep stosb
 
 # P4ML[0] -> 0x2000 (PDPT-A)
+# every entry in P4ML is 512G
+# P4ML[0] indicates 0x0 to 0x8000000000
   mov $(0x2000 | 3), %eax
   mov %eax, 0x1000
 
 # P4ML[511] -> 0x3000 (PDPT-B)
+# every entry in P4ML is 512G
+# P4ML[511] = 0xff8000000000
   mov $(0x3000 | 3), %eax
   mov %eax, 0x1FF8
 
 # PDPT-A[0] -> 0x4000 (PD)
+# every entry in PDPT is 1024M
+# PDPT-B[0] indicates 0x0 to 0x40000000
   mov $(0x4000 | 3), %eax
   mov %eax, 0x2000
 
 # PDPT-B[510] -> 0x4000 (PD)
+# every entry in PDPT is 1024M
+# PDPT-B[510] = 0x007f80000000
+# 0xff8000000000 + 0x007f80000000 = 0xffff80000000
   mov $(0x4000 | 3), %eax
   mov %eax, 0x3FF0
 
+# PDPT-A and PDPT-B share the same PD
 # PD[0..511] -> 0..1022MB
+# PD is like:
+# 0x000083
+# 0x200083
+# 0x400083
+# 0x600083
+# ... until 1022MB
+# $0x83 indicates 2MB page instead of next level of pte
   mov $0x83, %eax
   mov $0x4000, %ebx
   mov $512, %ecx
@@ -87,7 +104,14 @@ entry32mp:
   mov $0x1000, %eax
   mov %eax, %cr3
 
+# e.g., mboot_header is linked at 0xffffffff80100000
+# gdtr64 is linked at 0xffffffff801000b0
+# mboot_load_addr is linked at 0x0000000000100000 
   lgdt (gdtr64 - mboot_header + mboot_load_addr)
+
+# A logical processor uses IA-32e paging if CR0.PG = 1, CR4.PAE = 1, 
+# and IA32_EFER.LME = 1. IA-32e paging translates 48-bit linear 
+# addresses to 52-bit physical addresses.
 
 # Enable PAE - CR4.PAE=1
   mov %cr4, %eax
@@ -113,13 +137,20 @@ gdtr64:
   .word gdt64_end - gdt64_begin - 1;
   .quad gdt64_begin - mboot_header + mboot_load_addr
 
+# Descriptor Privilege Level: used to restrict accesses to the segment. It
+# represents the minimal CPU privilege level requested for accessing the segment.
+# Therefore, a segment with its DPL set to 0 is accessible only when the CPL is
+# 0—that is, in Kernel Mode—while a segment with its DPL set to 3 is accessible
+# with every CPL value.
+
+# This part is confusing, check Intel Manual 5.2.1
 .align 16
 gdt64_begin:
   .long 0x00000000 # 0: null desc
   .long 0x00000000
-  .long 0x00000000 # 1: Code, R/X, Nonconforming
+  .long 0x00000000 # 1: Code, R/X, Nonconforming DPL is 0
   .long 0x00209800
-  .long 0x00000000 # 2: Data, R/W, Expand Down
+  .long 0x00000000 # 2: Data, R/W, Expand Down DPL is 0
   .long 0x00009000
 gdt64_end:
 
@@ -152,23 +183,19 @@ entry64high:
 # enter main()
   jmp main
 
-.global __deadloop
-__deadloop:
-# we should never return here...
-  jmp .
-
 entry64mp:
 # obtain kstack from data block before entryother
   mov $0x7000, %rax
   mov -16(%rax), %rsp
 #jmp mpenter
+  jmp entry64mp
 
-.global wrmsr
-wrmsr:
-  mov %rdi, %rcx     # arg0 -> msrnum
-  mov %rsi, %rax     # val.low -> eax
-  shr $32, %rsi
-  mov %rsi, %rdx     # val.high -> edx
-  wrmsr
-  retq
+#.global wrmsr
+#wrmsr:
+#  mov %rdi, %rcx     # arg0 -> msrnum
+#  mov %rsi, %rax     # val.low -> eax
+#  shr $32, %rsi
+#  mov %rsi, %rdx     # val.high -> edx
+#  wrmsr
+#  retq
 

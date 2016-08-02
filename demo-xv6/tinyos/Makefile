@@ -39,10 +39,12 @@ bootblock: bootasm.S bootmain.c
 
 kernel.elf: entry.o kernel.ld ${OBJS}
 	$(LD) $(LDFLAGS) -T kernel.ld -o kernel.elf entry.o ${OBJS} -b binary
+	$(OBJDUMP) -S kernel.elf > kernel.asm
+	$(OBJDUMP) -t kernel.elf | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > kernel.sym
 
 qemu: system.img
 	qemu-system-x86_64 -smp 2 -hda system.img -m 512m -enable-kvm
 
 clean:
-	rm -f *.o *.d *.asm\
+	rm -f *.o *.d *.asm *.sym \
 		bootblock kernel.elf system.img
