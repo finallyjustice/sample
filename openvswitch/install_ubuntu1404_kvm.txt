@@ -1,0 +1,62 @@
+To install openvswitch on ubuntu 14.04 and boot a kvm guest
+-----------------------------------------------------------
+
+1. `chown zhang /soft/openvswitch`
+
+2. Download code, compile with `./configure --prefix=/soft/openvswitch`, `make` and `make install`.
+
+3. Create ovsdb with (conf.db can be removed to reset ovsdb):
+
+# sudo /soft/openvswitch/bin/ovsdb-tool create /soft/openvswitch/etc/openvswitch/conf.db /soft/openvswitch/share/openvswitch/vswitch.ovsschema
+
+4a. Start ovsdb-server (no ssl)
+
+# sudo /soft/openvswitch/sbin/ovsdb-server --remote=punix:/soft/openvswitch/var/run/openvswitch/db.sock \
+# --remote=db:Open_vSwitch,Open_vSwitch,manager_options \
+# --pidfile --detach --log-file
+
+# cat /soft/openvswitch/var/log/openvswitch/ovsdb-server.log
+
+4b. Start ovsdb-server (ssl)
+
+# sudo /soft/openvswitch/sbin/ovsdb-server --remote=punix:/soft/openvswitch/var/run/openvswitch/db.sock \
+# --remote=db:Open_vSwitch,Open_vSwitch,manager_options \
+# --private-key=db:Open_vSwitch,SSL,private_key \
+# --certificate=db:Open_vSwitch,SSL,certificate \
+# --bootstrap-ca-cert=db:Open_vSwitch,SSL,ca_cert \
+# --pidfile --detach --log-file
+
+Make sure th libssl-dev and openssl are installed to avoid error "Private key specified but Open vSwitch was built without SSL support". 
+
+
+5. Start ovs-vsctl:
+
+# sudo /soft/openvswitch/bin/ovs-vsctl --no-wait init
+
+6. Start ovs-vswitchd:
+
+# sudo /soft/openvswitch/sbin/ovs-vswitchd --pidfile --detach --log-file
+
+# cat /usr/local/var/log/openvswitch/ovs−vswitchd.log
+
+7. Create an ovs bridge:
+
+# sudo /soft/openvswitch/bin/ovs-vsctl add-br ovs-br
+
+8. Bind eth0 to bridge:
+
+# sudo /soft/openvswitch/bin/ovs-vsctl add-port br0 eth0
+
+9. Configure IP address for bridge:
+
+# ifconfig eth0 0.0.0.0
+# dhclient ovs-br
+
+10. Copy ovs-ifup and ovs-ifdown to /home/zhang.
+
+11. Boot a kvm guest: 
+
+# sudo qemu-system-x86_64 -hda /home/zhang/img/oel61.img \
+# -m 4096M -enable-kvm -smp 2 \
+# -net nic,model=e1000 \
+# -net tap,ifname=tap1,script=/home/zhang/ovs-ifup,downscript=/home/zhang/ovs-ifdown
