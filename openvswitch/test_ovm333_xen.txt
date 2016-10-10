@@ -1,0 +1,21 @@
+To use openvswitch on Oracle VM 3.3.3
+-------------------------------------
+
+1. /usr/share/openvswitch/scripts/ovs-ctl start
+
+2. Create an ovs bridge:
+
+# ovs-vsctl add-br xenbr0
+
+3. Bind bond0 to bridge:
+
+# ovs-vsctl add-port xenbr0 bond0
+
+4. Configure IP address for bridge:
+
+# ifconfig bond0 0.0.0.0
+# dhclient xenbr0
+
+5. Add the following entry to guest vm.cfg:
+
+vif = ['type=netfront,mac=00:19:38:dd:e7:ac,script=vif-openvswitch,bridge=xenbr0']
