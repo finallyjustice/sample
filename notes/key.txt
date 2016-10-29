@@ -1,0 +1,41 @@
+sorting
+================================
+insertion sort
+merge sort
+quick sort
+heap sort
+radix sort
+
+binary search tree
+================================
+insert
+search
+minimum
+maximum
+delete
+
+
+trie
+================================
+
+
+b-tree
+================================
+
+
+hash
+================================
+
+
+graph
+================================
+representation: matrix, adjacency list, objects and pointers
+bfs/dfs
+distance between nodes
+search
+connectivity
+cycle-detection
+
+
+string
+================================
