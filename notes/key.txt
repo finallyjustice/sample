@@ -4,7 +4,9 @@ insertion sort
 merge sort
 quick sort
 heap sort
+counting sort
 radix sort
+bucket sort
 
 binary search tree
 ================================
@@ -16,6 +18,10 @@ delete
 
 
 trie
+================================
+
+
+red-black tree
 ================================
 
 
@@ -35,6 +41,10 @@ distance between nodes
 search
 connectivity
 cycle-detection
+
+
+dynamic programming
+================================
 
 
 string
