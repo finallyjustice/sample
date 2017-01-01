@@ -1,0 +1,91 @@
+To install openvswitch on ubuntu 16.04
+-----------------------------------------------------------
+
+OVS: openvswitch-2.6.1.tar.gz
+OS : 4.4.0-21-generic
+
+1. `sudo mkdir /soft/openvswitch` and `sudo chown zhang /soft/openvswitch`
+
+2. `./configure --prefix=/soft/openvswitch --with-linux=/lib/modules/`uname -r`/build`, `make` and `make install`
+
+3. Load kernel modules:
+
+# sudo modprobe nf_nat
+# sudo modprobe libcrc32c
+# sudo modprobe nf_nat_ipv6
+# sudo modprobe gre
+# sudo modprobe nf_nat_ipv4
+
+# sudo insmod datapath/linux/openvswitch.ko
+
+4. Initialize the configuration database using ovsdb-tool with (conf.db can be removed to reset ovsdb):
+
+# sudo /soft/openvswitch/bin/ovsdb-tool create /soft/openvswitch/etc/openvswitch/conf.db /soft/openvswitch/share/openvswitch/vswitch.ovsschema
+
+
+To start openvswitch on ubuntu 16.04 and boot a kvm guest
+-----------------------------------------------------------
+
+1a. Start ovsdb-server (no ssl)
+
+# sudo /soft/openvswitch/sbin/ovsdb-server --remote=punix:/soft/openvswitch/var/run/openvswitch/db.sock \
+# --remote=db:Open_vSwitch,Open_vSwitch,manager_options \
+# --pidfile --detach --log-file
+
+# cat /soft/openvswitch/var/log/openvswitch/ovsdb-server.log
+
+1b. Start ovsdb-server (ssl)
+
+# sudo /soft/openvswitch/sbin/ovsdb-server --remote=punix:/soft/openvswitch/var/run/openvswitch/db.sock \
+# --remote=db:Open_vSwitch,Open_vSwitch,manager_options \
+# --private-key=db:Open_vSwitch,SSL,private_key \
+# --certificate=db:Open_vSwitch,SSL,certificate \
+# --bootstrap-ca-cert=db:Open_vSwitch,SSL,ca_cert \
+# --pidfile --detach --log-file
+
+Make sure th libssl-dev and openssl are installed to avoid error "Private key
+specified but Open vSwitch was built without SSL support". 
+
+
+2. Initialize the database using ovs-vsctl. This is only necessary the first
+time after you create the database with ovsdb-tool (but running it at any time
+is harmless):
+
+# sudo /soft/openvswitch/bin/ovs-vsctl --no-wait init
+
+3. Start ovs-vswitchd:
+
+# sudo /soft/openvswitch/sbin/ovs-vswitchd --pidfile --detach --log-file
+
+# cat /soft/openvswitch/var/log/openvswitch/ovs-vswitchd.log
+
+4. Create an ovs bridge:
+
+# sudo /soft/openvswitch/bin/ovs-vsctl add-br ovs-br
+
+5. Bind enp0s25 to bridge:
+
+# sudo /soft/openvswitch/bin/ovs-vsctl add-port ovs-br enp0s25
+
+6. Configure IP address for bridge:
+
+# ifconfig enp0s25 0.0.0.0
+# dhclient ovs-br
+
+7. Copy ovs-ifup and ovs-ifdown to /home/zhang/script
+
+8. Boot a kvm guest: 
+
+# sudo qemu-system-x86_64 -hda /home/zhang/img/oel61.img \
+# -m 4096M -enable-kvm -smp 2 \
+# -net nic,model=e1000 \
+# -net tap,ifname=tap1,script=/home/zhang/script/ovs-ifup,downscript=/home/zhang/script/ovs-ifdown
+
+
+
+To destroy openvswitch on ubuntu 16.04
+-----------------------------------------------------------
+
+# sudo kill `cat /soft/openvswitch/var/run/openvswitch/ovsdb-server.pid /soft/openvswitch/var/run/openvswitch/ovs-vswitchd.pid`
+
+
