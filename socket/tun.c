@@ -1,5 +1,5 @@
 /*
- * # ifconfig devname 10.0.0.1 up;
+ * # ifconfig devname up;
  * # route add -net 10.0.0.2 netmask 255.255.255.255 dev devname
  * # ping 10.0.0.1
  */
