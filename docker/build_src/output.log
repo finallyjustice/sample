@@ -1,0 +1,29 @@
+zhang@vm:~/src/docker$ sudo make binary
+docker build   -t "docker-dev:master-home" -f "Dockerfile" .
+Sending build context to Docker daemon 37.16 MB
+Step 1 : FROM docker-dev:master-build
+ ---> 26c7c5b5c0c8
+Step 2 : VOLUME /var/lib/docker
+ ---> Using cache
+ ---> daba3ad3eed3
+Step 3 : WORKDIR /go/src/github.com/docker/docker
+ ---> Using cache
+ ---> 713da8d1597e
+Step 4 : ENV DOCKER_BUILDTAGS apparmor pkcs11 seccomp selinux
+ ---> Using cache
+ ---> 7f96b65876d7
+Step 5 : ENTRYPOINT hack/dind
+ ---> Using cache
+ ---> e061a1cd920e
+Step 6 : COPY . /go/src/github.com/docker/docker
+ ---> Using cache
+ ---> e57326486d75
+Successfully built e57326486d75
+docker run --rm -i --privileged  -e BUILD_APT_MIRROR -e BUILDFLAGS -e KEEPBUNDLE -e DOCKER_BUILD_ARGS -e DOCKER_BUILD_GOGC -e DOCKER_BUILD_PKGS -e DOCKER_CROSSPLATFORMS -e DOCKER_DEBUG -e DOCKER_EXPERIMENTAL -e DOCKER_GITCOMMIT -e DOCKER_GRAPHDRIVER -e DOCKER_INCREMENTAL_BINARY -e DOCKER_PORT -e DOCKER_REMAP_ROOT -e DOCKER_STORAGE_OPTS -e DOCKER_USERLANDPROXY -e TESTDIRS -e TESTFLAGS -e TIMEOUT -e HTTP_PROXY -e HTTPS_PROXY -e NO_PROXY -e http_proxy -e https_proxy -e no_proxy -v "/home/zhang/src/docker/bundles:/go/src/github.com/docker/docker/bundles" -v /home/zhang/src/docker/.git:/go/src/github.com/docker/docker/.git -v "dockerdev-go-pkg-cache-gopath:/go/pkg" -v "dockerdev-go-pkg-cache-goroot-linux_amd64:/usr/local/go/pkg/linux_amd64" -v "dockerdev-go-pkg-cache-goroot-linux_amd64_netgo:/usr/local/go/pkg/linux_amd64_netgo"  -t "docker-dev:master-home" hack/make.sh binary
+
+---> Making bundle: binary (in bundles/17.06.0-dev/binary)
+Building: bundles/17.06.0-dev/binary-client/docker-17.06.0-dev
+Created binary: bundles/17.06.0-dev/binary-client/docker-17.06.0-dev
+Building: bundles/17.06.0-dev/binary-daemon/dockerd-17.06.0-dev
+Created binary: bundles/17.06.0-dev/binary-daemon/dockerd-17.06.0-dev
+Copying nested executables into bundles/17.06.0-dev/binary-daemon
