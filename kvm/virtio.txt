@@ -1,0 +1,18 @@
+list nics:
+# qemu-system-x86_64 -net nic,model=?
+
+emulated nic:
+# qemu-system-x86_64 -hda disk.img -m 4096m -enable-kvm -smp 2 -net nic -net tap,ifname=tap1,script=/etc/qemu-ifup,downscript=no
+# qemu-system-x86_64 -hda disk.img -m 4096m -enable-kvm -smp 2 -net nic,model=e1000 -net tap,ifname=tap1,script=/etc/qemu-ifup,downscript=no
+
+virtio net
+# qemu-system-x86_64 -hda disk.img -m 4096m -enable-kvm -smp 2 -net nic,model=virtio -net tap,ifname=tap1,script=/etc/qemu-ifup,downscript=no
+
+vhost net
+# qemu-system-x86_64 -hda disk.img -m 4096m -enable-kvm -smp 2 -net nic,model=virtio -net tap,vnet_hdr=on,vhost=on
+
+virtio block
+# qemu-system-x86_64 -drive file=disk.img,if=virtio -m 4096m -enable-kvm -smp 2
+
+virtio memory balloon
+# qemu-system-x86_64 -hda disk.img -m 4096m -enable-kvm -smp 2 -balloon virtio
