@@ -1,0 +1,31 @@
+This is about how to use btrfs as docker backend storage on ubuntu 16.04:
+
+1. Install btrfs-tools
+
+2. # sudo service docker stop
+
+3. # sudo mkfs.btrfs -f /dev/sdb
+
+4. # sudo mount /dev/sdb /var/lib/docker
+
+5. # sudo service docker start
+
+6. Verify:
+
+# sudo docker info | grep "Storage"
+WARNING: No swap limit support
+Storage Driver: btrfs
+
+7. To expand btrfs storage:
+
+# sudo df -lkh /var/lib/docker
+# sudo btrfs device add /dev/sdc /var/lib/docker
+# sudo df -lkh /var/lib/docker
+
+8. To check status:
+
+# sudo btrfs fi show /var/lib/docker
+Label: none  uuid: a87f1fb5-dbc1-4f38-8f7b-ea304d6b7344
+	Total devices 2 FS bytes used 444.00KiB
+	devid    1 size 20.00GiB used 2.02GiB path /dev/sdb
+	devid    2 size 10.00GiB used 0.00B path /dev/sdc
