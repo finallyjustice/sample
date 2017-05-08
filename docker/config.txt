@@ -27,3 +27,13 @@ ExecStart=/usr/bin/dockerd --dns xx.xx.xx.xx (the dns used in ifconfig)
 # /etc/default/docker
 
 DOCKER_OPTS="--registry-mirror=https://docker.mirrors.ustc.edu.cn"
+
+--------------------------------------------
+
+# Restart docker service on ubuntu:
+
+$ sudo systemctl daemon-reload
+
+$ sudo systemctl restart docker
+or
+$ sudo service docker restart
