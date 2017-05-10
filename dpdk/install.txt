@@ -1,0 +1,144 @@
+This is DPDK test for 16.11.1 on Ubuntu 16.04.
+
+Suppose there are three NIC: enp0s3, enp0s8 and enp0s9. enp0s3 is used for ssh and the other two should be ifconfig down.
+
+In addition, we assume VM has 4 vcpu.
+
+1. # wget http://fast.dpdk.org/rel/dpdk-16.11.1.tar.xz
+
+2. # ./tools/dpdk-setup.sh
+
+Choose "[13] x86_64-native-linuxapp-gcc" to build dpdk source code.
+
+3. Exit and set the following env:
+
+# export RTE_SDK=`pwd`
+# export RTE_TARGET=x86_64-native-linuxapp-gcc
+
+4. Switch to su.
+
+5. # ./tools/dpdk-setup.sh
+
+Choose "[16] Insert IGB UIO module" to install uio module
+
+Choose "[19] Setup hugepage mappings for non-NUMA systems" and set hugepage as 512
+
+Choose "[22] Bind Ethernet/Crypto device to IGB UIO module" and bind enp0s8 and enp0s9
+
+Choose "[26] Run testpmd application in interactive mode"
+- set bitmask as 0xc
+- run start
+- run stop
+- run quit
+
+Choose "[33] Exit Script" to exit.
+
+Go to "dpdk-stable-16.11.1/x86_64-native-linuxapp-gcc/build/app/test" and run `./test`, we would be able to do tests, e.g., timer_autotest:
+
+--------------------------------------------------------------------------------------------
+
+Option: 26
+
+
+  Enter hex bitmask of cores to execute testpmd app on
+  Example: to execute app on cores 0 to 7, enter 0xff
+bitmask: 0xc
+Launching app
+EAL: Detected 4 lcore(s)
+EAL: Probing VFIO support...
+EAL: PCI device 0000:00:03.0 on NUMA socket -1
+EAL:   probe driver: 8086:100e net_e1000_em
+EAL: PCI device 0000:00:08.0 on NUMA socket -1
+EAL:   probe driver: 8086:100e net_e1000_em
+EAL: PCI device 0000:00:09.0 on NUMA socket -1
+EAL:   probe driver: 8086:100e net_e1000_em
+Interactive-mode selected
+USER1: create a new mbuf pool <mbuf_pool_socket_0>: n=155456, size=2176, socket=0
+Configuring Port 0 (socket 0)
+Port 0: 08:00:27:22:EB:F3
+Configuring Port 1 (socket 0)
+Port 1: 08:00:27:CE:1F:B6
+Checking link statuses...
+Port 0 Link Up - speed 1000 Mbps - full-duplex
+Port 1 Link Up - speed 1000 Mbps - full-duplex
+Done
+testpmd> start
+io packet forwarding - ports=2 - cores=1 - streams=2 - NUMA support disabled, MP over anonymous pages disabled
+Logical Core 3 (socket 0) forwards packets on 2 streams:
+  RX P=0/Q=0 (socket 0) -> TX P=1/Q=0 (socket 0) peer=02:00:00:00:00:01
+  RX P=1/Q=0 (socket 0) -> TX P=0/Q=0 (socket 0) peer=02:00:00:00:00:00
+
+  io packet forwarding - CRC stripping disabled - packets/burst=32
+  nb forwarding cores=1 - nb forwarding ports=2
+  RX queues=1 - RX desc=128 - RX free threshold=0
+  RX threshold registers: pthresh=0 hthresh=0 wthresh=0
+  TX queues=1 - TX desc=512 - TX free threshold=0
+  TX threshold registers: pthresh=0 hthresh=0 wthresh=0
+  TX RS bit threshold=0 - TXQ flags=0x0
+testpmd> stop
+Telling cores to stop...
+Waiting for lcores to finish...
+
+  ---------------------- Forward statistics for port 0  ----------------------
+  RX-packets: 1020905        RX-dropped: 0             RX-total: 1020905
+  TX-packets: 1020895        TX-dropped: 0             TX-total: 1020895
+  ----------------------------------------------------------------------------
+
+  ---------------------- Forward statistics for port 1  ----------------------
+  RX-packets: 1020895        RX-dropped: 0             RX-total: 1020895
+  TX-packets: 1020928        TX-dropped: 0             TX-total: 1020928
+  ----------------------------------------------------------------------------
+
+  +++++++++++++++ Accumulated forward statistics for all ports+++++++++++++++
+  RX-packets: 2041800        RX-dropped: 0             RX-total: 2041800
+  TX-packets: 2041823        TX-dropped: 0             TX-total: 2041823
+  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Done.
+testpmd> quit
+
+Shutting down port 0...
+Stopping ports...
+Done
+Closing ports...
+Done
+
+Shutting down port 1...
+Stopping ports...
+Done
+Closing ports...
+Done
+
+Bye...
+
+--------------------------------------------------------------------------------------------
+
+RTE>>timer_autotest
+Start timer stress tests
+TESTTIMER: core 3 finished
+TESTTIMER: core 1 finished
+TESTTIMER: core 0 finished
+TESTTIMER: core 2 finished
+
+Start timer stress tests 2
+- 115 timer reset collisions (OK)
+Test OK
+
+Start timer basic tests
+TESTTIMER: 3705063631000: callback id=0 count=1 on core 0
+TESTTIMER: 3705063642068: callback id=3 count=1 on core 1
+TESTTIMER: 3705064690612: callback id=2 count=1 on core 0
+TESTTIMER: 3705911676695: callback id=1 count=1 on core 0
+TESTTIMER: 3705912462246: callback id=2 count=2 on core 0
+TESTTIMER: 3705911680519: callback id=3 count=2 on core 1
+TESTTIMER: 3706759710658: callback id=2 count=3 on core 0
+TESTTIMER: 3706759710701: callback id=3 count=3 on core 1
+TESTTIMER: core 0 finished
+TESTTIMER: core 1 finished
+TESTTIMER: core 3 finished
+TESTTIMER: core 2 finished
+No timer statistics, RTE_LIBRTE_TIMER_DEBUG is disabled
+Test OK
+RTE>>quit
+
+--------------------------------------------------------------------------------------------
