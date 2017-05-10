@@ -1,0 +1,47 @@
+pv: physical volume
+vg: volume group (data on disk)
+lv: logical volume (linear device mapper)
+
+---------------------------------------------------------------------------
+
+Assuming: /dev/sdb1, /dev/sdb2, /dev/sdb3
+
+# fdisk /dev/sdb1 and change type to "8e" with "option t"
+
+# pvcreate /dev/sdb1
+# pvcreate /dev/sdb2
+# pvcreate /dev/sdb3
+# vgcreate volume-group1 /dev/sdb1 /dev/sdb2 /dev/sdb3
+# lvcreate -L 100M -n lv1 volume-group1
+# lvcreate -L 100M -n lv2 volume-group1
+
+# pvdisplay
+# vgdisplay
+# lvdisplay 
+
+# lvremove /dev/volume-group1/lv1
+# lvremove /dev/volume-group1/lv2
+# vgremove volume-group1
+# pvremove /dev/sdb1
+# pvremove /dev/sdb2
+# pvremove /dev/sdb3
+
+---------------------------------------------------------------------------
+
+# mdadm --create --verbose /dev/md0 --level=raid1 --raid-devices=2 /dev/sdb1 /dev/sdb2
+# mdadm --detail /dev/md0
+# pvcreate /dev/md0
+# vgcreate volume-group1 /dev/md0
+# lvcreate -L 100M -n lv1 volume-group1
+
+# lvremove /dev/volume-group1/lv1
+# vgremove volume-group1
+# pvremove /dev/md0
+# mdadm --fail /dev/md0 /dev/sdb1
+# mdadm --fail /dev/md0 /dev/sdb2
+# mdadm --remove /dev/md0 /dev/sdb1
+# mdadm --remove /dev/md0 /dev/sdb2
+# mdadm --stop /dev/md0
+# mdadm --remove /dev/md0
+
+---------------------------------------------------------------------------
