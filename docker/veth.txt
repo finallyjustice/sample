@@ -1,0 +1,20 @@
+# ip netns add net0
+# ip netns add net1
+
+# ip netns list
+
+# ip link add veth_0_peer0 type veth peer name veth_0_peer1
+# ip link
+
+# ip link set veth_0_peer0 netns net0
+# ip link set veth_0_peer1 netns net1
+
+# ip netns exec net0 ip addr add local 192.168.0.1/24 dev veth_0_peer0
+# ip netns exec net0 ifconfig veth_0_peer0 up
+# ip netns exec net1 ip addr add local 192.168.0.2/24 dev veth_0_peer1
+# ip netns exec net1 ifconfig veth_0_peer1 up
+
+# ip netns exec net0 ip addr
+# ip netns exec net1 ip addr
+
+# ip netns exec net1 ping 192.168.0.1
