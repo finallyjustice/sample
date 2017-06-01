@@ -1,0 +1,27 @@
+lvm snapshot
+
+# dd if=/dev/zero of=disk.img bs=1M count=1024
+# losetup /dev/loop0 disk.img
+# pvcreate /dev/loop0
+# vgcreate volume-group1 /dev/loop0
+# lvcreate -L 100M -n lv1 volume-group1
+# mkfs.ext4 /dev/volume-group1/lv1
+
+/dev/volume-group1/snaplv1 is a snapshot
+# lvreate -s -n snaplv1 -L 100M /dev/volume-group1/lv1
+
+# lvremove /dev/volume-group1/snaplv1
+# lvremove /dev/volume-group1/lv1
+# vgremove volume-group1
+# pvremove /dev/loop0
+
+
+------------------------------------------------------
+
+btrfs snapshot
+
+# btrfs subvolume create sub1
+# btrfs subvolume snapshot ./sub1 ./snap1
+
+# btrfs subvolume del -c snap1
+# btrfs subvolume del -c sub1
