@@ -1,0 +1,11 @@
+# To boot ubuntu 16.04 from text mode
+
+Edit /etc/default/grub
+
+Comment the line GRUB_CMDLINE_LINUX_DEFAULT="quiet", by adding # at the beginning
+Change GRUB_CMDLINE_LINUX="" to GRUB_CMDLINE_LINUX="text"
+Uncomment this line #GRUB_TERMINAL=console, by removing the # at the beginning
+
+sudo update-grub 
+
+sudo systemctl set-default multi-user.target
