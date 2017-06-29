@@ -1,0 +1,101 @@
+# This is about how to configure a 2-node ocfs2 cluster. qemu-kvm will be used
+to emulate the shared disk (shared.img) between OSes.
+
+1. Install 2 oracle linux 6:
+ ocfs1.img - node 1 (vm1)
+ ocfs2.img - node 2 (vm2)
+ shared.img - OCFS2 shared storage.
+
+Install ocfs2-tools on oracle linux.
+
+2. Boot 2 VMs:
+
+# sudo qemu-system-x86_64 -m 4096 -smp 2 -hda ocfs1.img -hdb shared.img -enable-kvm -net nic,macaddr=00:16:e3:cc:64:a9 -net tap,ifname=tap1,script=/etc/qemu-ifup,downscript=no
+
+# sudo qemu-system-x86_64 -m 4096 -smp 2 -hda ocfs2.img -hdb shared.img -enable-kvm -net nic,macaddr=00:16:e3:cc:46:9a -net tap,ifname=tap2,script=/etc/qemu-ifup,downscript=no
+
+3. Add the following to /etc/hosts on both node:
+
+10.182.71.35	vm1
+10.182.70.233	vm2
+
+Run `hostname vm1` on node 1 and `hostname vm2` on node 2.
+
+4. Disable iptables on both node:
+
+vm1# /etc/init.d/iptables stop
+vm2# /etc/init.d/iptables stop
+
+5. Create new partition on node 1 /dev/sdb with fdisk as sdb1.
+Run `partprobe` on node 2 to have sdb1 in view.
+
+6. Run the following on node 1 (vm1) and node 2 (vm2)
+
+---------------------------------------------------------------------
+[root@vm ~]# /etc/init.d/o2cb configure
+Configuring the O2CB driver.
+
+This will configure the on-boot properties of the O2CB driver.
+The following questions will determine whether the driver is loaded on
+boot.  The current values will be shown in brackets ('[]').  Hitting
+<ENTER> without typing an answer will keep that current value.  Ctrl-C
+will abort.
+
+Load O2CB driver on boot (y/n) [y]: y
+Cluster stack backing O2CB [o2cb]: 
+Cluster to start on boot (Enter "none" to clear) [cluster]: cluster
+Specify heartbeat dead threshold (>=7) [31]: 
+Specify network idle timeout in ms (>=5000) [30000]: 
+Specify network keepalive delay in ms (>=1000) [2000]: 
+Specify network reconnect delay in ms (>=2000) [2000]: 
+Writing O2CB configuration: OK
+checking debugfs...
+Setting cluster stack "o2cb": OK
+Checking O2CB cluster configuration : Failed
+---------------------------------------------------------------------
+
+7. Make filesystem on node 1:
+
+vm1# mkfs.ocfs2 /dev/sdb1
+
+8. Create configure file:
+
+[root@vm ~]# o2cb add-cluster cluster
+[root@vm ~]# o2cb add-node --ip 10.182.71.35 cluster vm1
+[root@vm ~]# o2cb add-node --ip 10.182.70.233 cluster vm2
+[root@vm ~]# o2cb add-heartbeat cluster /dev/sdb1
+# make sure /dev/sdb1 is mkfs before the last step
+[root@vm ~]# o2cb register-cluster cluster
+
+You will be able to have vim /etc/ocfs2/cluster.conf  as bellow. Please scp it to vm2:
+
+cluster:
+        heartbeat_mode = local
+        node_count = 2
+        name = cluster
+
+node:
+        number = 0
+        cluster = cluster
+        ip_port = 7777
+        ip_address = 10.182.71.35
+        name = vm1
+
+node:
+        number = 1
+        cluster = cluster
+        ip_port = 7777
+        ip_address = 10.182.70.233
+        name = vm2
+
+heartbeat:
+        cluster = cluster
+        region = 9A632809A6D44FA2B341EA45A3982842
+
+8. Run the following on BOTH node:
+
+# /etc/init.d/o2cb restart
+
+9. Mount ocfs2 on both node via:
+
+# mount /dev/sdb1 /mnt

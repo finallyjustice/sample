@@ -1,0 +1,18 @@
+# lsmod | grep ocfs
+ocfs2                1061287  1 
+ocfs2_dlmfs            18881  1 
+ocfs2_stack_o2cb        4279  1 
+ocfs2_dlm             225901  1 ocfs2_stack_o2cb
+ocfs2_nodemanager     234198  12 ocfs2,ocfs2_dlmfs,ocfs2_stack_o2cb,ocfs2_dlm
+ocfs2_stackglue        11888  3 ocfs2,ocfs2_dlmfs,ocfs2_stack_o2cb
+configfs               28184  2 ocfs2_nodemanager
+jbd2                  105456  2 ocfs2,ext4
+
+---------------------------------------------------------------------
+
+# o2cb_ctl -V
+o2cb_ctl version 1.8.6
+
+---------------------------------------------------------------------
+
+# echo "fs_locks" | debugfs.ocfs2 /dev/sdb1 > /tmp/ocfs.lock
