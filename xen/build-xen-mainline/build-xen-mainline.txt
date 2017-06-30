@@ -1,0 +1,86 @@
+This is based on mainline xen commit 695bb5f504ab48c1d546446f104c1b6c0ead126d
+
+Here are files to edit:
+ tools/firmware/etherboot/Makefile
+ tools/firmware/Makefile
+ tools/Makefile
+
+
+-------------------------------------
+About tools/firmware/etherboot/Makefile, comment as below:
+
+30 $T:
+31 #    if ! $(FETCHER) _$T $(IPXE_TARBALL_URL); then \
+32 #        $(GIT) clone $(IPXE_GIT_URL) $D.git; \
+33 #        (cd $D.git && $(GIT) archive --format=tar --prefix=$D/ \
+34 #        $(IPXE_GIT_TAG) | gzip >../_$T); \
+35 #        rm -rf $D.git; \
+36 #    fi
+37 #    mv _$T $T
+
+Rename makefile as Makefile-etherboot
+
+-------------------------------------
+About tools/firmware/Makefile
+
+22 seabios-dir:
+23     #GIT=$(GIT) $(XEN_ROOT)/scripts/git-checkout.sh $(SEABIOS_UPSTREAM_URL) $(SEABIOS_UPSTREAM_REVISION) seabios-dir
+24     cp seabios-config seabios-dir/.config;
+25     $(MAKE) -C seabios-dir olddefconfig
+
+Rename makefile as Makefile-firmware
+
+-------------------------------------
+About tools/Makefile
+
+182 qemu-xen-traditional-dir-find:
+183     set -ex; \
+184 #    if test -d $(QEMU_TRADITIONAL_LOC); then \
+185 #        mkdir -p qemu-xen-traditional-dir; \
+186 #    else \
+187 #        export GIT=$(GIT); \
+188 #        $(XEN_ROOT)/scripts/git-checkout.sh $(QEMU_TRADITIONAL_LOC) $(QEMU_TRADITIONAL_REVISION) qemu-xen-traditional-dir; \
+189 #    fi
+
+226 qemu-xen-dir-find:
+227 #    if test -d $(QEMU_UPSTREAM_LOC) ; then \
+228 #        mkdir -p qemu-xen-dir; \
+229 #    else \
+230 #        export GIT=$(GIT); \
+231 #        $(XEN_ROOT)/scripts/git-checkout.sh $(QEMU_UPSTREAM_LOC) $(QEMU_UPSTREAM_REVISION) qemu-xen-dir ; \
+232 #    fi
+
+Rename makefile as Makefile-tools
+
+=====================================
+
+From tools/firmware/etherboot/Makefile,
+
+IPXE_GIT_TAG := 827dd1bfee67daa683935ce65316f7e0f057fe1c
+
+IPXE_TARBALL_URL is http://xenbits.xen.org/xen-extfiles/ipxe-git-827dd1bfee67daa683935ce65316f7e0f057fe1c.tar.gz
+
+Change name to ipxe.tar.gz
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+About seabios,
+
+SEABIOS_UPSTREAM_URL is http://xenbits.xen.org/git-http/seabios.git
+SEABIOS_UPSTREAM_REVISION is rel-1.10.2
+
+Download tarball from git and rename folder as seabios-dir, and re-tar as seabios.tar.gz.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+http://xenbits.xen.org/git-http/qemu-xen.git
+QEMU_TRADITIONAL_REVISION is 8051789e982499050680a26febeada7467e18a8d
+Rename as qemu-xen-traditional-dir and tar as qemu-xen-traditional.tar.gz.
+
+http://xenbits.xen.org/git-http/qemu-xen-traditional.git
+QEMU_UPSTREAM_REVISION is master
+Rename as qemu-xen-dir and tar as qemu-xen.tar.gz.
+
+
+
+Put all above mentioned files into 
