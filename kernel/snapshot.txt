@@ -18,6 +18,43 @@ lvm snapshot
 
 ------------------------------------------------------
 
+devicemapper snapshot
+
+# dd if=/dev/zero of=data.img bs=1K count=1 seek=10M
+# dd if=/dev/zero of=meta.data.img bs=1K count=1 seek=1G
+
+# losetup /dev/loop0 data.img
+# losetup /dev/loop1 meta.data.img
+
+# dmsetup create my-thin-pool \
+> --table "0 20971522 thin-pool /dev/loop0 /dev/loop1 \
+> 128 65536 1 skip_block_zeroing"
+
+# dmsetup message /dev/mapper/my-thin-pool 0 "create_thin 0"
+# dmsetup create my-thin-volumn-001 \
+> --table "0 2097152 thin /dev/mapper/my-thin-pool 0"
+
+# dmsetup message /dev/mapper/my-thin-pool 0 "create_snap 1 0"
+# dmsetup create mysnap1 \
+> --table "0 2097152 thin /dev/mapper/my-thin-pool 1"
+
+# dmsetup message /dev/mapper/my-thin-pool 0 "create_thin 2"
+# dmsetup create my-thin-volumn-002 \
+> --table "0 2097152 thin /dev/mapper/my-thin-pool 2"
+
+# dmsetup message /dev/mapper/my-thin-pool 0 "create_snap 3 2"
+# dmsetup create mysnap2 \
+> --table "0 2097152 thin /dev/mapper/my-thin-pool 3"
+
+
+# lsblk
+# dmsetup ls --tree
+# dmsetup ls
+# dmsetup table
+# dmsetup status
+
+------------------------------------------------------
+
 btrfs snapshot
 
 # btrfs subvolume create sub1
