@@ -7,3 +7,6 @@ Connect to docker via ssh:
 Run with volumes
 
 # docker run -it -v /root/vol1:/mnt/vol1 -v /root/vol2:/mnt/vol2 rastasheep/ubuntu-sshd bash
+
+----------------------------------------
+To detach from container: Ctrl+P+Q
