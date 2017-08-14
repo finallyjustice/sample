@@ -1,0 +1,9 @@
+----------------------------------------
+Connect to docker via ssh:
+
+# docker run -d -p 50001:22 --name=testssh rastasheep/ubuntu-sshd /usr/sbin/sshd -D
+
+----------------------------------------
+Run with volumes
+
+# docker run -it -v /root/vol1:/mnt/vol1 -v /root/vol2:/mnt/vol2 rastasheep/ubuntu-sshd bash
