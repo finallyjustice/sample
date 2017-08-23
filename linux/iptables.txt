@@ -1,0 +1,27 @@
+# iptables --list-rules
+
+# iptables -F
+
+# iptables -P INPUT DROP 
+deny all
+
+# iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+accept connection whose destination port is "http tcp port 80"
+
+# iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+accept connection whose destination port is "ssh tcp port 22"
+
+# iptables -A INPUT -p tcp -s 10.xx.xx.xx --dport 22 -j ACCEPT
+accept ssh connection only from host 10.xx.xx.xx
+
+# iptables -A INPUT -p icmp --icmp-type echo-request -i enp0s3 -j DROP
+reject all echo request to revent death of ping
+
+# iptables -A FORWARD -p tcp --syn -m limit --limit 1/s -j ACCEPT
+to prevent SYN flood attack
+
+# iptables -A INPUT -s 10.xx.xx.xx -j DROP
+drop packets from specific source IP
+
+# iptables -A INPUT -i enp0s3 -p tcp -s 10.xx.xx.xx -j DROP
+drop tcp packets from specific source IP via enp0s3
