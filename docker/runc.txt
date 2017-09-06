@@ -1,0 +1,6 @@
+# mkdir my_container
+# cd my_container
+# mkdir rootfs
+# sudo docker export $(sudo docker create busybox) | tar -C rootfs -xvf -
+# runc spec
+# sudo runc run busybox

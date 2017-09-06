@@ -1,0 +1,69 @@
+Here is tutorial on building components for v17.05.0-ce-rc3:
+
+- docker-containerd, docker-containerd-shim, docker-containerd-ctr (containerd)
+- docker-runc (runc)
+- docker-init (tini)
+- docker-proxy (libnetwork)
+
+The src and commit id of each component for v17.05.0-ce-rc3 is at:
+
+- moby/hack/dockerfile/install-binaries.sh
+- moby/hack/dockerfile/binaries-commits
+
+src and commit id:
+
+- containerd : https://github.com/docker/containerd.git  9048e5e50717ea4497b757314bad98ea3763c145
+- runc       : https://github.com/docker/runc.git        9c2d8d184e5da67c95d601382adf14862e4f2228
+- tini       : https://github.com/krallin/tini.git       949e6facb77383876aeff8a6944dde66b3089574
+- libnetwork : https://github.com/docker/libnetwork.git  7b2b1feb1de4817d522cc372af149ff48d25028e
+
+---------------------------------------------------
+To build containerd:
+
+# sudo docker run -it --entrypoint="/bin/bash" -v /home/zhang/src/containerd:/tmp/containerd finallyjustice/docker_build:v17.05.0-ce-rc3
+container# cp -r /tmp/containerd /go/src/github.com/docker/.
+container# cd /tmp/containerd
+container# make static
+container# exit
+
+The binaries are at containerd/bin
+
+- containerd      : docker-containerd
+- containerd-shim : docker-containerd-shim
+- ctr             : docker-containerd-ctr
+
+---------------------------------------------------
+To build runc:
+
+# sudo docker run -it --entrypoint="/bin/bash" -v /home/zhang/src/runc:/tmp/runc finallyjustice/docker_build:v17.05.0-ce-rc3
+container# cd /tmp/runc/
+container# make "BUILDTAGS=seccomp apparmor selinux" static
+container# exit
+
+The binary is at runc/runc
+
+- runc : docker-runc
+
+---------------------------------------------------
+To build tini:
+
+# cmake .
+# make tini-static
+
+The binary is at tini/tini-static
+
+- tini-static : docker-init
+
+---------------------------------------------------
+To build libnetwork:
+
+# sudo docker run -it --entrypoint="/bin/bash" -v /home/zhang/src/libnetwork:/tmp/libnetwork finallyjustice/docker_build:v17.05.0-ce-rc3
+
+container# cp -r /tmp/libnetwork /go/src/github.com/docker/.
+container# cd /tmp/libnetwork
+container# go build -ldflags= -o ./docker-proxy github.com/docker/libnetwork/cmd/proxy
+container# exit
+
+The binary is at libnetwork
+
+- docker-proxy
