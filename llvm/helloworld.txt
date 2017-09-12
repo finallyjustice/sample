@@ -1,0 +1,21 @@
+1. frontend (clang): converts source code to IR
+2. optimizer (opt): optimizes IR to IR
+3. backend (llc): converts IR to machine code (assembly)
+
+----------------------------------
+
+#include <stdio.h>
+
+int main() {
+	printf("Hello, Compiler!\n");
+	return 0;
+}
+
+----------------------------------
+
+# clang -E hello.c -o preprocessed.i
+# clang -S -emit-llvm -o llvm_ir.ll hello.c
+# opt -O2 -S llvm_ir.ll -o optimized.ll
+# llc -o compiled-assembly.s optimized.ll
+# gcc -c compiled-assembly.s -o compiled-assembly.o
+# gcc compiled-assembly.s -o hello
