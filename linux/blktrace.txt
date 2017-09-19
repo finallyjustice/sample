@@ -1,0 +1,47 @@
+# mount -t debugfs debugfs /sys/kernel/debug
+
+# blktrace -d /dev/xvda -o – | blkparse -i –
+
+# btrace /dev/xvda
+
+# blktrace -d /dev/xvda
+# blkparse -i xvda
+
+To calculate Q2Q, Q2G, etc, automatically (I/O tracing report)
+# blkparse -i xvda -d xvda.blktrace.bin
+# btt -i xvda.blktrace.bin
+
+To get Q2C latency
+# btt -i xvda.blktrace.bin -q xvda.q2c_latency
+
+To get D2C latency
+# btt -i xvda.blktrace.bin -l xvda.d2c_latency
+
+To dump block access
+# btt -i xvda.blktrace.bin -B xvda_dump_blocknos
+
+---------------------------------------------------------------------
+
+Suppose sector number from blktrace on dm-0 is 2365952. From `fdisk -l`, sector
+size is 512. From `debugfs -R stats /dev/dm-0`, block size is 4096. Therefore,
+sector 2365952 in dm-0 is equivalent to block 2365952/8=295744 in dm-0.
+
+[root@vm ~]# debugfs -R 'icheck 295744' /dev/dm-0 
+debugfs 1.43-WIP (20-Jun-2013)
+Block	Inode number
+295744	129772
+[root@vm ~]# debugfs -R 'ncheck 129772' /dev/dm-0 
+debugfs 1.43-WIP (20-Jun-2013)
+Inode	Pathname
+129772	/root/disk.img
+
+---------------------------------------------------------------------
+
+Q2Q - time between requests sent to the block layer
+Q2G - time from a block I/O is queued to the time it gets a request allocated for it
+G2I - time from a request is allocated to the time it is Inserted into the device's queue
+Q2M - time from a block I/O is queued to the time it gets merged with an existing request
+I2D - time from a request is inserted into the device's queue to the time it is actually issued to the device
+M2D - time from a block I/O is merged with an exiting request until the request is issued to the device
+D2C - service time of the request by the device
+Q2C - total time spent in the block layer for a request
