@@ -1,0 +1,96 @@
+This is how x86_64 c program calls a glibc function puts.
+
+(gdb) disassemble main
+Dump of assembler code for function main:
+   0x0000000000400526 <+0>:	push   %rbp
+   0x0000000000400527 <+1>:	mov    %rsp,%rbp
+   0x000000000040052a <+4>:	sub    $0x10,%rsp
+   0x000000000040052e <+8>:	mov    %edi,-0x4(%rbp)
+   0x0000000000400531 <+11>:	mov    %rsi,-0x10(%rbp)
+=> 0x0000000000400535 <+15>:	mov    $0x4005d4,%edi
+   0x000000000040053a <+20>:	callq  0x400400 <puts@plt>
+   0x000000000040053f <+25>:	mov    $0x4005e5,%edi
+   0x0000000000400544 <+30>:	callq  0x400400 <puts@plt>
+   0x0000000000400549 <+35>:	mov    $0x0,%eax
+   0x000000000040054e <+40>:	leaveq 
+   0x000000000040054f <+41>:	retq   
+End of assembler dump.
+
+puts@plt is at 0x400400. The first instruction of puts@plt is to jump to *0x601018=0x400406 (in .got.plt), which is the second instruction of puts@plt.
+
+(gdb) disassemble 0x400400
+Dump of assembler code for function puts@plt:
+   0x0000000000400400 <+0>:	jmpq   *0x200c12(%rip)        # 0x601018
+   0x0000000000400406 <+6>:	pushq  $0x0
+   0x000000000040040b <+11>:	jmpq   0x4003f0
+End of assembler dump.
+
+(gdb) x 0x601018
+0x601018:	0x00400406
+
+puts@plt pushes 0x0 on stack and jumps to 0x4003f0 which is at the beginning of plt section. 0x0 indicates the first entry in .rela.plt.
+
+This piece of code first pushes 0x601008 (.got.plt) on satck and then jumps to *0x601010 (.got.plt). 0x601008 is the address of address of link_map base address.
+
+(gdb) x/5i 0x4003f0
+   0x4003f0:	pushq  0x200c12(%rip)        # 0x601008
+   0x4003f6:	jmpq   *0x200c14(%rip)        # 0x601010
+   0x4003fc:	nopl   0x0(%rax)
+   0x400400 <puts@plt>:	jmpq   *0x200c12(%rip)        # 0x601018
+   0x400406 <puts@plt+6>:	pushq  $0x0
+
+(gdb) x *0x601010
+   0xfffffffff7dee6a0:	Cannot access memory at address 0xfffffffff7dee6a0
+
+This address is belong to ld-linux-x86-64.so.2. ld would init the got for puts.
+
+There are to arguments on stack: (1) 0x0 indicates the first entry in rela.plt.
+
+--> rela(0): r_offset=601018, r_info=100000007, r_addend=0, sym=1, type=7
+
+(gdb) info sharedlibrary
+From                To                  Syms Read   Shared Object Library
+0x00007ffff7dd7ac0  0x00007ffff7df5640  Yes         /lib64/ld-linux-x86-64.so.2
+0x00007ffff7a2d8b0  0x00007ffff7b80334  Yes         /lib/x86_64-linux-gnu/libc.so.6
+
+Once the puts address is updated by ld, the corresponding address becomes 0xfffffffff7a7d5d0.
+
+(gdb) x *0x601018 # in .got.plt
+0xfffffffff7a7d5d0:	Cannot access memory at address 0xfffffffff7a7d5d0
+
+This address is belong to libc.so.6.
+
+ABout .got.plt:
+
+1st entry: base of dynamic section
+2nd entry: seems base of link_map
+3rd entry: seems address of _dl_runtime_resolve in ld
+
+
+---------------------------------------------------
+
+Notes:
+
+plt: code section to redirect library calls, e.g., puts
+got.plt: data address for address used in plt section
+rela.plt: relocation section to calculate address (stored in got.plt) used in plt section
+shstrtab: string used for section name
+.interp: ld path
+.gnu.hash
+
+Once we run stripe, symtab section is removed.
+
+Android implements its own dynamic loader and linker for native
+libraries (/system/bin/linker). Unlike its counterpart in the desktop,
+Android’s loader resolves all the external functions eagerly.
+For example, if the app’s native code depends on the __android
+_log_print function in liblog.so, the loader will promptly load
+the library and recursively resolve the function address. Even though
+Android does not support lazy address resolution, the PLT/GOT [9]
+structure is still used for dynamic linking. More specifically, the
+compiler generates a stub in the PLT section for each external function.
+All calls to that function in the library are redirect to the stub,
+which simply contains an indirect branch to the address in the associated
+GOT entry. When a native library is loaded, the loader
+resolves the address of the external function and fills it in the GOT
+entry.
