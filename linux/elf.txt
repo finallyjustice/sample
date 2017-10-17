@@ -44,7 +44,7 @@ This piece of code first pushes 0x601008 (.got.plt) on satck and then jumps to *
 
 This address is belong to ld-linux-x86-64.so.2. ld would init the got for puts.
 
-There are to arguments on stack: (1) 0x0 indicates the first entry in rela.plt.
+There are to arguments on stack: (1) 0x0 indicates the first entry in rela.plt and (2) 0x601008 (.got.plt).
 
 --> rela(0): r_offset=601018, r_info=100000007, r_addend=0, sym=1, type=7
 
@@ -60,25 +60,38 @@ Once the puts address is updated by ld, the corresponding address becomes 0xffff
 
 This address is belong to libc.so.6.
 
-ABout .got.plt:
+About .got.plt:
 
 1st entry: base of dynamic section
 2nd entry: seems base of link_map
 3rd entry: seems address of _dl_runtime_resolve in ld
 
-
 ---------------------------------------------------
 
-Notes:
+elf sections:
 
-plt: code section to redirect library calls, e.g., puts
-got.plt: data address for address used in plt section
-rela.plt: relocation section to calculate address (stored in got.plt) used in plt section
-shstrtab: string used for section name
+ELF section index 0 is reserved but not used.
+
+.plt: code section to redirect library calls, e.g., puts@plt
+.got.plt: data address for address used in plt section, main()->puts@plt->addr@got.plt
+.rela.plt: relocation section to calculate address (stored in got.plt) used in plt section
+.shstrtab: string used for section name
 .interp: ld path
-.gnu.hash
+.symtab: the symbol table that would be removed with stripe
+.strtab: string used by symtab
+.gnu.hash: hash table for symbol request externally and it is used to calculate the index in .dynsym of a symbol string
+.dynsym: symbol table used in dynamic linking (symtab section is removed once we run stripe)
+.rela.name: name is supplied by the section to which the relocations apply.
 
-Once we run stripe, symtab section is removed.
+SYMTAB and DYNSYM: These sections hold a symbol table. Currently, an object
+file may have only one section of each type, but this restriction may be
+relaxed in the future. Typically, SYMTAB provides symbols for link editing,
+though it may also be used for dynamic linking. As a complete symbol table, it
+may contain many symbols unnecessary for dynamic linking. Consequently, an
+object file may also contain a DYNSYM section, which olds a minimal set of
+dynamic linking symbols, to save space.
+
+---------------------------------------------------
 
 Android implements its own dynamic loader and linker for native
 libraries (/system/bin/linker). Unlike its counterpart in the desktop,
@@ -94,3 +107,21 @@ which simply contains an indirect branch to the address in the associated
 GOT entry. When a native library is loaded, the loader
 resolves the address of the external function and fills it in the GOT
 entry.
+
+A relocatable file holds code and data suitable for linking with other object
+files to create an executable or a shared object file.
+An executable file holds a program suitable for execution; the file specifies
+how exec (BA_OS) creates a program's process image.
+A shared object file holds code and data suitable for linking in two contexts.
+
+---------------------------------------------------
+
+Support there is an executable program called "binary" and binary would print
+"Hello World" via puts (in libc). Initially, the address of puts in got.plt is
+one address in ld and the request to puts would be forwarded to ld via
+puts@plt. ld would calculate the has of symbol name (puts), traverse each
+libraries and search in buckets of gnu.hash with this hash and identify the
+index of puts in dynsym section. Once entry of puts in synsym is identified,
+the address of puts would be written to got.plt with the help of binary's
+rela.plt. The address in got.plt would point to puts the next time when binary
+calls puts.
