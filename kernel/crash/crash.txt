@@ -1,0 +1,17 @@
+Information of mpykdump can be viewed in following website:
+
+https://people.redhat.com/anderson/extensions.html
+
+Download pykdump on following website:
+
+https://sourceforge.net/projects/pykdump/
+
+1. Run crash.
+
+2. Load pykdump library.
+
+crash> extend ls /xxx/pykdump/usr/local/lib/mpykdump64.so
+
+3. Run python script in crash
+
+crash> epython /xxx/sample/kernel/crash/script.py
