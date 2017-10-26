@@ -1,0 +1,9 @@
+# sudo apt-get install ecryptfs-utils
+# mkdir /home/zhang/test/cipherdoc
+# mkdir /home/zhang/test/clearvdoc
+# sudo mount -t ecryptfs /home/zhang/test/cleardoc /home/zhang/test/cipherdoc
+# sudo umount /home/zhang/test/cipherdoc
+
+or
+
+# sudo mount -t ecryptfs /home/zhang/test/cipherdoc /home/zhang/test/cipherdoc
