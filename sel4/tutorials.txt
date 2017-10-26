@@ -1,0 +1,63 @@
+https://wiki.sel4.systems/Tutorials
+
+Seems proxy configuration is not required.
+
+================================================================================
+
+# mkdir sel4-tutorials-manifest
+# cd sel4-tutorials-manifest
+# repo init -u https://github.com/SEL4PROJ/sel4-tutorials-manifest -m sel4-tutorials.xml
+# repo init --config-name
+# repo sync
+
+Regard 1st tutorial:
+
+# make ia32_hello-1_defconfig
+
+Compilation failed with `make -j4`
+
+Edit sel4-tutorials-manifest/apps/hello-1/src/main.c by adding:
+
+------------------------------------------------------
+
+int main(void)
+{
+	printf("hello world!\n");
+}
+
+------------------------------------------------------
+
+# make -j4
+# make simulate
+
+
+================================================================================
+
+# mkdir camkes-tutorials-manifest
+# cd camkes-tutorials-manifest
+# repo init -u https://github.com/SEL4PROJ/sel4-tutorials-manifest -m camkes-tutorials.xml
+# repo init --config-name
+# repo sync
+
+Regard 0th tutorial:
+
+# rm configs
+# ln -s projects/sel4-tutorials/build-config/configs-camkes configs
+# make ia32_hello-camkes-0_defconfig
+# make -j4
+
+================================================================================
+
+# mkdir sel4test
+# cd sel4test
+# repo init -u https://github.com/seL4/sel4test-manifest.git
+# repo init --config-name
+# repo sync
+
+// repo init -u https://github.com/seL4/sel4test-manifest.git -m 2.0.x.xml
+
+# make ia32_simulation_release_xml_defconfig
+// make menuconfig
+
+# make -j libmuslc && make
+# make simulate-ia32
