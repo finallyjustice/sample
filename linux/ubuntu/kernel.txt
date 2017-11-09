@@ -1,0 +1,8 @@
+To get source code via apt:
+
+# apt-get source linux-image-$(uname -r)
+
+To get source code via git:
+
+# git clone git://kernel.ubuntu.com/ubuntu/ubuntu-<release>.git
+# git clone git://kernel.ubuntu.com/ubuntu/ubuntu-xenial.git
