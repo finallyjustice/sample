@@ -6,3 +6,16 @@ To get source code via git:
 
 # git clone git://kernel.ubuntu.com/ubuntu/ubuntu-<release>.git
 # git clone git://kernel.ubuntu.com/ubuntu/ubuntu-xenial.git
+
+
+To build ubuntu kvm:
+
+# make mrproper
+
+# cp /lib/modules/4.4.0-45-generic/build/.config .
+# cp /lib/modules/4.4.0-45-generic/build/Module.symvers .
+
+# make prepare
+# make scripts
+# make oldconfig
+# make M=arch/x86/kvm
