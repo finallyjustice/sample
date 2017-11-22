@@ -1,0 +1,14 @@
+# suppose glibc-2.25
+
+Create /soft/glibc and run:
+
+# sudo chown zhang /soft/glibc
+
+Create new folder build-glibc-2.25 and run the following at the folder:
+
+# ../glibc-2.25/configure --prefix=/soft/glibc
+# make
+# make install
+
+
+# LD_PRELOAD=/soft/glibc/lib/ld-linux-x86-64.so. ./test
