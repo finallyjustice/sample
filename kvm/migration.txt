@@ -1,0 +1,5 @@
+src# qemu-system-x86_64 -hda ocfs1.img -m 2048M -enable-kvm -smp 2 -monitor stdio
+dst# qemu-system-x86_64 -hda ocfs1.img -m 2048M -enable-kvm -smp 2 -monitor stdio -incoming tcp:0:60001
+
+On qemu monitor of source server, run:
+(qemu) migrate -dtcp:127.0.0.1:60001
