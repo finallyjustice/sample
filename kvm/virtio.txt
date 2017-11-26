@@ -8,6 +8,10 @@ emulated nic:
 virtio net
 # qemu-system-x86_64 -hda disk.img -m 4096m -enable-kvm -smp 2 -net nic,model=virtio -net tap,ifname=tap1,script=/etc/qemu-ifup,downscript=no
 
+# qemu-system-x86_64 -hda ~/img/qemu-ubuntu16.04.img -m 4096M -enable-kvm -smp 2 -netdev tap,id=tapnet,ifname=tap0,script=/home/zhang/qemu-ifup,downscript=no -device virtio-net-pci,netdev=tapnet
+
+# qemu-system-x86_64 -kernel /home/zhang/test/linux-4.14-rc5/arch/x86_64/boot/bzImage -append "root=/dev/sda1 init=/sbin/init text" -hda ~/img/qemu-ubuntu16.04.img -m 4096M -enable-kvm -smp 2 -monitor stdio -netdev tap,id=tapnet,ifname=tap0,script=/home/zhang/qemu-ifup,downscript=no -device virtio-net-pci,netdev=tapnet
+
 vhost net
 # qemu-system-x86_64 -hda disk.img -m 4096m -enable-kvm -smp 2 -net nic,model=virtio -net tap,vnet_hdr=on,vhost=on
 
