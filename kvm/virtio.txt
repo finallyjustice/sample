@@ -20,3 +20,7 @@ virtio block
 
 virtio memory balloon
 # qemu-system-x86_64 -hda disk.img -m 4096m -enable-kvm -smp 2 -balloon virtio
+
+
+virtio block and net with kernel
+# qemu-system-x86_64 -kernel /home/zhang/test/linux-4.14-rc5/arch/x86_64/boot/bzImage -append "root=/dev/vda1 init=/sbin/init text" -m 3000M -smp 2 -enable-kvm -monitor stdio -drive file=/home/zhang/img/ubuntu1604.img,format=raw,if=none,id=drive-virtio-disk0 -device virtio-blk-pci,drive=drive-virtio-disk0,id=virtio-disk0 -netdev tap,id=tapnet,ifname=tap0,script=/home/zhang/script/qemu-ifup,downscript=no -device virtio-net-pci,netdev=tapnet
