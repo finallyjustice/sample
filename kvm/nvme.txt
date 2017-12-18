@@ -1,0 +1,1 @@
+./qemu-system-x86_64 -hda /home/zhang/img/ocfs2.img -device nvme,drive=lightnvme,serial=deadbeaf1 -enable-kvm -m 3000M -drive file=/home/zhang/img/ocfs1.img,if=none,id=lightnvme
