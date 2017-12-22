@@ -1,3 +1,10 @@
+/*
+ * pkg-config --cflags glib-2.0
+ * pkg-config --libs glib-2.0
+ *
+ * cc hello.c `pkg-config --cflags --libs glib-2.0` -o hello
+ */
+
 #include <glib.h>
 #include <stdio.h>
 #include <strings.h>
