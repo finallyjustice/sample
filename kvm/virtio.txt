@@ -1,3 +1,9 @@
+help:
+# qemu-system-x86_64 -device help
+# qemu-system-x86_64 -machine help
+# qemu-system-x86_64 -cpu help
+# qemu-system-x86_64 -device virtio-blk-pci,help
+
 list nics:
 # qemu-system-x86_64 -net nic,model=?
 
@@ -27,3 +33,6 @@ virtio block and net with kernel
 
 multiqueue:
 # /soft/qemu/bin/qemu-system-x86_64 -kernel /home/zhang/test/linux-4.14-rc5/arch/x86_64/boot/bzImage -append "root=/dev/vda1 init=/sbin/init text" -m 3000M -smp 2 -enable-kvm -monitor stdio -drive file=/home/zhang/img/ubuntu1604.img,format=raw,if=none,id=drive-virtio-disk0 -device virtio-blk-pci,drive=drive-virtio-disk0,id=virtio-disk0,num-queues=2 -netdev tap,id=tapnet,ifname=tap0,script=/home/zhang/script/qemu-ifup,downscript=no,queues=2 -device virtio-net-pci,netdev=tapnet,mq=true
+
+virtio-scsi:
+# qemu-system-x86_64 -m 3000M -smp 2 -enable-kvm -drive file=/home/zhang/img/ocfs1.img,format=raw,if=none,id=virt1 -device virtio-scsi-pci,id=virt1,iothread=iothread0 -object iothread,id=iothread0 -device scsi-hd,drive=virt1
