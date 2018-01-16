@@ -1,0 +1,95 @@
+From 2ee6abdc666d5fe7ebd8ae322367209ed45a0640 Mon Sep 17 00:00:00 2001
+From: Dongli Zhang <dongli.zhang@oracle.com>
+Date: Tue, 16 Jan 2018 13:12:07 +0800
+Subject: [PATCH 1/1] tools: update Makefile to avoid 'git clone'
+
+Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+---
+ tools/Makefile                    | 24 ++++++++++++------------
+ tools/firmware/Makefile           |  2 +-
+ tools/firmware/etherboot/Makefile | 14 +++++++-------
+ 3 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/tools/Makefile b/tools/Makefile
+index ab7a01e..bb5e9e5 100644
+--- a/tools/Makefile
++++ b/tools/Makefile
+@@ -148,12 +148,12 @@ endif
+ # External target: qemu-xen-traditional
+ qemu-xen-traditional-dir-find:
+ 	set -ex; \
+-	if test -d $(QEMU_TRADITIONAL_LOC); then \
+-		mkdir -p qemu-xen-traditional-dir; \
+-	else \
+-		export GIT=$(GIT); \
+-		$(XEN_ROOT)/scripts/git-checkout.sh $(QEMU_TRADITIONAL_LOC) $(QEMU_TRADITIONAL_REVISION) qemu-xen-traditional-dir; \
+-	fi
++	#if test -d $(QEMU_TRADITIONAL_LOC); then \
++	#	mkdir -p qemu-xen-traditional-dir; \
++	#else \
++	#	export GIT=$(GIT); \
++	#	$(XEN_ROOT)/scripts/git-checkout.sh $(QEMU_TRADITIONAL_LOC) $(QEMU_TRADITIONAL_REVISION) qemu-xen-traditional-dir; \
++	#fi
+ 
+ .PHONY: qemu-xen-traditional-dir-force-update
+ qemu-xen-traditional-dir-force-update: qemu-xen-traditional-dir-find
+@@ -194,12 +194,12 @@ subdir-uninstall-qemu-xen-traditional-dir:
+ 
+ # External target: qemu-xen
+ qemu-xen-dir-find:
+-	if test -d $(QEMU_UPSTREAM_LOC) ; then \
+-		mkdir -p qemu-xen-dir; \
+-	else \
+-		export GIT=$(GIT); \
+-		$(XEN_ROOT)/scripts/git-checkout.sh $(QEMU_UPSTREAM_LOC) $(QEMU_UPSTREAM_REVISION) qemu-xen-dir ; \
+-	fi
++	#if test -d $(QEMU_UPSTREAM_LOC) ; then \
++	#	mkdir -p qemu-xen-dir; \
++	#else \
++	#	export GIT=$(GIT); \
++	#	$(XEN_ROOT)/scripts/git-checkout.sh $(QEMU_UPSTREAM_LOC) $(QEMU_UPSTREAM_REVISION) qemu-xen-dir ; \
++	#fi
+ 
+ .PHONY: qemu-xen-dir-force-update
+ qemu-xen-dir-force-update: qemu-xen-dir-find
+diff --git a/tools/firmware/Makefile b/tools/firmware/Makefile
+index 868b506..ecd99e4 100644
+--- a/tools/firmware/Makefile
++++ b/tools/firmware/Makefile
+@@ -20,7 +20,7 @@ ovmf-dir:
+ 	cp ovmf-makefile ovmf-dir/Makefile;
+ 
+ seabios-dir:
+-	GIT=$(GIT) $(XEN_ROOT)/scripts/git-checkout.sh $(SEABIOS_UPSTREAM_URL) $(SEABIOS_UPSTREAM_REVISION) seabios-dir
++	#GIT=$(GIT) $(XEN_ROOT)/scripts/git-checkout.sh $(SEABIOS_UPSTREAM_URL) $(SEABIOS_UPSTREAM_REVISION) seabios-dir
+ 	cp seabios-config seabios-dir/.config;
+ 	$(MAKE) -C seabios-dir olddefconfig
+ 
+diff --git a/tools/firmware/etherboot/Makefile b/tools/firmware/etherboot/Makefile
+index e33458d..5be3b0c 100644
+--- a/tools/firmware/etherboot/Makefile
++++ b/tools/firmware/etherboot/Makefile
+@@ -28,13 +28,13 @@ all: $(ROMS)
+ 	$(MAKE) -C $D/src bin/$(*F).rom
+ 
+ $T:
+-	if ! $(FETCHER) _$T $(IPXE_TARBALL_URL); then \
+-		$(GIT) clone $(IPXE_GIT_URL) $D.git; \
+-		(cd $D.git && $(GIT) archive --format=tar --prefix=$D/ \
+-		$(IPXE_GIT_TAG) | gzip -n >../_$T); \
+-		rm -rf $D.git; \
+-	fi
+-	mv _$T $T
++	#if ! $(FETCHER) _$T $(IPXE_TARBALL_URL); then \
++	#	$(GIT) clone $(IPXE_GIT_URL) $D.git; \
++	#	(cd $D.git && $(GIT) archive --format=tar --prefix=$D/ \
++	#	$(IPXE_GIT_TAG) | gzip -n >../_$T); \
++	#	rm -rf $D.git; \
++	#fi
++	#mv _$T $T
+ 
+ $D/src/arch/i386/Makefile: $T Config
+ 	rm -rf $D
+-- 
+2.7.4
+

@@ -1,0 +1,39 @@
+This is how to install xen-unstable on Ubuntu 16.04.
+
+xen-mainline
+
+1. Put mainline-xen under /home/zhang/src/.
+
+http://xenbits.xen.org/git-http/xen.git
+
+2. ./xen-tools-change.sh
+
+3. sudo mkdir /soft/xen & sudo chown zhang /soft/xen
+
+4. sudo mkdir /var/lib/xen & sudo chown zhang /var/lib/xen
+
+5. sudo mkdir /var/lib/xenstored & sudo chown zhang /var/lib/xenstored
+
+6. sudo mkdir /var/log/xen if it does not exist
+
+7. ./configure --prefix=/soft/xen --sysconfdir=/soft/xen
+
+8. make xen & sudo cp xen.gz /boot/. & grub-update & dom0_mem=8192m
+
+9. make tools
+
+10. make install-tools
+
+11. "su" after reboot machine.
+
+12. Create bridge via bridge.sh
+
+13. export LD_LIBRARY_PATH=/soft/xen/lib
+
+14. export PYTHONPATH=/soft/xen/lib/python2.7/site-packages
+
+15. PATH=$PATH:/soft/xen/bin:/soft/xen/sbin
+
+16. Run "/soft/xen/init.d/xencommons start"
+
+17. Boot guest with xl

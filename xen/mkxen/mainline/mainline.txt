@@ -1,0 +1,15 @@
+* git clone http://git.ipxe.org/ipxe.git for commit specified by IPXE_GIT_TAG
+in tools/firmware/etherboot/Makefile and tar as ipxe.tar.gz
+
+* git clone http://xenbits.xen.org/git-http/seabios.git with tag specified by
+SEABIOS_UPSTREAM_REVISION in Config.mk, change folder to seabios-dir, tar as
+seabios.tar.gz
+
+* git clone http://xenbits.xen.org/git-http/qemu-xen-traditional.git for commit
+specified by QEMU_TRADITIONAL_REVISION in Config.mk, change folder to
+qemu-xen-traditional-dir, tar as qemu-xen-traditional.tar.gz
+
+* git clone http://xenbits.xen.org/git-http/qemu-xen.git for master branch,
+change folder to qemu-xen-dir, tar as qemu-xen.tar.gz
+
+* update a set of Makefile according to update_makefile.patch
