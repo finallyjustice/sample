@@ -1,0 +1,12 @@
+update grub2 on centos
+======================
+
+1. edit /etc/default/grub
+
+2. # grub2-mkconfig -o /boot/grub2/grub.cfg
+
+
+selet grub entry on ubuntu
+==========================
+
+# grub-reboot '1 > 0'
