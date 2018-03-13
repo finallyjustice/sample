@@ -18,7 +18,7 @@ About tools/firmware/etherboot/Makefile, comment as below:
 36 #    fi
 37 #    mv _$T $T
 
-Rename makefile as Makefile-etherboot
+Rename makefile as Makefile-etherboot and copy out to build
 
 -------------------------------------
 About tools/firmware/Makefile
@@ -28,7 +28,7 @@ About tools/firmware/Makefile
 24     cp seabios-config seabios-dir/.config;
 25     $(MAKE) -C seabios-dir olddefconfig
 
-Rename makefile as Makefile-firmware
+Rename makefile as Makefile-firmware and copy out to build
 
 -------------------------------------
 About tools/Makefile
@@ -50,7 +50,7 @@ About tools/Makefile
 231 #        $(XEN_ROOT)/scripts/git-checkout.sh $(QEMU_UPSTREAM_LOC) $(QEMU_UPSTREAM_REVISION) qemu-xen-dir ; \
 232 #    fi
 
-Rename makefile as Makefile-tools
+Rename makefile as Makefile-tools and copy out to build
 
 =====================================
 
@@ -60,11 +60,11 @@ IPXE_GIT_TAG := 827dd1bfee67daa683935ce65316f7e0f057fe1c
 
 IPXE_TARBALL_URL is http://xenbits.xen.org/xen-extfiles/ipxe-git-827dd1bfee67daa683935ce65316f7e0f057fe1c.tar.gz
 
-Change name to ipxe.tar.gz
+Change name to ipxe.tar.gz and copy out to build
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-About seabios,
+About seabios (in Config.mk),
 
 SEABIOS_UPSTREAM_URL is http://xenbits.xen.org/git-http/seabios.git
 SEABIOS_UPSTREAM_REVISION is rel-1.10.2
@@ -83,4 +83,4 @@ Rename as qemu-xen-dir and tar as qemu-xen.tar.gz.
 
 
 
-Put all above mentioned files into 
+Put all above mentioned files into build folder, edit 'XENPATH' in xen-tools-change.sh and run the script.
