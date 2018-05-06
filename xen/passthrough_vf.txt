@@ -1,0 +1,54 @@
+# rmmod igb
+# modprobe igb max_vfs=2
+
+1. Unbind from the old driver:
+
+# echo 0000:02:10.0 > /sys/bus/pci/devices/0000\:02\:10.0/driver/unbind
+
+2. Create a new slot in pciback for the device:
+
+# echo 0000:02:10.0 > /sys/bus/pci/drivers/pciback/new_slot 
+
+3. Bind to pciback:
+
+# echo 0000:02:10.0 > /sys/bus/pci/drivers/pciback/bind
+
+add below to hvm config file:
+
+pci = [ '02:10.0' ]
+
+
+Another way is via:
+
+# echo 7 > /sys/bus/pci/drivers/igb/0000\:02\:00.0/sriov_numvfs
+
+------------------------------------------------------
+
+Below is informaton inside guest:
+
+# ethtool -i ens5
+driver: igbvf
+version: 2.4.0-k
+firmware-version: 
+expansion-rom-version: 
+bus-info: 0000:00:05.0
+supports-statistics: yes
+supports-test: yes
+supports-eeprom-access: no
+supports-register-dump: yes
+supports-priv-flags: no
+
+
+# dmesg  | grep igb
+[    0.817075] igbvf: Intel(R) Gigabit Virtual Function Network Driver - version 2.4.0-k
+[    0.817076] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.
+[    0.836023] igbvf 0000:00:05.0: PF still in reset state. Is the PF interface up?
+[    0.836024] igbvf 0000:00:05.0: Assigning random MAC address.
+[    0.856794] igbvf 0000:00:05.0: PF still resetting
+[    0.857390] igbvf 0000:00:05.0: Intel(R) I350 Virtual Function
+[    0.857391] igbvf 0000:00:05.0: Address: 1e:47:33:c1:5d:5f
+[    0.865131] igbvf 0000:00:05.0 ens5: renamed from eth1
+
+
+# lsmod | grep igb
+igbvf                  45056  0
