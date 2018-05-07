@@ -1,0 +1,25 @@
+* enable vt-d in bios
+* enable INTEL_IOMMU in config
+* set 'intel_iommu=on' in grub to enable iommu
+
+The below should be available in log:
+
+# dmesg | grep -e DMAR -e IOMMU | grep IOMMU
+[    0.000000] DMAR: IOMMU enabled
+
+------------------------------------------------------
+
+# sudo modprobe vfio
+# sudo modprobe vfio-pci
+
+# echo 0000:02:00.0 > /sys/bus/pci/devices/0000\:02\:00.0/driver/unbind
+# lspci -ns 0000:02:00.0
+
+# echo "8086 1521" > /sys/bus/pci/drivers/vfio-pci/new_id
+
+# qemu-system-x86_64 -m 4096M -enable-kvm -smp 2 -hda disk.img -device vfio-pci,host=0000:02:00.0
+
+------------------------------------------------------
+
+* echo 2 > /sys/module/igb/drivers/pci\:igb/0000\:02\:00.0/sriov_numvfs
+
