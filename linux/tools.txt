@@ -1,0 +1,1 @@
+# cdrecord -v -eject dev=/dev/cdrom xxx.iso
