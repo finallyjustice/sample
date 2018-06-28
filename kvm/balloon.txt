@@ -1,0 +1,17 @@
+Add below to qemu command line:
+
+-device virtio-balloon-pci,id=balloon0
+
+or
+
+-device virtio-balloon-pci,id=balloon0,bus=pci.0,addr=0x6
+
+
+(qemu) info balloon
+balloon: actual=3000
+(qemu) balloon 2000
+(qemu) info balloon
+balloon: actual=2000
+
+
+The result is reflected inside guest.
