@@ -1,0 +1,4 @@
+apt proxy:
+
+/etc/apt/apt.conf.d/02proxy
+Acquire::http::Proxy "http://xxx:80";
