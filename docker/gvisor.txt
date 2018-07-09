@@ -1,0 +1,11 @@
+export  http_proxy=http://xxx:80
+export  https_proxy=http://xxx:80
+export  HTTP_PROXY=http://xxx:80
+export  HTTPS_PROXY=http://xxx:80
+
+To install bazel on ubuntu (18.04):
+
+https://github.com/bazelbuild/bazel/releases
+
+bazel build runsc
+sudo cp ./bazel-bin/runsc/linux_amd64_pure_stripped/runsc /usr/local/bin
