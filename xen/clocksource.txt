@@ -1,0 +1,7 @@
+linux (dom0): set the below in grub:
+
+clocksource=xen
+
+xen: set the below in xen grub:
+
+clocksource=hpet (pit | hpet | acpi | tsc)
