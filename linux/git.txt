@@ -1,0 +1,1 @@
+git commit --amend --author="First Second <first.second@linux.com>" --no-edit
