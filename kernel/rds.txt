@@ -1,0 +1,13 @@
+diff --git a/src/rxe.c b/src/rxe.c
+index 94d0de5..dd0bcb7 100644
+--- a/src/rxe.c
++++ b/src/rxe.c
+@@ -58,7 +58,7 @@
+ #include <infiniband/driver.h>
+ #include <infiniband/arch.h>
+ #include <infiniband/verbs.h>
+-#include <rdma/rdma_user_rxe.h>
++#include "/usr/src/linux-headers-4.8.0-36/include/uapi/rdma/rdma_user_rxe.h"
+ 
+ #include "rxe_queue.h"
+ #include "rxe-abi.h"
