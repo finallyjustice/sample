@@ -1,6 +1,8 @@
 # rmmod igb
 # modprobe igb max_vfs=2
 
+PCI_IOV should be enabled in kernel
+
 1. Unbind from the old driver:
 
 # echo 0000:02:10.0 > /sys/bus/pci/devices/0000\:02\:10.0/driver/unbind
