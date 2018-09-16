@@ -1,3 +1,8 @@
+To test softroce on ubuntu 16.04
+================================
+
+Edit the file:
+
 diff --git a/src/rxe.c b/src/rxe.c
 index 94d0de5..dd0bcb7 100644
 --- a/src/rxe.c
@@ -11,3 +16,71 @@ index 94d0de5..dd0bcb7 100644
  
  #include "rxe_queue.h"
  #include "rxe-abi.h"
+
+
+
+Installed the below:
+
+- libibverbs-dev
+- libswitch-perl
+- rdmacm-utils
+- ibverbs-utils
+
+
+./configure
+make
+make install
+
+
+# rxe_cfg status
+# sudo rxe_cfg start
+# sudo  rxe_cfg add eth0
+
+# sudo rxe_cfg status
+  Name  Link  Driver  Speed  NMTU  IPv4_addr    RDEV  RMTU          
+  eth0  yes   vif            1500  192.168.1.6  rxe0  1024  (3)
+
+
+
+Test pingpong:
+
+# ibv_rc_pingpong -d rxe0 -g 1
+  local address:  LID 0x0000, QPN 0x000011, PSN 0x15ec66, GID ::ffff:192.168.1.6
+  remote address: LID 0x0000, QPN 0x000012, PSN 0x515be8, GID ::ffff:192.168.1.6
+8192000 bytes in 0.03 seconds = 2532.21 Mbit/sec
+1000 iters in 0.03 seconds = 25.88 usec/iter
+
+# ibv_rc_pingpong -d rxe0 -g 1 192.168.1.6
+  local address:  LID 0x0000, QPN 0x000012, PSN 0x515be8, GID ::ffff:192.168.1.6
+  remote address: LID 0x0000, QPN 0x000011, PSN 0x15ec66, GID ::ffff:192.168.1.6
+8192000 bytes in 0.02 seconds = 2681.18 Mbit/sec
+1000 iters in 0.02 seconds = 24.44 usec/iter
+
+
+Test rping:
+
+# rping -s -a 192.168.1.6 -v -C 10
+server ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+server ping data: rdma-ping-1: BCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrs
+server ping data: rdma-ping-2: CDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrst
+server ping data: rdma-ping-3: DEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstu
+server ping data: rdma-ping-4: EFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuv
+server ping data: rdma-ping-5: FGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvw
+server ping data: rdma-ping-6: GHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwx
+server ping data: rdma-ping-7: HIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxy
+server ping data: rdma-ping-8: IJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz
+server ping data: rdma-ping-9: JKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyzA
+server DISCONNECT EVENT...
+wait for RDMA_READ_ADV state 10
+
+# rping -c -a 192.168.1.6 -v -C 10
+ping data: rdma-ping-0: ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqr
+ping data: rdma-ping-1: BCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrs
+ping data: rdma-ping-2: CDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrst
+ping data: rdma-ping-3: DEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstu
+ping data: rdma-ping-4: EFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuv
+ping data: rdma-ping-5: FGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvw
+ping data: rdma-ping-6: GHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwx
+ping data: rdma-ping-7: HIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxy
+ping data: rdma-ping-8: IJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz
+ping data: rdma-ping-9: JKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyzA
