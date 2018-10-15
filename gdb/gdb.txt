@@ -1,0 +1,8 @@
+(gdb) set print pretty on
+
+(gdb) p *(Object *)0x5555579a9f20
+
+(gdb) info thread
+(gdb) thread 2
+
+(gdb) delete bread #n
