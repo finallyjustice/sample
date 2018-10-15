@@ -1,5 +1,7 @@
 (gdb) set print pretty on
 
+(gdb) set print array on
+
 (gdb) p *(Object *)0x5555579a9f20
 
 (gdb) info thread
