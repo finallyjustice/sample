@@ -1,0 +1,77 @@
+two ways: legacy and modern.
+
+boot qemu with '-smp 1,maxcpus=4' 
+
+legacy cpu hotplug:
+
+(qemu) cpu-add <index>
+
+vm# echo 1 > /sys/devices/system/cpu/cpu1/online
+
+
+modern cpu hotplut:
+
+(qemu) info hotpluggable-cpus 
+Hotpluggable CPUs:
+  type: "qemu64-x86_64-cpu"
+  vcpus_count: "1"
+  CPUInstance Properties:
+    socket-id: "3"
+    core-id: "0"
+    thread-id: "0"
+  type: "qemu64-x86_64-cpu"
+  vcpus_count: "1"
+  qom_path: "/machine/unattached/device[35]"  ---> hotplugged by cpu-add
+  CPUInstance Properties:
+    socket-id: "2"
+    core-id: "0"
+    thread-id: "0"
+  type: "qemu64-x86_64-cpu"
+  vcpus_count: "1"
+  qom_path: "/machine/peripheral/core1"  ---> hotplugged by device_add
+  CPUInstance Properties:
+    socket-id: "1"
+    core-id: "0"
+    thread-id: "0"
+  type: "qemu64-x86_64-cpu"
+  vcpus_count: "1"
+  qom_path: "/machine/unattached/device[0]"
+  CPUInstance Properties:
+    socket-id: "0"
+    core-id: "0"
+    thread-id: "0"
+
+(qemu) device_add qemu64-x86_64-cpu,id=core1,socket-id=1,core-id=0,thread-id=0
+
+(qemu) info hotpluggable-cpus 
+Hotpluggable CPUs:
+  type: "qemu64-x86_64-cpu"
+  vcpus_count: "1"
+  CPUInstance Properties:
+    node-id: "1"
+    socket-id: "0"
+    core-id: "3"
+    thread-id: "0"
+  type: "qemu64-x86_64-cpu"
+  vcpus_count: "1"
+  CPUInstance Properties:
+    node-id: "0"
+    socket-id: "0"
+    core-id: "2"
+    thread-id: "0"
+  type: "qemu64-x86_64-cpu"
+  vcpus_count: "1"
+  qom_path: "/machine/unattached/device[2]"
+  CPUInstance Properties:
+    node-id: "1"
+    socket-id: "0"
+    core-id: "1"
+    thread-id: "0"
+  type: "qemu64-x86_64-cpu"
+  vcpus_count: "1"
+  qom_path: "/machine/unattached/device[0]"
+  CPUInstance Properties:
+    node-id: "0"
+    socket-id: "0"
+    core-id: "0"
+    thread-id: "0"

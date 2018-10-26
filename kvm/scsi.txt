@@ -1,0 +1,4 @@
+./x86_64-softmmu/qemu-system-x86_64 ~/img/ubuntu1804.qcow2 -m 3000M -enable-kvm -smp 2 \
+	-device megasas,id=raid -drive file=/home/zhang/img/nvme.disk,if=none,cache=unsafe,id=id0 \
+	-device scsi-disk,drive=id0 \
+	-net nic -net user,hostfwd=tcp::5022-:22

@@ -1,0 +1,15 @@
+xmllint is libxml2-utils
+
+issue: libvirt could not find capabilities for arch=x86_64
+solution: install qemu-system-x86 on ubuntu
+
+
+
+issue: virFirewallValidateBackend:191 : direct firewall backend requested, but /sbin/ebtables is not available: No such file or directory
+issue: cannot see default virtbr0
+solution: sudo apt-get install ebtables
+
+
+to use spice: install libspice-server-dev
+
+./configure --prefix=/soft/qemu --enable-spice --target-list=x86_64-softmmu --enable-debug
