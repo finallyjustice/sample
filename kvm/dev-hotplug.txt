@@ -1,0 +1,46 @@
+drive_add 0 file=/home/zhang/img/sparse/sparse.img,format=raw,id=myh1,if=none
+
+
+(qemu) info block
+drive-virtio-disk0 (#block138): /home/zhang/img/ubuntu1604/ubuntu1604.img (raw)
+    Attached to:      /machine/peripheral/virtio-disk0/virtio-backend
+    Cache mode:       writeback
+
+ide1-cd0: [not inserted]
+    Attached to:      /machine/unattached/device[25]
+    Removable device: not locked, tray closed
+
+floppy0: [not inserted]
+    Attached to:      /machine/unattached/device[18]
+    Removable device: not locked, tray closed
+
+sd0: [not inserted]
+    Removable device: not locked, tray closed
+
+myh1 (#block451): /home/zhang/img/sparse/sparse.img (raw)
+    Removable device: not locked, tray closed
+    Cache mode:       writeback
+
+
+(qemu) device_add virtio-blk-pci,drive=myh1
+
+
+(qemu) info block
+drive-virtio-disk0 (#block138): /home/zhang/img/ubuntu1604/ubuntu1604.img (raw)
+    Attached to:      /machine/peripheral/virtio-disk0/virtio-backend
+    Cache mode:       writeback
+
+ide1-cd0: [not inserted]
+    Attached to:      /machine/unattached/device[25]
+    Removable device: not locked, tray closed
+
+floppy0: [not inserted]
+    Attached to:      /machine/unattached/device[18]
+    Removable device: not locked, tray closed
+
+sd0: [not inserted]
+    Removable device: not locked, tray closed
+
+myh1 (#block451): /home/zhang/img/sparse/sparse.img (raw)
+    Attached to:      /machine/peripheral-anon/device[0]/virtio-backend
+    Cache mode:       writeback
