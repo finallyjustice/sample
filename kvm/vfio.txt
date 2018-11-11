@@ -23,3 +23,18 @@ The below should be available in log:
 
 * echo 2 > /sys/module/igb/drivers/pci\:igb/0000\:02\:00.0/sriov_numvfs
 
+============================================================
+
+nvme userspace:
+
+# sudo modprobe vfio
+# sudo modprobe vfio-pci
+
+# echo 0000:01:00.0 > /sys/bus/pci/devices/0000\:01\:00.0/driver/unbind
+# lspci -ns 0000:01:00.0
+
+# echo "8086 f1a6" > /sys/bus/pci/drivers/vfio-pci/new_id
+
+Add below to qemu-system-x96-64:
+
+-drive file=nvme://0000:01:00.0/1,if=none,id=nvmedrive0 -device virtio-blk,drive=nvmedrive0,id=nvmevirtio0
