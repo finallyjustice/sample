@@ -44,3 +44,13 @@ sd0: [not inserted]
 myh1 (#block451): /home/zhang/img/sparse/sparse.img (raw)
     Attached to:      /machine/peripheral-anon/device[0]/virtio-backend
     Cache mode:       writeback
+
+
+To use iothread:
+
+(qemu) object_add iothread,id=io2
+(qemu) drive_add 0 file=/home/zhang/img/sparse/sparse.img,format=raw,id=myh1,if=none
+(qemu) device_add virtio-blk-pci,drive=myh1,id=virtio-disk1,num-queues=2,iothread=io2
+
+(qemu) device_del virtio-disk1
+(qemu) object_del io2
