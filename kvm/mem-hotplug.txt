@@ -40,3 +40,10 @@ available 4035244
 usable 3824032
 last_update 1540561013
 rss 591472
+
+===========================================================================
+
+-m 2000M,slots=3,maxmem=3000M
+
+(qemu) object_add memory-backend-ram,id=mem1,size=128M
+(qemu) device_add pc-dimm,id=dimm1,memdev=mem1
