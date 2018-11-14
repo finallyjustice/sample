@@ -54,3 +54,19 @@ To use iothread:
 
 (qemu) device_del virtio-disk1
 (qemu) object_del io2
+
+
+
+
+To hotplug on q35:
+
+"Bus 'pcie.0' does not support hotplugging"
+
+Add "-device pcie-root-port,id=root,slot=0" in qemu-system-x86_64.
+
+(qemu) object_add iothread,id=io2
+(qemu) drive_add 0 file=/home/zhang/img/sparse/sparse.img,format=raw,id=myh1,if=none
+(qemu) device_add virtio-blk-pci,drive=myh1,id=virtio-disk1,num-queues=2,iothread=io2,bus=root
+
+(qemu) device_del virtio-disk1
+(qemu) object_del io2
