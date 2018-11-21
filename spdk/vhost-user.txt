@@ -1,0 +1,104 @@
+https://spdk.io/doc/getting_started.html
+https://spdk.io/doc/vhost.html
+
+Install libnuma-dev and libcunit1-dev.
+
+
+Add below to /etc/security/limits.conf ('*' indicates all):
+
+* hard memlock unlimited
+* soft memlock unlimited
+
+
+# git clone https://github.com/spdk/spdk
+# cd spdk
+# git submodule update --init
+
+# ./configure
+# make
+
+# ./test/unit/unittest.sh
+
+Set side used for memory-backend-file in qemu:
+
+# sudo HUGEMEM=2048 scripts/setup.sh
+
+
+Start the SPDK vhost target application (on cpu 0 and 1):
+
+# app/vhost/vhost -S /var/tmp -m 0x3
+Starting SPDK v19.01-pre / DPDK 18.08.0 initialization...
+[ DPDK EAL parameters: vhost --no-shconf -c 0x3 -m 1024 --base-virtaddr=0x200000000000 --file-prefix=spdk_pid1643 ]
+EAL: Detected 4 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Probing VFIO support...
+EAL: VFIO support initialized
+app.c: 605:spdk_app_start: *NOTICE*: Total cores available: 2
+reactor.c: 293:_spdk_reactor_run: *NOTICE*: Reactor started on core 1
+reactor.c: 293:_spdk_reactor_run: *NOTICE*: Reactor started on core 0
+
+
+Create a 64MB malloc bdev with 512-byte block size:
+
+# scripts/rpc.py construct_malloc_bdev 64 512 -b Malloc0
+Malloc0
+
+
+Create a vhost-blk device exposing Malloc0 bdev. The device will be accessible to QEMU via /var/tmp/vhost.1
+
+# scripts/rpc.py construct_vhost_blk_controller --cpumask 0x1 vhost.1 Malloc0
+
+Will obtained below in vhost target application terminal:
+
+VHOST_CONFIG: vhost-user server: socket created, fd: 17
+VHOST_CONFIG: bind to /var/tmp/vhost.1
+
+
+# sudo taskset -c 2,3 ./x86_64-softmmu/qemu-system-x86_64 -machine q35 --enable-kvm
+     -cpu host -smp 2 -m 1000M 
+     -object memory-backend-file,id=mem0,size=1000M,mem-path=/dev/hugepages,share=on -numa node,memdev=mem0
+     -drive file=/home/zhang/img/ubuntu1604/ubuntu1604.img,format=raw,if=none,id=drive-virtio-disk0
+     -device virtio-blk-pci,drive=drive-virtio-disk0,id=virtio-disk0
+     -chardev socket,id=spdk_vhost_blk0,path=/var/tmp/vhost.1
+     -device vhost-user-blk-pci,chardev=spdk_vhost_blk0,id=spdk-vhost-user1,num-queues=2
+     -vnc :0 -monitor stdio
+
+
+
+VHOST_CONFIG: new vhost user connection is 16
+VHOST_CONFIG: new device, handle is 0
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_GET_FEATURES
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_GET_PROTOCOL_FEATURES
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_PROTOCOL_FEATURES
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_GET_QUEUE_NUM
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_OWNER
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_GET_FEATURES
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_VRING_CALL
+VHOST_CONFIG: vring call idx:0 file:18
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_VRING_CALL
+VHOST_CONFIG: vring call idx:1 file:19
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_GET_CONFIG
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_FEATURES
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_MEM_TABLE
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_VRING_NUM
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_VRING_BASE
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_VRING_ADDR
+VHOST_CONFIG: guest memory region 0, size: 0x3e800000
+	 guest physical addr: 0x0
+	 guest virtual  addr: 0x7f1e01600000
+	 host  virtual  addr: 0x7fce75800000
+	 mmap addr : 0x7fce75800000
+	 mmap size : 0x3e800000
+	 mmap align: 0x200000
+	 mmap off  : 0x0
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_VRING_KICK
+VHOST_CONFIG: vring kick idx:0 file:21
+VHOST_CONFIG: virtio is now ready for processing.
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_VRING_CALL
+VHOST_CONFIG: vring call idx:0 file:22
+VHOST_CONFIG: virtio is now ready for processing.
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_VRING_CALL
+VHOST_CONFIG: vring call idx:1 file:18
+VHOST_CONFIG: virtio is now ready for processing.
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_MEM_TABLE
+VHOST_CONFIG: /var/tmp/vhost.1: read message VHOST_USER_SET_MEM_TABLE
