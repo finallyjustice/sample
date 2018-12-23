@@ -3,6 +3,32 @@ i440fx
 -device pci-bridge,id=bridge0,chassis_nr=1 -device e1000,bus=bridge0,addr=0x3
 -device pci-bridge,id=bridge1,chassis_nr=2 -device e1000,bus=bridge1,addr=0x3 -device e1000,bus=bridge1,addr=0x4
 
+# lspci -t
+-[0000:00]-+-00.0
+           +-01.0
+           +-01.1
+           +-01.3
+           +-02.0
+           +-03.0
+           +-04.0
+           +-05.0-[01]----03.0
+           \-06.0-[02]--+-03.0
+                        \-04.0
+
+# lspci
+00:00.0 Host bridge: Intel Corporation 440FX - 82441FX PMC [Natoma] (rev 02)
+00:01.0 ISA bridge: Intel Corporation 82371SB PIIX3 ISA [Natoma/Triton II]
+00:01.1 IDE interface: Intel Corporation 82371SB PIIX3 IDE [Natoma/Triton II]
+00:01.3 Bridge: Intel Corporation 82371AB/EB/MB PIIX4 ACPI (rev 03)
+00:02.0 VGA compatible controller: Device 1234:1111 (rev 02)
+00:03.0 Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 03)
+00:04.0 Non-Volatile memory controller: Intel Corporation QEMU NVM Express Controller (rev 02)
+00:05.0 PCI bridge: Red Hat, Inc. QEMU PCI-PCI bridge
+00:06.0 PCI bridge: Red Hat, Inc. QEMU PCI-PCI bridge
+01:03.0 Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 03)
+02:03.0 Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 03)
+02:04.0 Ethernet controller: Intel Corporation 82540EM Gigabit Ethernet Controller (rev 03)
+
 -------------------------------------------------------------------
 
 i440fx (take care of bus_nr allocation)
