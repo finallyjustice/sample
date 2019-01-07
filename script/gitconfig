@@ -1,0 +1,15 @@
+[user]
+	email = xxxx.xxxx@xxxx.com
+	name = xxxx xxxx
+[http]
+	proxy = http://xxx.xxx.com:80
+[sendemail]
+	smtpserver = xxxxx.xxxx.com
+	smtpserverport = xxx
+	smtpuser = xxxx.xxxx@xxxx.com
+	smtpencryption = ssl
+	suppresscc = all
+[core]
+	gitproxy = /home/zhang/script/gitproxy.sh
+[color]
+	ui = auto
