@@ -1,0 +1,12 @@
+-qmp tcp:10.0.0.1:4444,server,nowait
+
+Seems the "qmp_capabilities" is mandatory and prerequisite.
+
+# telnet 10.0.0.1
+{ "execute": "qmp_capabilities" }
+{"return": {}}
+
+{ "execute": "dump-guest-memory", "arguments": { "paging": false, "protocol": "file:/home/vmcore.out" }}
+{"timestamp": {"seconds": 1546915940, "microseconds": 65746}, "event": "STOP"}
+{"timestamp": {"seconds": 1546915952, "microseconds": 928319}, "event": "DUMP_COMPLETED", "data": {"result": {"total": 2114060288, "status": "completed", "completed": 2114060288}}}
+{"timestamp": {"seconds": 1546915952, "microseconds": 928450}, "event": "RESUME"}
