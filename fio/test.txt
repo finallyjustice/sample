@@ -1,0 +1,97 @@
+# fio -name iops -rw=read -bs=4k -runtime=60 -iodepth 32 -filename /dev/nvme0n1 -ioengine libaio -direct=1
+iops: (g=0): rw=read, bs=4K-4K/4K-4K/4K-4K, ioengine=libaio, iodepth=32
+fio-2.2.10
+Starting 1 process
+Jobs: 1 (f=1): [R(1)] [100.0% done] [823.4MB/0KB/0KB /s] [211K/0/0 iops] [eta 00m:00s]
+iops: (groupid=0, jobs=1): err= 0: pid=1836: Sun Mar  3 22:36:56 2019
+  read : io=49295MB, bw=841284KB/s, iops=210320, runt= 60001msec
+    slat (usec): min=1, max=154, avg= 1.73, stdev= 0.95
+    clat (usec): min=59, max=641, avg=150.09, stdev=27.51
+     lat (usec): min=60, max=642, avg=151.86, stdev=27.46
+    clat percentiles (usec):
+     |  1.00th=[  101],  5.00th=[  110], 10.00th=[  119], 20.00th=[  123],
+     | 30.00th=[  131], 40.00th=[  145], 50.00th=[  149], 60.00th=[  153],
+     | 70.00th=[  163], 80.00th=[  179], 90.00th=[  185], 95.00th=[  189],
+     | 99.00th=[  217], 99.50th=[  241], 99.90th=[  290], 99.95th=[  318],
+     | 99.99th=[  402]
+    bw (KB  /s): min=731048, max=1040992, per=99.95%, avg=840859.50, stdev=36362.89
+    lat (usec) : 100=0.60%, 250=99.00%, 500=0.40%, 750=0.01%
+  cpu          : usr=17.56%, sys=42.09%, ctx=2554138, majf=0, minf=42
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.1%, 16=0.1%, 32=100.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.1%, 64=0.0%, >=64=0.0%
+     issued    : total=r=12619470/w=0/d=0, short=r=0/w=0/d=0, drop=r=0/w=0/d=0
+     latency   : target=0, window=0, percentile=100.00%, depth=32
+
+Run status group 0 (all jobs):
+   READ: io=49295MB, aggrb=841283KB/s, minb=841283KB/s, maxb=841283KB/s, mint=60001msec, maxt=60001msec
+
+Disk stats (read/write):
+  nvme0n1: ios=12600021/0, merge=0/0, ticks=1836060/0, in_queue=1780100, util=99.83%
+
+
+
+# fio -name iops -rw=randrw -bs=4k -runtime=5 -iodepth 32 -filename /dev/nvme0n1 -ioengine libaio -direct=1
+[sudo] password for zhang: 
+iops: (g=0): rw=randrw, bs=4K-4K/4K-4K/4K-4K, ioengine=libaio, iodepth=32
+fio-2.2.10
+Starting 1 process
+Jobs: 1 (f=1): [m(1)] [100.0% done] [83496KB/82688KB/0KB /s] [20.9K/20.7K/0 iops] [eta 00m:00s]
+iops: (groupid=0, jobs=1): err= 0: pid=1865: Sun Mar  3 22:59:56 2019
+  read : io=496664KB, bw=99253KB/s, iops=24813, runt=  5004msec
+    slat (usec): min=2, max=46, avg= 4.34, stdev= 2.33
+    clat (usec): min=110, max=8307, avg=1231.02, stdev=819.35
+     lat (usec): min=113, max=8312, avg=1235.45, stdev=819.32
+    clat percentiles (usec):
+     |  1.00th=[  326],  5.00th=[  406], 10.00th=[  462], 20.00th=[  548],
+     | 30.00th=[  684], 40.00th=[  844], 50.00th=[  972], 60.00th=[ 1112],
+     | 70.00th=[ 1288], 80.00th=[ 2160], 90.00th=[ 2608], 95.00th=[ 2832],
+     | 99.00th=[ 3376], 99.50th=[ 3600], 99.90th=[ 4048], 99.95th=[ 5664],
+     | 99.99th=[ 7904]
+    bw (KB  /s): min=80456, max=136936, per=100.00%, avg=99277.10, stdev=23147.36
+  write: io=496172KB, bw=99155KB/s, iops=24788, runt=  5004msec
+    slat (usec): min=3, max=51, avg= 4.62, stdev= 2.37
+    clat (usec): min=8, max=3093, avg=47.01, stdev=41.47
+     lat (usec): min=14, max=3097, avg=51.72, stdev=41.64
+    clat percentiles (usec):
+     |  1.00th=[   13],  5.00th=[   14], 10.00th=[   15], 20.00th=[   16],
+     | 30.00th=[   19], 40.00th=[   24], 50.00th=[   32], 60.00th=[   43],
+     | 70.00th=[   57], 80.00th=[   76], 90.00th=[  106], 95.00th=[  123],
+     | 99.00th=[  155], 99.50th=[  167], 99.90th=[  197], 99.95th=[  229],
+     | 99.99th=[  251]
+    bw (KB  /s): min=80920, max=134824, per=100.00%, avg=99197.00, stdev=22999.69
+    lat (usec) : 10=0.01%, 20=15.43%, 50=16.93%, 100=11.61%, 250=6.07%
+    lat (usec) : 500=7.20%, 750=9.74%, 1000=9.02%
+    lat (msec) : 2=13.59%, 4=10.34%, 10=0.05%
+  cpu          : usr=11.19%, sys=26.96%, ctx=48906, majf=0, minf=10
+  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.1%, 16=0.1%, 32=100.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.1%, 64=0.0%, >=64=0.0%
+     issued    : total=r=124166/w=124043/d=0, short=r=0/w=0/d=0, drop=r=0/w=0/d=0
+     latency   : target=0, window=0, percentile=100.00%, depth=32
+
+Run status group 0 (all jobs):
+   READ: io=496664KB, aggrb=99253KB/s, minb=99253KB/s, maxb=99253KB/s, mint=5004msec, maxt=5004msec
+  WRITE: io=496172KB, aggrb=99155KB/s, minb=99155KB/s, maxb=99155KB/s, mint=5004msec, maxt=5004msec
+
+Disk stats (read/write):
+  nvme0n1: ios=121968/121834, merge=0/0, ticks=145672/2388, in_queue=143764, util=97.94%
+
+-----------------------------------------------------------------------------------
+
+# fio -name iops -rw=read -bs=4k -runtime=60 -iodepth 32 -filename /dev/nvme0n1 -ioengine libaio -direct=1
+
+# fio -name iops -rw=randrw -bs=4k -runtime=5 -iodepth 32 -filename /dev/nvme0n1 -ioengine libaio -direct=1
+
+# fio -name iops -rw=randrw -bsrange=512-2048 -runtime=5 -iodepth 32 -filename /dev/nvme0n1 -ioengine libaio -direct=1
+
+# fio -name iops -rw=randrw -bsrange=512-2048 -runtime=5 -iodepth 32 -numjobs=2 -filename /dev/nvme0n1 -ioengine libaio -direct=1
+
+# fio -name iops -rw=randrw -bsrange=512-2048 -runtime=5 -iodepth 32 -numjobs=2 -filename /dev/nvme0n1 -ioengine libaio -direct=1 -size=2G
+
+# fio -name iops -rw=randrw -bsrange=512-2048 -runtime=5 -iodepth 32 -numjobs=2 -filename /dev/nvme0n1 -ioengine libaio -direct=1 -size=2G -group_reporting
+
+
+> rw: read, randrw, randwrite
+
+> -group_reporting: do not display result for each 'numjobs'
