@@ -1,0 +1,84 @@
+self.__bootstrap_inner()
+  File "/usr/lib64/python2.6/threading.py", line 532, in __bootstrap_inner
+    self.run()
+  File "/usr/lib64/python2.6/threading.py", line 484, in run
+    self.__target(*self.__args, **self.__kwargs)
+  File "/usr/lib64/python2.6/SocketServer.py", line 570, in process_request_thread
+    self.finish_request(request, client_address)
+  File "/usr/lib64/python2.6/SocketServer.py", line 332, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "/usr/lib64/python2.6/site-packages/xen/util/xmlrpclib2.py", line 109, in <lambda>
+    requestHandler(allowed, x, y, z)),
+  File "/usr/lib64/python2.6/site-packages/xen/util/xmlrpclib2.py", line 68, in __init__
+    server)
+  File "/usr/lib64/python2.6/SocketServer.py", line 627, in __init__
+    self.handle()
+  File "/usr/lib64/python2.6/BaseHTTPServer.py", line 329, in handle
+    self.handle_one_request()
+  File "/usr/lib64/python2.6/BaseHTTPServer.py", line 323, in handle_one_request
+    method()
+  File "/usr/lib64/python2.6/site-packages/xen/util/xmlrpclib2.py", line 83, in do_POST
+    rsp = self.server._marshaled_dispatch(data)
+  File "/usr/lib64/python2.6/site-packages/xen/util/xmlrpclib2.py", line 134, in _marshaled_dispatch
+    response = self._dispatch(method, params)
+  File "/usr/lib64/python2.6/SimpleXMLRPCServer.py", line 418, in _dispatch
+    return func(*params)
+  File "/usr/lib64/python2.6/site-packages/xen/xend/XendDomain.py", line 1415, in domain_migrate
+    self._domain_migrate(dominfo, dst, live, port, node, vmfiles)
+  File "/usr/lib64/python2.6/site-packages/xen/xend/XendDomain.py", line 1502, in _domain_migrate
+    dst, node=node, vmfiles=vmfiles)
+  File "/usr/lib64/python2.6/site-packages/xen/xend/XendCheckpoint.py", line 136, in save
+    log.info("".join(traceback.format_stack()))
+
+
+
+self.__bootstrap_inner()
+  File "/usr/lib64/python2.6/threading.py", line 532, in __bootstrap_inner
+    self.run()
+  File "/usr/lib64/python2.6/threading.py", line 484, in run
+    self.__target(*self.__args, **self.__kwargs)
+  File "/usr/lib64/python2.6/site-packages/xen/web/connection.py", line 62, in main
+    if self.protocol.dataReceived(data):
+  File "/usr/lib64/python2.6/site-packages/xen/xend/server/relocate.py", line 47, in dataReceived
+    res = self.dispatch(val)
+  File "/usr/lib64/python2.6/site-packages/xen/xend/server/relocate.py", line 93, in dispatch
+    return op_method(op_name, req)
+  File "/usr/lib64/python2.6/site-packages/xen/xend/server/relocate.py", line 113, in op_receive
+    self.transport.sock.fileno(), relocating=True)
+  File "/usr/lib64/python2.6/site-packages/xen/xend/XendDomain.py", line 1207, in domain_restore_fd
+    dominfo = XendCheckpoint.restore(self, fd, paused=paused, relocating=relocating)
+  File "/usr/lib64/python2.6/site-packages/xen/xend/XendCheckpoint.py", line 212, in restore
+    log.info("".join(traceback.format_stack()))
+
+
+
+_domain_migrate() -- python/xen/xend/XendDomain.py
+ > XendCheckpoint.save(sock.fileno(), dominfo, True, live,
+                       dst, node=node, vmfiles=vmfiles)
+    > save() -- python/xen/xend/XendCheckpoint.py
+       - [xc_save]: /usr/lib64/xen/bin/xc_save 26 3 0 0 5
+       - saveInputHandler
+       - copy /var/lib/xen/qemu-save.%d
+
+DEBUG (XendCheckpoint:140) [xc_save]: /usr/lib64/xen/bin/xc_save 26 3 0 0 5
+
+
+listening on ports and calls:
+domain_restore_fd() -- python/xen/xend/XendDomain.py
+ > XendCheckpoint.restore(self, fd, paused=paused, relocating=relocating)
+    > restore -- python/xen/xend/XendCheckpoint.py
+       - [xc_restore]: /usr/lib64/xen/bin/xc_restore 5 5 3 5 1 1 1 0 1
+
+DEBUG (XendCheckpoint:315) [xc_restore]: /usr/lib64/xen/bin/xc_restore 5 5 3 5 1 1 1 0 1
+
+
+---------------------------------------------------------
+
+25d2ba40  00 00 00 00 00 51 65 6d  75 44 65 76 69 63 65 4d  |.....QemuDeviceM|
+25d2ba50  6f 64 65 6c 52 65 63 6f  72 64 51 45 56 4d 00 00  |odelRecordQEVM..|
+
+
+qemu-resume.2  qemu-save.1
+
+
+QEMU_VM_FILE_MAGIC
