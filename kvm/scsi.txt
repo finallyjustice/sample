@@ -2,3 +2,30 @@
 	-device megasas,id=raid -drive file=/home/zhang/img/nvme.disk,if=none,cache=unsafe,id=id0 \
 	-device scsi-disk,drive=id0 \
 	-net nic -net user,hostfwd=tcp::5022-:22
+
+
+./x86_64-softmmu/qemu-system-x86_64 -enable-kvm -smp 2 -m 2000M -vnc :0 \
+-net nic -net user,hostfwd=tcp::5022-:22 -hda /home/zhang/img/ubuntu1604/disk.img \
+-device virtio-scsi-pci,id=scsi0 \
+-device scsi-hd,drive=drive0,bus=scsi0.0,channel=0,scsi-id=0,lun=0 \
+-drive file=/home/zhang/img/test.img,if=none,id=drive0 \
+-device scsi-hd,drive=drive1,bus=scsi0.0,channel=0,scsi-id=0,lun=1 \
+-drive file=/home/zhang/img/test1.img,if=none,id=drive1
+
+zhang@vm:~$ dmesg | grep SCSI
+[    0.095928] SCSI subsystem initialized
+[    0.743884] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 246)
+[    0.969861] sd 0:0:0:0: [sda] Attached SCSI disk
+[    1.115099] scsi host2: Virtio SCSI HBA
+[    9.612639] sd 2:0:0:0: [sdb] Attached SCSI disk
+[    9.614214] sd 2:0:0:1: [sdc] Attached SCSI disk
+zhang@vm:~$ dmesg | grep scsi
+[    0.799336] scsi host0: ata_piix
+[    0.799686] scsi host1: ata_piix
+[    0.965059] scsi 0:0:0:0: Direct-Access     ATA      QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+[    0.966506] sd 0:0:0:0: Attached scsi generic sg0 type 0
+[    1.115099] scsi host2: Virtio SCSI HBA
+[    1.116623] scsi 2:0:0:0: Direct-Access     QEMU     QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+[    1.117909] scsi 2:0:0:1: Direct-Access     QEMU     QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+[    9.600836] sd 2:0:0:0: Attached scsi generic sg1 type 0
+[    9.606466] sd 2:0:0:1: Attached scsi generic sg2 type 0
