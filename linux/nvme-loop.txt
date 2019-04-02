@@ -8,9 +8,14 @@ Change "import configshell_fb as configshell" to "import configshell" in nvmetcl
 Copy examples/loop.json as loop-test.json and change /dev/nvme0n1 to /dev/loop0.
 
 
+/dev/loop0      --> nvmet_bdev_execute_rw()
+/dev/nvme0n1    --> nvmet_bdev_execute_rw()
+disk.img (file) --> nvmet_file_execute_rw()
+
+
 Setup the target:
 
-# sudo ./nvmetcli restore loop-test.json 
+# ./nvmetcli restore loop-test.json 
 # dmesg 
 [  461.134184] nvmet: adding nsid 1 to subsystem testnqn
 
