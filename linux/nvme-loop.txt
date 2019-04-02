@@ -1,0 +1,33 @@
+# git clone git://git.infradead.org/users/hch/nvmetcli.git
+# git clone https://github.com/linux-nvme/nvme-cli
+
+# losetup /dev/loop0 disk.img
+
+Change "import configshell_fb as configshell" to "import configshell" in nvmetcli
+
+Copy examples/loop.json as loop-test.json and change /dev/nvme0n1 to /dev/loop0.
+
+
+Setup the target:
+
+# sudo ./nvmetcli restore loop-test.json 
+# dmesg 
+[  461.134184] nvmet: adding nsid 1 to subsystem testnqn
+
+Connect to the target using nvme-cli tool:
+
+# ./nvme connect -t loop -n testnqn -q hostnqn
+# dmesg 
+[  461.134184] nvmet: adding nsid 1 to subsystem testnqn
+[  819.944349] nvmet: creating controller 1 for subsystem testnqn for NQN hostnqn.
+[  819.944866] nvme nvme1: ANA group 1: optimized.
+[  819.944878] nvme nvme1: creating 2 I/O queues.
+[  819.949305] nvme nvme1: new ctrl: "testnqn"
+
+# ./nvme list
+Node             SN                   Model                                    Namespace Usage                      Format           FW Rev  
+---------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
+/dev/nvme0n1     deadbeaf1            QEMU NVMe Ctrl                           1           6.29  GB /   6.29  GB    512   B +  0 B   1.0     
+/dev/nvme1n1     39f5e43ea80db39b     Linux                                    1         536.87  MB / 536.87  MB    512   B +  0 B   5.0.0-rc
+
+
