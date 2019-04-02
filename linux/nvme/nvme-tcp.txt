@@ -1,0 +1,31 @@
+host and client are the same VM with nvme emulated by qemu.
+
+ip is 10.182.71.29
+
+# git clone git://git.infradead.org/users/hch/nvmetcli.git
+# git clone https://github.com/linux-nvme/nvme-cli
+
+Change "import configshell_fb as configshell" to "import configshell" in nvmetcli
+
+
+# ./nvmetcli restore tcp.json
+# dmesg 
+[  442.630261] nvmet: adding nsid 1 to subsystem testhost
+[  442.631648] nvmet_tcp: enabling port 1 (10.182.71.29:8888)
+
+
+# echo "host_traddr=10.182.71.29,traddr=10.182.71.29,transport=tcp,trsvcid=8888,nqn=testhost,hostnqn=nqn.host1,nr_io_queues=8,queue_size=16" > /dev/nvme-fabrics
+# dmesg 
+[  442.630261] nvmet: adding nsid 1 to subsystem testhost
+[  442.631648] nvmet_tcp: enabling port 1 (10.182.71.29:8888)
+[  498.167839] nvmet: creating controller 1 for subsystem testhost for NQN nqn.host1.
+[  498.168915] nvme nvme1: ANA group 1: optimized.
+[  498.169572] nvme nvme1: creating 2 I/O queues.
+[  498.171437] nvme nvme1: new ctrl: NQN "testhost", addr 10.182.71.29:8888
+
+
+# ./nvme list
+Node             SN                   Model                                    Namespace Usage                      Format           FW Rev  
+---------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
+/dev/nvme0n1     deadbeaf1            QEMU NVMe Ctrl                           1           6.29  GB /   6.29  GB    512   B +  0 B   1.0     
+/dev/nvme1n1     3f3b204765312ea9     Linux                                    1           6.29  GB /   6.29  GB    512   B +  0 B   5.0.0-rc
