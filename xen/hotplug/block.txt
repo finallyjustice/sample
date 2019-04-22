@@ -1,0 +1,43 @@
+# xm block-attach 24 file:/disk/shared.img xvdc w!
+
+
+/var/log/xen/xend.log
+
+[2019-04-22 09:42:42 2235] DEBUG (XendDomainInfo:890) XendDomainInfo.device_create: ['vbd', ['uname', 'file:/disk/shared.img'], ['dev', 'xvdc'], ['mode', 'w!']]
+[2019-04-22 09:42:42 2235] DEBUG (XendDomainInfo:902) XendDomainInfo.device_create: {'uuid': '3d214f76-d336-71a2-bd9b-7f555dc09fa3', 'bootable': 0, 'driver': 'paravirtualised', 'dev': 'xvdc', 'uname': 'file:/disk/shared.img', 'mode': 'w!'}
+[2019-04-22 09:42:42 2235] DEBUG (DevController:95) DevController: writing {'backend-id': '0', 'virtual-device': '51744', 'device-type': 'disk', 'state': '1', 'backend': '/local/domain/0/backend/vbd/24/51744'} to /local/domain/24/device/vbd/51744.
+[2019-04-22 09:42:42 2235] DEBUG (DevController:97) DevController: writing {'domain': 'ol7-02', 'discard-enable': '0', 'uuid': '3d214f76-d336-71a2-bd9b-7f555dc09fa3', 'bootable': '0', 'dev': 'xvdc', 'state': '1', 'params': '/disk/shared.img', 'mode': 'w!', 'online': '1', 'frontend-id': '24', 'type': 'file', 'frontend': '/local/domain/24/device/vbd/51744'} to /local/domain/0/backend/vbd/24/51744.
+[2019-04-22 09:42:42 2235] DEBUG (DevController:144) Waiting for 51744.
+[2019-04-22 09:42:42 2235] DEBUG (DevController:632) hotplugStatusCallback /local/domain/0/backend/vbd/24/51744/hotplug-status.
+[2019-04-22 09:42:42 2235] DEBUG (DevController:632) hotplugStatusCallback /local/domain/0/backend/vbd/24/51744/hotplug-status.
+[2019-04-22 09:42:42 2235] DEBUG (DevController:646) hotplugStatusCallback 1.
+
+
+/var/log/messages
+
+Apr 22 09:42:42 dhcp-10-182-71-191 kernel: [435687.260506] xen-blkback: backend/vbd/24/51744: using 3 queues, protocol 1 (x86_64-abi) persistent grants
+
+-------------------------------------------------------------------
+
+# xm block-list 24
+Vdev  BE handle state evt-ch ring-ref BE-path
+51712  0    0     4      -1     -1    /local/domain/0/backend/vbd/24/51712  
+51744  0    0     4      -1     -1    /local/domain/0/backend/vbd/24/51744
+
+-------------------------------------------------------------------
+
+# xm block-detach 24 51744
+
+
+/var/log/xen/xend.log
+
+[2019-04-22 09:50:03 2235] DEBUG (XendDomainInfo:1328) XendDomainInfo.destroyDevice: deviceClass = vbd, device = 51744
+[2019-04-22 09:50:03 2235] DEBUG (DevController:180) Waiting for 51744 - destroyDevice.
+[2019-04-22 09:50:03 2235] DEBUG (DevController:653) deviceDestroyCallback /local/domain/0/backend/vbd/24/51744/hotplug-status.
+[2019-04-22 09:50:03 2235] DEBUG (DevController:653) deviceDestroyCallback /local/domain/0/backend/vbd/24/51744/hotplug-status.
+[2019-04-22 09:50:03 2235] DEBUG (DevController:664) deviceDestroyCallback 6.
+
+
+/var/log/messages
+
+Nothing...
