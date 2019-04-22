@@ -1,0 +1,19 @@
+Oracle VM and OL7:
+
+Add "serial = 'pty'" to vm.cfg
+
+Append below to  /etc/default/grub:
+
+GRUB_TERMINAL="serial console"
+GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1"
+GRUB_CMDLINE_LINUX="console=ttyS0,115200n8 console=tty0"
+
+Update grub:
+
+# grub2-mkconfig > /boot/grub2/grub.cfg
+
+Make sure serial-getty@ttyS0 is running:
+
+#systemctl status serial-getty@ttyS0
+#systemctl enable serial-getty@ttyS0  (if not already started)
+#systemctl start serial-getty@ttyS0
