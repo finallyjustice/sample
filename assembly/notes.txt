@@ -1,0 +1,11 @@
+
+movl %edx, 4(%edi)
+
+This instruction places the value contained in the EDX register in the memory
+location 4 bytes after the location pointed to by the EDI register.
+
+
+movl %edx, -4(%edi)
+
+This instruction places the value in the memory location 4 bytes before the
+location pointed to by the EDI register.
