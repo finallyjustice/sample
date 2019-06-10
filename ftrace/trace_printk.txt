@@ -1,0 +1,82 @@
+This sample for trace_printk() uses below patch.
+
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 13f0cb0..5973c6d 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -562,6 +562,9 @@ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev,
+            (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL))
+                swiotlb_bounce(orig_addr, tlb_addr, size, DMA_TO_DEVICE);
+ 
++       trace_printk("swiotlb_tbl_map_single: devce=%s, orig_addr=0x%016llx, size=%lu, index=%u, nslots=%u\n",
++                    dev_name(hwdev), orig_addr, size, index, nslots);
++
+        return tlb_addr;
+ }
+ 
+@@ -613,6 +616,9 @@ void swiotlb_tbl_unmap_single(struct device *hwdev, phys_addr_t tlb_addr,
+                io_tlb_used -= nslots;
+        }
+        spin_unlock_irqrestore(&io_tlb_lock, flags);
++
++       trace_printk("swiotlb_tbl_unmap_single: devce=%s, orig_addr=0x%016llx, size=%lu, index=%u, nslots=%u\n",
++                    dev_name(hwdev), orig_addr, size, index, nslots);
+ }
+ 
+ void swiotlb_tbl_sync_single(struct device *hwdev, phys_addr_t tlb_addr,
+
+-----------------------------------------------
+
+Enable 'CONFIG_FUNCTION_TRACER'.
+
+# cd /sys/kernel/debug/tracing
+
+# echo 0 > tracing_on
+
+# echo function_graph > current_tracer
+
+# echo 1 > /proc/sys/kernel/ftrace_enabled
+
+# echo ':mod:swiotlb' > set_ftrace_filter
+
+# cat set_ftrace_filter 
+:mod:swiotlb
+
+# echo 1 > tracing_on
+
+
+# cat trace
+# tracer: function_graph
+#
+# CPU  DURATION                  FUNCTION CALLS
+# |     |   |                     |   |   |   |
+ 1)               |  /* swiotlb_tbl_map_single: devce=0000:00:03.0, orig_addr=0x00000000719ff0da, size=54, index=9625, nslots=1 */
+ 1)               |  /* swiotlb_tbl_map_single: devce=0000:00:03.0, orig_addr=0x0000000071b48000, size=116, index=9626, nslots=1 */
+ 1)               |  /* swiotlb_tbl_unmap_single: devce=0000:00:03.0, orig_addr=0x00000000719ff0da, size=54, index=9625, nslots=1 */
+ 1)               |  /* swiotlb_tbl_unmap_single: devce=0000:00:03.0, orig_addr=0x0000000071b48000, size=116, index=9626, nslots=1 */
+ ------------------------------------------
+ 1)    sshd-855    =>   kworker-97  
+ ------------------------------------------
+
+ 1)               |  /* swiotlb_tbl_map_single: devce=0000:00:01.1, orig_addr=0x000000007af02000, size=4096, index=9628, nslots=2 */
+ ------------------------------------------
+ 1)   kworker-97   =>    <idle>-0   
+ ------------------------------------------
+
+ 1)               |  /* swiotlb_tbl_unmap_single: devce=0000:00:01.1, orig_addr=0x000000007af02000, size=4096, index=9628, nslots=2 */
+ ------------------------------------------
+ 1)    <idle>-0    =>    sshd-855   
+ ------------------------------------------
+
+ 1)               |  /* swiotlb_tbl_map_single: devce=0000:00:03.0, orig_addr=0x00000000719ff0da, size=54, index=9630, nslots=1 */
+ 1)               |  /* swiotlb_tbl_map_single: devce=0000:00:03.0, orig_addr=0x0000000071b48000, size=36, index=9631, nslots=1 */
+ 1)               |  /* swiotlb_tbl_unmap_single: devce=0000:00:03.0, orig_addr=0x00000000719ff0da, size=54, index=9630, nslots=1 */
+ 1)               |  /* swiotlb_tbl_unmap_single: devce=0000:00:03.0, orig_addr=0x0000000071b48000, size=36, index=9631, nslots=1 */
+ 1)               |  /* swiotlb_tbl_map_single: devce=0000:00:03.0, orig_addr=0x00000000719ff0da, size=54, index=9632, nslots=1 */
+ 1)               |  /* swiotlb_tbl_map_single: devce=0000:00:03.0, orig_addr=0x0000000071b48000, size=36, index=9633, nslots=1 */
+ 1)               |  /* swiotlb_tbl_unmap_single: devce=0000:00:03.0, orig_addr=0x00000000719ff0da, size=54, index=9632, nslots=1 */
+ 1)               |  /* swiotlb_tbl_unmap_single: devce=0000:00:03.0, orig_addr=0x0000000071b48000, size=36, index=9633, nslots=1 */
+ 1)               |  /* swiotlb_tbl_map_single: devce=0000:00:03.0, orig_addr=0x00000000719ff0da, size=54, index=9634, nslots=1 */
+ 1)               |  /* swiotlb_tbl_map_single: devce=0000:00:03.0, orig_addr=0x0000000071b48000, size=36, index=9635, nslots=1 */
+ 1)               |  /* swiotlb_tbl_unmap_single: devce=0000:00:03.0, orig_addr=0x00000000719ff0da, size=54, index=9634, nslots=1 */
+ 1)               |  /* swiotlb_tbl_unmap_single: devce=0000:00:03.0, orig_addr=0x0000000071b48000, size=36, index=9635, nslots=1 *
