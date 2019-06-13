@@ -29,3 +29,13 @@ zhang@vm:~$ dmesg | grep scsi
 [    1.117909] scsi 2:0:0:1: Direct-Access     QEMU     QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
 [    9.600836] sd 2:0:0:0: Attached scsi generic sg1 type 0
 [    9.606466] sd 2:0:0:1: Attached scsi generic sg2 type 0
+
+
+
+qemu-system-x86_64 -enable-kvm -smp 4 -m 2000M -vnc :0 -net nic -net user,hostfwd=tcp::5022-:22 \
+-device lsi53c895a,id=scsi0 \
+-device scsi-hd,drive=drive0,bus=scsi0.0,channel=0,scsi-id=0,lun=0 \
+-drive file=/home/zhang/img/ubuntu1604/disk.img,if=none,id=drive0 \
+-device scsi-hd,drive=drive1,bus=scsi0.0,channel=0,scsi-id=1,lun=0  \
+-drive file=/home/zhang/img/test.img,if=none,id=drive1 \
+-kernel /home/zhang/kvm/mainline-linux/arch/x86_64/boot/bzImage -append "root=/dev/sda1 init=/sbin/init text"
