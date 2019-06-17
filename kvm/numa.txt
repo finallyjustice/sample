@@ -1,0 +1,35 @@
+# qemu-system-x86_64 -hda /home/zhang/img/ubuntu1804.qcow2 -vnc :0 \
+-net nic -net user,hostfwd=tcp::5022-:22 -enable-kvm \
+-smp 4 -m 2304M \
+-numa node,mem=2048,cpus=0-1 \
+-numa node,mem=256,cpus=2-3
+
+
+# dmesg | egrep 'NODE|node|zone'
+[    0.000000] NODE_DATA(0) allocated [mem 0x7ffd5000-0x7fffffff]
+[    0.000000] NODE_DATA(1) allocated [mem 0x8ffb4000-0x8ffdefff]
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000000001000-0x000000000009efff]
+[    0.000000]   node   0: [mem 0x0000000000100000-0x000000007fffffff]
+[    0.000000]   node   1: [mem 0x0000000080000000-0x000000008ffdefff]
+[    0.000000] Initmem setup node 0 [mem 0x0000000000001000-0x000000007fffffff]
+[    0.000000] On node 0 totalpages: 524190
+[    0.000000]   DMA zone: 64 pages used for memmap
+[    0.000000]   DMA zone: 21 pages reserved
+[    0.000000]   DMA zone: 3998 pages, LIFO batch:0
+[    0.000000]   DMA32 zone: 8128 pages used for memmap
+[    0.000000]   DMA32 zone: 520192 pages, LIFO batch:31
+[    0.000000] Initmem setup node 1 [mem 0x0000000080000000-0x000000008ffdefff]
+[    0.000000] On node 1 totalpages: 65503
+[    0.000000]   DMA32 zone: 1024 pages used for memmap
+[    0.000000]   DMA32 zone: 65503 pages, LIFO batch:15
+[    0.000000] setup_percpu: NR_CPUS:8192 nr_cpumask_bits:4 nr_cpu_ids:4 nr_node_ids:2
+[    0.000000] Built 2 zonelists, mobility grouping on.  Total pages: 580456
+[    0.000000] Policy zone: DMA32
+[    0.012512] Inode-cache hash table entries: 262144 (order: 9, 2097152 bytes)
+[    0.020003] .... node  #0, CPUs:      #1
+[    0.025505] .... node  #1, CPUs:   #2
+[    0.037416] smp: Brought up 2 nodes, 4 CPUs
+[    0.981049] ata1.01: NODEV after polling detection
+[    0.985327] ata2.01: NODEV after polling detection
