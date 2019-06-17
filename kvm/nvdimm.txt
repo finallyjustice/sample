@@ -1,0 +1,71 @@
+# qemu-system-x86_64 -hda /home/zhang/img/ubuntu1804.qcow2 -smp 2 -vnc :0 \
+-net nic -net user,hostfwd=tcp::5022-:22 \
+-enable-kvm \
+-machine pc,nvdimm \
+-m 2G,maxmem=100G,slots=10 \
+-object memory-backend-file,share,id=mem2,mem-path=/home/zhang/NVDIMM.img,size=16G \
+-device nvdimm,memdev=mem2,id=nv2
+
+
+# sudo apt-get install libndctl
+# sudo apt-get install ndctl
+
+
+# dmesg | grep NVDIMM
+[    0.000000] ACPI: SSDT 0x000000007FFE0F80 00038D (v01 BOCHS  NVDIMM   00000001 BXPC 00000001)
+
+
+# ndctl list
+{
+  "dev":"namespace0.0",
+  "mode":"raw",
+  "size":17179869184,
+  "sector_size":512,
+  "blockdev":"pmem0",
+  "numa_node":0
+}
+
+
+# ndctl create-namespace -f -e namespace0.0 --mode=dax
+{
+  "dev":"namespace0.0",
+  "mode":"devdax",
+  "map":"dev",
+  "size":"15.75 GiB (16.91 GB)",
+  "uuid":"c7e4666a-12d9-4f7d-89e6-3ab602188081",
+  "daxregion":{
+    "id":0,
+    "size":"15.75 GiB (16.91 GB)",
+    "align":2097152,
+    "devices":[
+      {
+        "chardev":"dax0.0",
+        "size":"15.75 GiB (16.91 GB)"
+      }
+    ]
+  },
+  "numa_node":0
+}
+
+
+# ndctl create-namespace -f -e namespace0.0 --mode=sector
+{
+  "dev":"namespace0.0",
+  "mode":"sector",
+  "size":"15.98 GiB (17.16 GB)",
+  "uuid":"660d2883-dd62-43f6-b01b-461c3c397d94",
+  "sector_size":4096,
+  "blockdev":"pmem0s",
+  "numa_node":0
+}
+
+
+# ndctl create-namespace -f -e namespace0.0 --mode=raw
+{
+  "dev":"namespace0.0",
+  "mode":"raw",
+  "size":"16.00 GiB (17.18 GB)",
+  "sector_size":512,
+  "blockdev":"pmem0",
+  "numa_node":0
+}
