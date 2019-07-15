@@ -1,6 +1,6 @@
 # mount -t debugfs debugfs /sys/kernel/debug
 
-# blktrace -d /dev/xvda -o – | blkparse -i –
+# blktrace -d /dev/xvda -o - | blkparse -i -
 
 # btrace /dev/xvda
 
