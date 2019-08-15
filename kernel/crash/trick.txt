@@ -1,0 +1,6 @@
+To read percpu variable:
+
+crash> struct blk_mq_ctx 0x2e4c0:0
+crash> struct blk_mq_ctx 0x2e4c0:1
+crash> struct blk_mq_ctx 0x2e4c0:2
+crash> struct blk_mq_ctx 0x2e4c0:a
