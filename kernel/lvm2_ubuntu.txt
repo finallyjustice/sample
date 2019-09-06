@@ -1,0 +1,91 @@
+This is how to build lvm2 (v2_02_185) on ubuntu with lvmetad enabled.
+
+All below commands are run as user (zhang) and sometimes with sudo. The
+installation should never in root privilege.
+
+1. Prepare folders.
+
+$ sudo mkdir /etc/lvm
+$ sudo chown zhang /etc/lvm
+
+$ sudo mkdir /soft/lvm2
+$ sudo chown zhang /soft/lvm2
+
+2. Build and install the source code.
+
+$ ./configure --prefix=/soft/lvm2 --enable-lvmetad
+$ make
+$ make install (not root privilege!!!)
+
+3. Confirm "use_lvmetad = 1" in /etc/lvm/lvm.conf in order to use lvmetad.
+
+4. Switch to su and set env.
+
+$ su
+# export LD_LIBRARY_PATH=/soft/lvm2/lib
+# PATH=$PATH:/soft/lvm2/lib
+
+5. Run lvmetad daemon in one terminal.
+
+# mkdir /run/lvm
+# chown zhang /run/lvm
+# /soft/lvm2/sbin/lvmetad -f
+
+6. Test lvm in another terminal by running below commands:
+
+# export LD_LIBRARY_PATH=/soft/lvm2/lib
+# PATH=$PATH:/soft/lvm2/lib
+
+
+qemu-img create System.img 25G
+parted System.img mklabel gpt
+losetup -f -P System.img
+parted -s /dev/loop0 unit s print
+udevadm settle
+parted -a none -s /dev/loop0 mkpart primary 64s 1048639s
+udevadm settle
+parted -a none -s /dev/loop0 set 1 boot on
+udevadm settle
+parted -a none -s /dev/loop0 mkpart primary 1048640s 1572928s
+udevadm settle
+parted -a none -s /dev/loop0 set 2 boot on
+udevadm settle
+parted -a none -s /dev/loop0 mkpart primary 1572929s 52428766s
+udevadm settle
+parted -a none -s /dev/loop0 set 3 lvm on
+udevadm settle
+parted -s /dev/loop0 unit s print
+
+udevadm settle
+losetup -d /dev/loop0
+sync
+kpartx -a -v System.img
+/soft/lvm2/sbin/lvm pvcreate --force /dev/mapper/loop0p3
+udevadm settle
+/soft/lvm2/sbin/lvm vgcreate VGExaDbDomU /dev/mapper/loop0p3
+udevadm settle
+/soft/lvm2/sbin/lvm lvcreate -L 24GB  -n LVDbSys1 VGExaDbDomU
+udevadm settle
+wipefs -af /dev/VGExaDbDomU/LVDbSys1
+mkfs -t ext3 -b 4096 /dev/VGExaDbDomU/LVDbSys1
+sync
+/sbin/tune2fs -c 0 -i 0 /dev/VGExaDbDomU/LVDbSys1
+/sbin/e2label /dev/VGExaDbDomU/LVDbSys1 DBSYS
+wipefs -af /dev/mapper/loop0p1
+mkfs -t ext3 -b 4096 /dev/mapper/loop0p1
+sync
+/sbin/tune2fs -c 0 -i 0 /dev/mapper/loop0p1
+/sbin/e2label /dev/mapper/loop0p1 BOOT
+wipefs -af /dev/mapper/loop0p2
+mkfs.vfat -F32 -s2 /dev/mapper/loop0p2
+sync
+udevadm settle
+/soft/lvm2/sbin/lvm vgchange -a n VGExaDbDomU
+udevadm settle
+kpartx -d -v /dev/loop0
+losetup -d /dev/loop0
+
+
+Below is required to cleanup the cache:
+
+/soft/lvm2/sbin/vgscan --cache
