@@ -1,0 +1,60 @@
+An interesting method to dump msix config for KVM guest.
+
+vm# lspci -vv
+00:04.0 Non-Volatile memory controller: Intel Corporation QEMU NVM Express Controller (rev 02) (prog-if 02 [NVM Express])
+	Subsystem: Red Hat, Inc. QEMU Virtual Machine
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 10
+	NUMA node: 0
+	Region 0: Memory at febf0000 (64-bit, non-prefetchable) [size=8K]
+	Region 4: Memory at febf3000 (32-bit, non-prefetchable) [size=4K]
+	Capabilities: [40] MSI-X: Enable+ Count=64 Masked-
+		Vector table: BAR=4 offset=00000000
+		PBA: BAR=4 offset=00000800
+	Capabilities: [80] Express (v2) Endpoint, MSI 00
+		DevCap:	MaxPayload 128 bytes, PhantFunc 0, Latency L0s <64ns, L1 <1us
+			ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 0.000W
+		DevCtl:	Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
+			RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop-
+			MaxPayload 128 bytes, MaxReadReq 128 bytes
+		DevSta:	CorrErr- UncorrErr- FatalErr- UnsuppReq- AuxPwr- TransPend-
+		LnkCap:	Port #0, Speed 2.5GT/s, Width x1, ASPM L0s, Exit Latency L0s <64ns, L1 <1us
+			ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
+		LnkCtl:	ASPM Disabled; RCB 64 bytes Disabled- CommClk-
+			ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+		LnkSta:	Speed 2.5GT/s, Width x1, TrErr- Train- SlotClk- DLActive+ BWMgmt- ABWMgmt-
+		DevCap2: Completion Timeout: Not Supported, TimeoutDis-, LTR-, OBFF Not Supported
+		DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis-, LTR-, OBFF Disabled
+		LnkSta2: Current De-emphasis Level: -6dB, EqualizationComplete-, EqualizationPhase1-
+			 EqualizationPhase2-, EqualizationPhase3-, LinkEqualizationRequest-
+	Kernel driver in use: nvme
+	Kernel modules: nvme
+
+msix table for nvme is at bar 4 with max 64 entries (queues). 
+
+(qemu) info pci
+  Bus  0, device   4, function 0:
+    Class 0264: PCI device 8086:5845
+      PCI subsystem 1af4:1100
+      IRQ 11.
+      BAR0: 64 bit memory at 0xfebf0000 [0xfebf1fff].
+      BAR4: 32 bit memory at 0xfebf3000 [0xfebf3fff].
+      id "nvme1"
+
+The nvme bar 4 is at guest physical address 0xfebf3000.
+
+(qemu) xp /40wx 0xfebf3000
+00000000febf3000: 0xfee08004 0x00000000 0x00004023 0x00000000
+00000000febf3010: 0xfee01004 0x00000000 0x00004022 0x00000000
+00000000febf3020: 0xfee02004 0x00000000 0x00004023 0x00000000
+00000000febf3030: 0xfee04004 0x00000000 0x00004023 0x00000000
+00000000febf3040: 0xfee08004 0x00000000 0x00004022 0x00000000
+00000000febf3050: 0x00000000 0x00000000 0x00000000 0x00000001
+00000000febf3060: 0x00000000 0x00000000 0x00000000 0x00000001
+00000000febf3070: 0x00000000 0x00000000 0x00000000 0x00000001
+00000000febf3080: 0x00000000 0x00000000 0x00000000 0x00000001
+00000000febf3090: 0x00000000 0x00000000 0x00000000 0x00000001
+
+Only first 5 entries have control=0x0 because only 5 entries are used (4 I/O queue and 1 admin queue).
