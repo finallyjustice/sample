@@ -17,3 +17,25 @@ Make sure serial-getty@ttyS0 is running:
 #systemctl status serial-getty@ttyS0
 #systemctl enable serial-getty@ttyS0  (if not already started)
 #systemctl start serial-getty@ttyS0
+
+--------------------------------------
+
+Sample Oracle Linux config file:
+
+# cat /etc/default/grub
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="crashkernel=auto rd.lvm.lv=ol/root rd.lvm.lv=ol/swap rhgb quiet console=ttyS0,115200n8 console=tty0 earlyprintk=ttyS0,115200n8"
+GRUB_DISABLE_RECOVERY="true"
+
+GRUB_TERMINAL="serial console"
+GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1"
+
+
+The most significant is the below:
+
+# cat /proc/cmdline 
+BOOT_IMAGE=/vmlinuz-4.14.35-1902.0.15.el7uek.x86_64 root=/dev/mapper/ol-root ro crashkernel=auto rd.lvm.lv=ol/root rd.lvm.lv=ol/swap rhgb quiet console=ttyS0,115200n8 console=tty1 loglevel=7 LANG=en_US.UTF-8
