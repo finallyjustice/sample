@@ -1,0 +1,65 @@
+(d5) HVM Loader
+(d5) Detected Xen v4.4.4OVM
+(d5) Xenbus rings @0xfeffc000, event channel 3
+(d5) System requested ROMBIOS
+(d5) CPU speed is 3093 MHz
+(d5) vcpu(0) = APICID 0
+(d5) vcpu(1) = APICID 2
+(d5) Relocating guest memory for lowmem MMIO space enabled
+(XEN) irq.c:295: Dom5 PCI link 0 changed 0 -> 5
+(d5) PCI-ISA link 0 routed to IRQ5
+(XEN) irq.c:295: Dom5 PCI link 1 changed 0 -> 10
+(d5) PCI-ISA link 1 routed to IRQ10
+(XEN) irq.c:295: Dom5 PCI link 2 changed 0 -> 11
+(d5) PCI-ISA link 2 routed to IRQ11
+(XEN) irq.c:295: Dom5 PCI link 3 changed 0 -> 5
+(d5) PCI-ISA link 3 routed to IRQ5
+(d5) pci dev 01:3 INTA->IRQ10
+(d5) pci dev 03:0 INTA->IRQ5
+(d5) No RAM in high memory; setting high_mem resource base to 100000000
+(d5) pci dev 02:0 bar 10 size 002000000: 0f0000008
+(d5) pci dev 03:0 bar 14 size 001000000: 0f2000008
+(d5) pci dev 02:0 bar 14 size 000001000: 0f3000000
+(d5) pci dev 03:0 bar 10 size 000000100: 00000c001
+(d5) pci dev 01:1 bar 20 size 000000010: 00000c101
+(d5) Multiprocessor initialisation:
+(d5)  - CPU0 ... 36-bit phys ... fixed MTRRs ... var MTRRs [1/8] ... done.
+(d5)  - CPU1 ... 36-bit phys ... fixed MTRRs ... var MTRRs [1/8] ... done.
+(d5) Testing HVM environment:
+(d5)  - REP INSB across page boundaries ... passed
+(d5)  - GS base MSRs and SWAPGS ... passed
+(d5) Passed 2 of 2 tests
+(d5) Writing SMBIOS tables ...
+(d5) Loading ROMBIOS ...
+(d5) 9628 bytes of ROMBIOS high-memory extensions:
+(d5)   Relocating to 0xfc001000-0xfc00359c ... done
+(d5) Creating MP tables ...
+(d5) Loading Cirrus VGABIOS ...
+(d5) Option ROMs:
+(d5)  c0000-c8fff: VGA BIOS
+(d5) Loading ACPI ...
+(d5) vm86 TSS at fc00f800
+(d5) BIOS map:
+(d5)  f0000-fffff: Main BIOS
+(d5) E820 table:
+(d5)  [00]: 00000000:00000000 - 00000000:0009e000: RAM
+(d5)  [01]: 00000000:0009e000 - 00000000:000a0000: RESERVED
+(d5)  HOLE: 00000000:000a0000 - 00000000:000e0000
+(d5)  [02]: 00000000:000e0000 - 00000000:00100000: RESERVED
+(d5)  [03]: 00000000:00100000 - 00000000:32000000: RAM
+(d5)  HOLE: 00000000:32000000 - 00000000:fc000000
+(d5)  [04]: 00000000:fc000000 - 00000001:00000000: RESERVED
+(d5) Invoking ROMBIOS ...
+(XEN) stdvga.c:147:d5 entering stdvga and caching modes
+(d5) VGABios $Id: vgabios.c,v 1.67 2008/01/27 09:44:12 vruppert Exp $
+(d5) Bochs BIOS - build: 06/23/99
+(d5) $Revision: 1.221 $ $Date: 2008/12/07 17:32:29 $
+(d5) Options: apmbios pcibios eltorito PMM 
+(d5) 
+(d5) ata0 master: QEMU HARDDISK ATA-7 Hard-Disk (20480 MBytes)
+(d5) 
+(d5) 
+(d5) 
+(d5) Press F12 for boot menu.
+(d5) 
+(d5) Booting from Hard Disk...
