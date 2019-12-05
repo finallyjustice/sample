@@ -1,0 +1,11 @@
+# mount -t debugfs debugfs /sys/kernel/debug
+
+# echo <pid> > /sys/kernel/debug/tracing/set_ftrace_pid
+
+# echo function > /sys/kernel/debug/tracing/current_tracer
+
+# cat /sys/kernel/debug/tracing/trace_pipe > /tmp/ftrace.save
+
+# echo nop > /sys/kernel/debug/tracing/current_tracer
+
+# cat /dev/null > /sys/kernel/debug/tracing/set_ftrace_pid
