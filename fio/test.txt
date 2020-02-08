@@ -1,3 +1,8 @@
+To evaluate IO performance:
+
+https://support.binarylane.com.au/support/solutions/articles/1000055889-how-to-benchmark-disk-i-o
+
+
 # fio -name iops -rw=read -bs=4k -runtime=60 -iodepth 32 -filename /dev/nvme0n1 -ioengine libaio -direct=1
 iops: (g=0): rw=read, bs=4K-4K/4K-4K/4K-4K, ioengine=libaio, iodepth=32
 fio-2.2.10
