@@ -21,6 +21,15 @@ OVMF.fd
 
 # qemu-system-x86_64 -drive file=OVMF_CODE.fd,if=pflash,format=raw,unit=0,readonly=on -drive file=OVMF_VARS.fd,if=pflash,format=raw,unit=1 -vnc :0 -device virtio-scsi-pci,id=virtio_scsi_pci0,bus=pci.0,addr=0x5 -drive id=drive_image1,if=none,format=qcow2,file=disk.qcow2 -device scsi-hd,id=image1,drive=drive_image1 -smp 2 -m 3000M -enable-kvm -serial stdio
 
+6. Now Oracle Linux 7 boot from uefi:
+
+# ls /boot/efi/EFI/*
+/boot/efi/EFI/BOOT:
+BOOTX64.EFI  fbx64.efi
+
+/boot/efi/EFI/redhat:
+BOOT.CSV  BOOTX64.CSV  fonts  grub.cfg  grubenv  grubx64.efi  mmx64.efi  shim.efi  shimx64.efi  shimx64-redhat.efi
+
 ----------------------------------------------------
 
 According to my test, UEFI (ovmf) works for OL7 and Ubuntu16.04 as guest. It is not working when Ubuntu18.04 is guest.
