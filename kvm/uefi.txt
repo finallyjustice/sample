@@ -1,0 +1,37 @@
+This is about to boot UEFI based OS (e.g., Oracle Linux 7) on Ubuntu 18.04.3 host (based on virtio-scsi).
+
+1. To install ovmf:
+
+# sudo apt-get install ovmf
+
+2. After installation, below would be available on host:
+
+# ls /usr/share/OVMF
+OVMF_CODE.fd  OVMF_VARS.fd
+#  ls /usr/share/ovmf
+OVMF.fd
+
+3. Copy OVMF_CODE.fd and OVMF_VARS.fd to image specific folder.
+
+4. Install Oracle Linux 7:
+
+# qemu-system-x86_64 -drive file=OVMF_CODE.fd,if=pflash,format=raw,unit=0,readonly=on -drive file=OVMF_VARS.fd,if=pflash,format=raw,unit=1 -vnc :0 -device virtio-scsi-pci,id=virtio_scsi_pci0,bus=pci.0,addr=0x5 -drive id=drive_image1,if=none,format=qcow2,file=disk.qcow2 -device scsi-hd,id=image1,drive=drive_image1  -cdrom ~/OracleLinux-R7-U7-Server-x86_64-dvd.iso -smp 2 -m 3000M -enable-kvm -boot d -serial stdio
+
+5. Boot Oracle Linux 7:
+
+# qemu-system-x86_64 -drive file=OVMF_CODE.fd,if=pflash,format=raw,unit=0,readonly=on -drive file=OVMF_VARS.fd,if=pflash,format=raw,unit=1 -vnc :0 -device virtio-scsi-pci,id=virtio_scsi_pci0,bus=pci.0,addr=0x5 -drive id=drive_image1,if=none,format=qcow2,file=disk.qcow2 -device scsi-hd,id=image1,drive=drive_image1 -smp 2 -m 3000M -enable-kvm -serial stdio
+
+----------------------------------------------------
+
+According to my test, UEFI (ovmf) works for OL7 and Ubuntu16.04 as guest. It is not working when Ubuntu18.04 is guest.
+
+Below is the command line I use to boot from mainline kernel when ovmf is used. Not sure if it is reasonable.
+
+# qemu-system-x86_64 -drive file=OVMF_CODE.fd,if=pflash,format=raw,unit=0,readonly=on -drive file=OVMF_VARS.fd,if=pflash,format=raw,unit=1 -vnc :0 -device virtio-scsi-pci,id=virtio_scsi_pci0,bus=pci.0,addr=0x5 -drive id=drive_image1,if=none,format=qcow2,file=disk.qcow2 -device scsi-hd,id=image1,drive=drive_image1  -smp 2 -m 3000M -enable-kvm -serial stdio -kernel ~/kvm/mainline-linux/arch/x86_64/boot/bzImage -append "root=/dev/sda2 init=/sbin/init text console=ttyS0 earlyprintk=ttyS0"
+
+----------------------------------------------------
+
+Extra links about to build ovmf:
+
+- https://wiki.ubuntu.com/UEFI/EDK2
+- https://askubuntu.com/questions/1092396/edk2-setup-for-ubuntu
