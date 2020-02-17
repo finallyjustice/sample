@@ -1,0 +1,17 @@
+This is about how to panic on unknown NMI.
+
+1. Enable panic on unknown nmi:
+
+# echo 1 > /proc/sys/kernel/unknown_nmi_panic
+
+2. Trigger nmi from QEMU monitor:
+
+(qemu) help nmi
+nmi  -- inject an NMI
+(qemu) nmi
+
+---------------------------------------
+
+Extra link on NMI interrupt:
+
+https://gist.githubusercontent.com/wmealing/5523247/raw/4dc0474cabc35a9b79cd49fc7eab1f027ea80606/nmi-interrupts.txt
