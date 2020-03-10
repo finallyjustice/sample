@@ -1,0 +1,27 @@
+--------------------------
+
+To install on ubuntu18.04, just follow "Upstream Stable and Signed Packages" in below link:
+
+https://github.com/iovisor/bcc/blob/master/INSTALL.md#ubuntu---binary
+
+The env is ubuntu18.04 with 5.0.0-23-generic.
+
+
+# sudo apt-key adv --keyserver keyserver.ubuntu.com --keyserver-options http-proxy=http://xxx:80 --recv-keys 4052245BD4284CDD
+
+# echo "deb https://repo.iovisor.org/apt/$(lsb_release -cs) $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/iovisor.list
+
+# sudo apt-get update
+
+# sudo apt-get install bcc-tools libbcc-examples linux-headers-$(uname -r)
+
+The tools are under '/usr/share/bcc/tools', e.g., '/usr/share/bcc/tools/slabratetop'.
+
+
+To test upstream bcc:
+
+# git clone https://github.com/iovisor/bcc
+
+$ sudo ./tools/execsnoop.py
+
+--------------------------
