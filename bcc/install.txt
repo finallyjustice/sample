@@ -25,3 +25,22 @@ To test upstream bcc:
 $ sudo ./tools/execsnoop.py
 
 --------------------------
+
+To install on oracle linux.
+
+The env is:
+
+# uname -r
+4.14.35-1902.3.2.el7uek.x86_64
+# rpm -qa | grep bcc
+python-bcc-0.8.0-1.el7.x86_64
+bcc-0.8.0-1.el7.x86_64
+bcc-tools-0.8.0-1.el7.x86_64
+
+Install kernel-uek-devel-4.14.35-1902.3.2.el7uek.x86_64.
+
+# yum install bcc
+
+# /usr/share/bcc/tools/biosnoop
+
+--------------------------

@@ -1,6 +1,6 @@
 #!/bin/sh
 # a sample from linux-block mailing list (Ming Lei)
-# it is tested on ubuntu18.04
+# it is tested on ubuntu18.04, oracle linux
 
 MAJ=$1
 MIN=$2
