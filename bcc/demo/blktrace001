@@ -1,0 +1,38 @@
+#!/bin/sh
+# a sample from linux-block mailing list (Ming Lei)
+# it is tested on ubuntu18.04
+
+MAJ=$1
+MIN=$2
+MAJ=$(( $MAJ << 20 ))
+DEV=$(( $MAJ | $MIN ))
+
+/usr/share/bcc/tools/trace -t -C \
+    't:block:block_getrq (args->dev == '$DEV') "%s %d %d", args->rwbs, args->sector, args->nr_sector' \
+    't:block:block_rq_issue (args->dev == '$DEV') "%s %d %d", args->rwbs, args->sector, args->nr_sector' \
+    't:block:block_rq_complete (args->dev == '$DEV') "%s %d %d", args->rwbs, args->sector, args->nr_sector'
+
+
+
+# sudo ./run.sh 259 0
+# /virtual/main.c:53:19: warning: comparison of array 'args->rwbs' not equal to a null pointer is always true [-Wtautological-pointer-compare]
+#         if (args->rwbs != 0) {
+#             ~~~~~~^~~~    ~
+# /virtual/main.c:114:19: warning: comparison of array 'args->rwbs' not equal to a null pointer is always true [-Wtautological-pointer-compare]
+#         if (args->rwbs != 0) {
+#             ~~~~~~^~~~    ~
+# /virtual/main.c:174:19: warning: comparison of array 'args->rwbs' not equal to a null pointer is always true [-Wtautological-pointer-compare]
+#         if (args->rwbs != 0) {
+#             ~~~~~~^~~~    ~
+# 3 warnings generated.
+# TIME     CPU PID     TID     COMM            FUNC             -
+# 7.030670 0   1100    1100    dd              block_getrq      WS 0 8
+# 7.030681 0   1100    1100    dd              block_rq_issue   WS 0 16
+# 7.030833 0   0       0       swapper/0       block_rq_complete WS 0 16
+# 7.048608 1   346     346     systemd-udevd   block_rq_issue   R 0 8
+# 7.048600 1   346     346     systemd-udevd   block_getrq      R 0 8
+# 7.048710 1   346     346     systemd-udevd   block_getrq      R 8 8
+# 7.048712 1   346     346     systemd-udevd   block_rq_issue   R 8 8
+# 7.048783 1   346     346     systemd-udevd   block_rq_issue   R 24 8
+# 7.048782 1   346     346     systemd-udevd   block_getrq      R 24 8
+# 7.048693 1   0       0       swapper/1       block_rq_complete R 0 8
