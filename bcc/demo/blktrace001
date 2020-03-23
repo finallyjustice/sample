@@ -36,3 +36,13 @@ DEV=$(( $MAJ | $MIN ))
 # 7.048783 1   346     346     systemd-udevd   block_rq_issue   R 24 8
 # 7.048782 1   346     346     systemd-udevd   block_getrq      R 24 8
 # 7.048693 1   0       0       swapper/1       block_rq_complete R 0 8
+#
+#
+# block_getrq() --> trace_block_getrq()
+#   - blk_mq_make_request()
+#
+# block_rq_issue() --> trace_block_rq_issue()
+#   - blk_mq_start_request()
+#
+# block_rq_complete() --> trace_block_rq_complete()
+#   - blk_update_request()
