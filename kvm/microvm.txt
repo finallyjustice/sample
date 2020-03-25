@@ -1,0 +1,8 @@
+qemu-system-x86_64 -M microvm,x-option-roms=off,pit=off,pic=off,isa-serial=off,rtc=off -enable-kvm -cpu host -m 512m -smp 2 -kernel mainline-linux/arch/x86_64/boot/bzImage -append "console=hvc0 root=/dev/vda1" -nodefaults -no-user-config -nographic -chardev stdio,id=virtiocon0 -device virtio-serial-device -device virtconsole,chardev=virtiocon0 -drive id=test,file=ubuntu1804.img,format=raw,if=none -device virtio-blk-device,drive=test -netdev tap,id=tap0,script=qemu-ifup,downscript=no -device virtio-net-device,netdev=tap0
+
+-----------------------------
+
+To build kernel, add xen.config, virtio-mmio, virtio console, virtio-blk and virtio-net.
+
+
+To reboot with triple fault, grep 'BOOT_TRIPLE' in kernel for details.
