@@ -1,0 +1,11 @@
+qemu-system-x86_64 -smp 4 -m 8G -enable-kvm -cpu host,kvm_pv_unhalt,hv_stimer,hv_relaxed,hv_vpindex,hv_ipi,hv_spinlocks=0xfff,hv_vapic,hv_tlbflush,hv_reset,hv_crash,hv_synic,hv_time -vnc :0 -net nic -net user,hostfwd=tcp::5023-:22 -device virtio-blk-pci,drive=drive0,id=virtblk0,num-queues=4 -drive file=ubuntu1804.img,if=none,id=drive0 -serial stdio
+
+------------------------------------------------------
+
+# dmesg | grep micro
+[    2.223442] systemd[1]: Detected virtualization microsoft.
+
+# cat /proc/interrupts  | grep Hyper
+HYP:          0          0          0          0   Hypervisor callback interrupts
+HRE:          0          0          0          0   Hyper-V reenlightenment interrupts
+HVS:          0          0          0          0   Hyper-V stimer0 interrupts
