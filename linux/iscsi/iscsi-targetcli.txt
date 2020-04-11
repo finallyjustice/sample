@@ -1,0 +1,81 @@
+# yum install targetcli
+# yum install iscsi-initiator-utils
+
+# dd if=/dev/zero of=disk.img bs=1M count=512 oflag=direct
+
+# targetcli /backstores/fileio create name=lun1 file_or_dev=/root/img/disk.img
+Warning: Could not load preferences file /root/.targetcli/prefs.bin.
+Created fileio lun1 with size 536870912
+
+# targetcli /iscsi create iqn.2017-07.com.mydebug.www:zhang
+Created target iqn.2017-07.com.mydebug.www:zhang.
+Created TPG 1.
+Global pref auto_add_default_portal=true
+Created default portal listening on all IPs (0.0.0.0), port 3260.
+
+# targetcli /iscsi/iqn.2017-07.com.mydebug.www:zhang/tpg1/luns create /backstores/fileio/lun1
+Created LUN 0.
+
+# targetcli /iscsi/iqn.2017-07.com.mydebug.www:zhang/tpg1 set attribute generate_node_acls=1
+Parameter generate_node_acls is now '1'.
+
+# targetcli /iscsi/iqn.2017-07.com.mydebug.www:zhang/tpg1 set attribute demo_mode_write_protect=0
+Parameter demo_mode_write_protect is now '0'.
+
+[root@vm ~]# targetcli ls
+o- / ......................................................................................................................... [...]
+  o- backstores .............................................................................................................. [...]
+  | o- block .................................................................................................. [Storage Objects: 0]
+  | o- fileio ................................................................................................. [Storage Objects: 1]
+  | | o- lun1 ................................................................. [/root/img/disk.img (512.0MiB) write-back activated]
+  | |   o- alua ................................................................................................... [ALUA Groups: 1]
+  | |     o- default_tg_pt_gp ....................................................................... [ALUA state: Active/optimized]
+  | o- pscsi .................................................................................................. [Storage Objects: 0]
+  | o- ramdisk ................................................................................................ [Storage Objects: 0]
+  o- iscsi ............................................................................................................ [Targets: 1]
+  | o- iqn.2017-07.com.mydebug.www:zhang ................................................................................. [TPGs: 1]
+  |   o- tpg1 .................................................................................................. [gen-acls, no-auth]
+  |     o- acls .......................................................................................................... [ACLs: 0]
+  |     o- luns .......................................................................................................... [LUNs: 1]
+  |     | o- lun0 ............................................................ [fileio/lun1 (/root/img/disk.img) (default_tg_pt_gp)]
+  |     o- portals .................................................................................................... [Portals: 1]
+  |       o- 0.0.0.0:3260 ..................................................................................................... [OK]
+  o- loopback ......................................................................................................... [Targets: 0]
+  o- vhost ............................................................................................................ [Targets: 0]
+
+
+Do not forget to run "iptables -F" on target server.
+
+==================================================
+
+
+# iscsiadm -m discovery -t sendtargets -p 10.211.14.246
+10.211.14.246:3260,1 iqn.2017-07.com.mydebug.www:zhang
+
+[  241.354413] Loading iSCSI transport class v2.0-870.
+[  241.376474] iscsi: registered transport (tcp)
+
+# iscsiadm -m node
+10.211.14.246:3260,1 iqn.2017-07.com.mydebug.www:zhang
+
+# iscsiadm -m node -T iqn.2017-07.com.mydebug.www:zhang --login
+Logging in to [iface: default, target: iqn.2017-07.com.mydebug.www:zhang, portal: 10.211.14.246,3260] (multiple)
+Login to [iface: default, target: iqn.2017-07.com.mydebug.www:zhang, portal: 10.211.14.246,3260] successful.
+
+[  437.218355] scsi host2: iSCSI Initiator over TCP/IP
+[  437.227702] scsi 2:0:0:0: Direct-Access     LIO-ORG  lun1             4.0  PQ: 0 ANSI: 5
+[  437.234105] scsi 2:0:0:0: alua: supports implicit and explicit TPGS
+[  437.239851] scsi 2:0:0:0: alua: device naa.600140527a0d0b11adb4b54b0c0aaa67 port group 0 rel port 1
+[  437.252224] scsi 2:0:0:0: Attached scsi generic sg0 type 0
+[  437.253225] scsi 2:0:0:0: alua: transition timeout set to 60 seconds
+[  437.253227] scsi 2:0:0:0: alua: port group 00 state A non-preferred supports TOlUSNA
+[  437.277194] sd 2:0:0:0: [sda] 1048576 512-byte logical blocks: (537 MB/512 MiB)
+[  437.282575] sd 2:0:0:0: [sda] Write Protect is on
+[  437.285861] sd 2:0:0:0: [sda] Mode Sense: 43 00 90 08
+[  437.286626] sd 2:0:0:0: [sda] Write cache: disabled, read cache: enabled, supports DPO and FUA
+[  437.304663] sd 2:0:0:0: [sda] Attached SCSI disk
+
+
+The below is to rescan on boot:
+
+# iscsiadm -m session --rescan
