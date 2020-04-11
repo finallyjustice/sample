@@ -22,7 +22,7 @@ Parameter generate_node_acls is now '1'.
 # targetcli /iscsi/iqn.2017-07.com.mydebug.www:zhang/tpg1 set attribute demo_mode_write_protect=0
 Parameter demo_mode_write_protect is now '0'.
 
-[root@vm ~]# targetcli ls
+# targetcli ls
 o- / ......................................................................................................................... [...]
   o- backstores .............................................................................................................. [...]
   | o- block .................................................................................................. [Storage Objects: 0]
@@ -49,18 +49,18 @@ Do not forget to run "iptables -F" on target server.
 ==================================================
 
 
-# iscsiadm -m discovery -t sendtargets -p 10.211.14.246
-10.211.14.246:3260,1 iqn.2017-07.com.mydebug.www:zhang
+# iscsiadm -m discovery -t sendtargets -p 10.0.0.1
+10.0.0.1:3260,1 iqn.2017-07.com.mydebug.www:zhang
 
 [  241.354413] Loading iSCSI transport class v2.0-870.
 [  241.376474] iscsi: registered transport (tcp)
 
 # iscsiadm -m node
-10.211.14.246:3260,1 iqn.2017-07.com.mydebug.www:zhang
+10.0.0.1:3260,1 iqn.2017-07.com.mydebug.www:zhang
 
 # iscsiadm -m node -T iqn.2017-07.com.mydebug.www:zhang --login
-Logging in to [iface: default, target: iqn.2017-07.com.mydebug.www:zhang, portal: 10.211.14.246,3260] (multiple)
-Login to [iface: default, target: iqn.2017-07.com.mydebug.www:zhang, portal: 10.211.14.246,3260] successful.
+Logging in to [iface: default, target: iqn.2017-07.com.mydebug.www:zhang, portal: 10.0.0.1,3260] (multiple)
+Login to [iface: default, target: iqn.2017-07.com.mydebug.www:zhang, portal: 10.0.0.1,3260] successful.
 
 [  437.218355] scsi host2: iSCSI Initiator over TCP/IP
 [  437.227702] scsi 2:0:0:0: Direct-Access     LIO-ORG  lun1             4.0  PQ: 0 ANSI: 5
