@@ -1,0 +1,112 @@
+The core idea to create iscsi-boot QEMU image is create install the OS from iscsi.
+
+1. Create an iscsi lun with targetcli, e.g.:
+
+# targetcli /backstores/fileio create name=lun1 file_or_dev=/mnt/ol7.raw
+# targetcli /iscsi create iqn.2017-07.com.ol7.www:zhang
+# targetcli /iscsi/iqn.2017-07.com.ol7.www:zhang/tpg1/luns create /backstores/fileio/lun1
+# targetcli /iscsi/iqn.2017-07.com.ol7.www:zhang/tpg1 set attribute generate_node_acls=1
+# targetcli /iscsi/iqn.2017-07.com.ol7.www:zhang/tpg1 set attribute demo_mode_write_protect=0
+# iptables -F
+
+ip : xx.xx.xx.xx
+lun: iqn.2017-07.com.ol7.www:zhang
+
+2. From qemu side, try to install from ISO.
+
+3. To install from iscsi, please first enable eth0 networking during installation before configuring iscsi target.
+
+4. We may hit below err when configuring disk for installation.
+
+"Failed to find a suitable stage1 device: Boot loader stage1 device cannot be on an iSCSI disk which is not configured in iBFT."
+
+To solve the problem, add "inst.nonibftiscsiboot" to kernel cmdline of ISO. Press "Tab" during boot so that we would be able to edit cmdline for ISO, as in [1].
+
+5. Once installation is finished, run below qemu command.
+
+qemu-system-x86_64 -m 4000M -smp 4 -vnc :3 -serial stdio -enable-kvm\
+-device virtio-net-pci,netdev=tapnet,mq=true,vectors=9 \
+-netdev tap,id=tapnet,ifname=tap0,script=qemu-ifup,downscript=no,queues=4,vhost=off \
+-boot order=n
+
+6. We would boot from iscsi via ipxe. Input "ctrl+B" to start ipxe shell. Run as in [2]:
+
+# dhcp
+# sanboot iscsi:xx.xx.xx.xx::::iqn.2017-07.com.ol7.www:zhang
+
+[1] https://bugzilla.redhat.com/show_bug.cgi?id=1562301
+[2] https://medium.com/oracledevs/kvm-iscsi-part-i-iscsi-boot-with-ipxe-f533f2666075
+
+================================================
+
+# dmesg | egrep "scsi|SCSI"
+[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-4.14.35-1902.3.2.el7uek.x86_64 root=/dev/mapper/ol_vm-root ro crashkernel=auto rd.iscsi.initiator=iqn.2017-07.com.ol7.www:zhang netroot=iscsi:@xx.xx.xx.xx::3260::iqn.2017-07.com.ol7.www:zhang rd.lvm.lv=ol_vm/root rd.lvm.lv=ol_vm/swap rhgb quiet ip=eth0:dhcp LANG=en_US.UTF-8
+[    0.000000] Kernel command line: BOOT_IMAGE=/vmlinuz-4.14.35-1902.3.2.el7uek.x86_64 root=/dev/mapper/ol_vm-root ro crashkernel=auto rd.iscsi.initiator=iqn.2017-07.com.ol7.www:zhang netroot=iscsi:@xx.xx.xx.xx::3260::iqn.2017-07.com.ol7.www:zhang rd.lvm.lv=ol_vm/root rd.lvm.lv=ol_vm/swap rhgb quiet ip=eth0:dhcp LANG=en_US.UTF-8
+[    0.045358] SCSI subsystem initialized
+[    0.317578] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 248)
+[   12.835060] Loading iSCSI transport class v2.0-870.
+[   12.841730] iscsi: registered transport (tcp)
+[   13.003189] scsi host0: ata_piix
+[   13.013956] libcxgbi:libcxgbi_init_module: Chelsio iSCSI driver library libcxgbi v0.9.1-ko (Apr. 2015)
+[   13.014090] scsi host1: ata_piix
+[   13.025103] Chelsio T3 iSCSI Driver cxgb3i v2.0.1-ko (Apr. 2015)
+[   13.025116] iscsi: registered transport (cxgb3i)
+[   13.034277] QLogic NetXtreme II iSCSI Driver bnx2i v2.7.10.1 (Jul 16, 2014)
+[   13.034287] iscsi: registered transport (bnx2i)
+[   13.041462] iscsi: registered transport (be2iscsi)
+[   13.041463] In beiscsi_module_init, tt=ffffffffc0404120
+[   13.176762] scsi 1:0:0:0: CD-ROM            QEMU     QEMU DVD-ROM     2.5+ PQ: 0 ANSI: 5
+[   13.208793] sr 1:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray
+[   13.208985] sr 1:0:0:0: Attached scsi CD-ROM sr0
+[   17.847640] scsi host2: iSCSI Initiator over TCP/IP
+[   17.851519] scsi 2:0:0:0: Direct-Access     LIO-ORG  lun1             4.0  PQ: 0 ANSI: 5
+[   17.852210] scsi 2:0:0:0: alua: supports implicit and explicit TPGS
+[   17.852214] scsi 2:0:0:0: alua: device naa.6001405cf9ce4fd3c1b4dc0946ba73d3 port group 0 rel port 1
+[   17.858355] scsi 2:0:0:0: alua: transition timeout set to 60 seconds
+[   17.858357] scsi 2:0:0:0: alua: port group 00 state A non-preferred supports TOlUSNA
+[   17.869652] sd 2:0:0:0: [sda] Attached SCSI disk
+[   19.503471] sr 1:0:0:0: Attached scsi generic sg0 type 5
+[   19.503514] sd 2:0:0:0: Attached scsi generic sg1 type 0
+
+
+# lsblk
+NAME           MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sr0             11:0    1 1024M  0 rom  
+fd0              2:0    1    4K  0 disk 
+sda              8:0    0   10G  0 disk 
+├─sda2           8:2    0    9G  0 part 
+│ ├─ol_vm-swap 252:1    0    1G  0 lvm  [SWAP]
+│ └─ol_vm-root 252:0    0    8G  0 lvm  /
+└─sda1           8:1    0    1G  0 part /boot
+
+
+# cat /proc/cmdline 
+BOOT_IMAGE=/vmlinuz-4.14.35-1902.3.2.el7uek.x86_64 root=/dev/mapper/ol_vm-root ro crashkernel=auto rd.iscsi.initiator=iqn.2017-07.com.ol7.www:zhang netroot=iscsi:@xx.xx.xx.xx::3260::iqn.2017-07.com.ol7.www:zhang rd.lvm.lv=ol_vm/root rd.lvm.lv=ol_vm/swap rhgb quiet ip=eth0:dhcp LANG=en_US.UTF-8
+
+
+linux16 /vmlinuz-4.14.35-1902.3.2.el7uek.x86_64 root=/dev/mapper/ol_vm-root ro crashkernel=auto rd.iscsi.initiator=iqn.2017-07.com.ol7.www:zhang netroot=iscsi:@xx.xx.xx.xx::3260::iqn.2017-07.com.ol7.www:zhang rd.lvm.lv=ol_vm/root rd.lvm.lv=ol_vm/swap rhgb quiet ip=eth0:dhcp LANG=en_US.UTF-8
+initrd16 /initramfs-4.14.35-1902.3.2.el7uek.x86_64.img
+
+
+# cat /etc/default/grub 
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL_OUTPUT="console"
+GRUB_CMDLINE_LINUX="crashkernel=auto rd.iscsi.initiator=iqn.2017-07.com.ol7.www:zhang netroot=iscsi:@xx.xx.xx.xx::3260::iqn.2017-07.com.ol7.www:zhang rd.lvm.lv=ol_vm/root rd.lvm.lv=ol_vm/swap rhgb quiet ip=eth0:dhcp"
+GRUB_DISABLE_RECOVERY="true"
+
+
+# cat /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Tue Apr 14 12:40:09 2020
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/ol_vm-root  /                       xfs     defaults,_netdev,_netdev 0 0
+UUID=10ee5006-cc9f-4873-95ed-1e54cd95961d /boot                   xfs     defaults,_netdev,_netdev,x-initrd.mount 0 0
+/dev/mapper/ol_vm-swap  swap                    swap    defaults,_netdev,x-initrd.mount 0 0
