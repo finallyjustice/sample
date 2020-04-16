@@ -79,3 +79,25 @@ Login to [iface: default, target: iqn.2017-07.com.mydebug.www:zhang, portal: 10.
 The below is to rescan on boot:
 
 # iscsiadm -m session --rescan
+
+==================================================
+
+https://boke.wsfnk.com/archives/360.html
+
+To rescan all sessions
+# iscsiadm -m session –R
+
+To logout a session
+# iscsiadm -m node -T iqn.2017-07.com.mydebug.www:zhang --logout
+
+To remove one session:
+# iscsiadm -m node -o delete -T iqn.2017-07.com.mydebug.www:zhang -p 10.0.0.1
+
+To remove entire target:
+# iscsiadm -m node -o delete -p 10.0.0.1
+
+To remove send_target under /var/lib/iscsi/send_targets:
+# iscsiadm remove discovery-address 10.0.0.1,3260
+
+To modify config under /var/lib/iscsi:
+# iscsiadm -m node -T iqn.2017-07.com.mydebug.www:zhang -p 10.0.0.1 -o update -n node.startup -v manual
