@@ -1,0 +1,80 @@
+# targetcli /backstores/fileio create name=lun1 file_or_dev=/home/zhang/img/vhost-img/vhost-backend.img 
+Created fileio lun1 with size 1073741824
+
+# targetcli /vhost create
+Created target naa.5001405324af0985.
+Created TPG 1.
+
+# targetcli /vhost/naa.5001405324af0985/tpg1/luns create /backstores/fileio/lun1
+Created LUN 0.
+
+
+# targetcli  ls
+o- / ......................................................................................................................... [...]
+  o- backstores .............................................................................................................. [...]
+  | o- block .................................................................................................. [Storage Objects: 0]
+  | o- fileio ................................................................................................. [Storage Objects: 1]
+  | | o- lun1 .......................................... [/home/zhang/img/vhost-img/vhost-backend.img (1.0GiB) write-back activated]
+  | |   o- alua ................................................................................................... [ALUA Groups: 1]
+  | |     o- default_tg_pt_gp ....................................................................... [ALUA state: Active/optimized]
+  | o- pscsi .................................................................................................. [Storage Objects: 0]
+  | o- ramdisk ................................................................................................ [Storage Objects: 0]
+  o- iscsi ............................................................................................................ [Targets: 0]
+  o- loopback ......................................................................................................... [Targets: 0]
+  o- vhost ............................................................................................................ [Targets: 1]
+    o- naa.5001405324af0985 .............................................................................................. [TPGs: 1]
+      o- tpg1 .................................................................................. [naa.5001405c7eb785de, no-gen-acls]
+        o- acls .......................................................................................................... [ACLs: 0]
+        o- luns .......................................................................................................... [LUNs: 1]
+          o- lun0 ................................... [fileio/lun1 (/home/zhang/img/vhost-img/vhost-backend.img) (default_tg_pt_gp)]
+
+
+# ls /sys/kernel/config/target/vhost/
+discovery_auth  naa.5001405324af0985  version
+
+# ls /sys/kernel/config/target/vhost/naa.5001405324af0985/tpgt_1/lun/lun_0/
+alua_tg_pt_gp        alua_tg_pt_offline   alua_tg_pt_status    alua_tg_pt_write_md  c17078bdc1/          statistics/
+
+# cat /sys/kernel/config/target/vhost/naa.5001405324af0985/tpgt_1/lun/lun_0/c17078bdc1/info 
+Status: ACTIVATED  Max Queue Depth: 0  SectorSize: 512  HwMaxSectors: 16384
+        TCM FILEIO ID: 0        File: /home/zhang/img/vhost-img/vhost-backend.img  Size: 1073741824  Mode: Buffered-WCE
+
+========================================================
+
+# qemu-system-x86_64 -m 2000M -enable-kvm -smp 4 -vnc :3 \
+  -net nic -net user,hostfwd=tcp::5023-:22 \
+  -hda ol7.qcow2  -serial stdio -device \
+  vhost-scsi-pci,wwpn=naa.5001405324af0985,num_queues=4
+
+# dmesg | egrep "scsi|SCSI"
+[    0.154101] SCSI subsystem initialized
+[    0.459575] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 248)
+[    0.869702] scsi host0: Virtio SCSI HBA
+[    0.913133] scsi 0:0:1:0: Direct-Access     LIO-ORG  lun1             4.0  PQ: 0 ANSI: 5
+[    1.198060] scsi host1: ata_piix
+[    1.198902] scsi host2: ata_piix
+[    3.218037] scsi 0:0:1:0: alua: supports implicit and explicit TPGS
+[    3.218915] scsi 0:0:1:0: alua: device naa.600140503996bd0010e4640b2deedaaa port group 0 rel port 1
+[    3.220448] scsi 1:0:0:0: Direct-Access     ATA      QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+[    3.221776] scsi 2:0:0:0: CD-ROM            QEMU     QEMU DVD-ROM     2.5+ PQ: 0 ANSI: 5
+[    3.226196] scsi 0:0:1:0: alua: transition timeout set to 60 seconds
+[    3.227071] scsi 0:0:1:0: alua: port group 00 state A non-preferred supports TOlUSNA
+[    3.235271] sd 1:0:0:0: [sdb] Attached SCSI disk
+[    3.252335] sd 0:0:1:0: [sda] Attached SCSI disk
+[    3.257049] sr 2:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray
+[    3.260139] sr 2:0:0:0: Attached scsi CD-ROM sr0
+[    4.294270] sd 0:0:1:0: Attached scsi generic sg0 type 0
+[    4.299427] sd 1:0:0:0: Attached scsi generic sg1 type 0
+[    4.301365] sr 2:0:0:0: Attached scsi generic sg2 type 5
+
+# ls /sys/block/sda/mq/
+0  1  2  3
+
+# cat /proc/interrupts  | grep virtio
+ 24:          0          0          0          0   PCI-MSI 65536-edge      virtio0-config
+ 25:          0          0          0          0   PCI-MSI 65537-edge      virtio0-control
+ 26:          0          0          0          0   PCI-MSI 65538-edge      virtio0-event
+ 27:          6          0          0          0   PCI-MSI 65539-edge      virtio0-request
+ 28:          0         12          0          0   PCI-MSI 65540-edge      virtio0-request
+ 29:          0          0        273          0   PCI-MSI 65541-edge      virtio0-request
+ 30:          0          0          0         95   PCI-MSI 65542-edge      virtio0-request
