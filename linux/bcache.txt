@@ -1,0 +1,143 @@
+# yum install libblkid-devel
+# yum install bcache-tools
+
+source code:
+https://github.com/g2p/bcache-tools.git
+
+
+# make-bcache -B /dev/xvdb 
+UUID:			682dc499-9554-4cb5-aeeb-943c0384746a
+Set UUID:		807f1959-fbf6-4f7b-9c58-50681830565e
+version:		1
+block_size:		1
+data_offset:		16
+
+
+# lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+xvdc        202:32   0    1G  0 disk
+xvda        202:0    0   10G  0 disk
+├─xvda2     202:2    0    9G  0 part
+│ ├─ol-swap 252:1    0    1G  0 lvm  [SWAP]
+│ └─ol-root 252:0    0    8G  0 lvm  /
+└─xvda1     202:1    0    1G  0 part /boot
+xvdb        202:16   0    1G  0 disk
+└─bcache0   253:0    0 1024M  0 disk
+
+
+# mkfs.xfs /dev/bcache0
+meta-data=/dev/bcache0           isize=256    agcount=4, agsize=65536 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=0        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=262142, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=853, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+
+
+# mount /dev/bcache0 /mnt/
+
+
+# make-bcache -C /dev/xvdc 
+UUID:			78b84cc0-2e4b-4b62-8454-ada53e938a5e
+Set UUID:		c400d68c-14a6-4967-a4aa-bde86608c006
+version:		0
+nbuckets:		2048
+block_size:		1
+bucket_size:		1024
+nr_in_set:		1
+nr_this_dev:		0
+first_bucket:		1
+
+
+# bcache-super-show /dev/xvdc 
+sb.magic		ok
+sb.first_sector		8 [match]
+sb.csum			99250DF394A9F4BA [match]
+sb.version		3 [cache device]
+
+dev.label		(empty)
+dev.uuid		78b84cc0-2e4b-4b62-8454-ada53e938a5e
+dev.sectors_per_block	1
+dev.sectors_per_bucket	1024
+dev.cache.first_sector	1024
+dev.cache.cache_sectors	2096128
+dev.cache.total_sectors	2097152
+dev.cache.ordered	yes
+dev.cache.discard	no
+dev.cache.pos		0
+dev.cache.replacement	0 [lru]
+
+cset.uuid		c400d68c-14a6-4967-a4aa-bde86608c006
+
+
+# echo "c400d68c-14a6-4967-a4aa-bde86608c006" > /sys/block/bcache0/bcache/attach
+
+# dmesg
+[  353.112444] bcache: register_bdev() registered backing device xvdb
+[  508.470233] bcache: run_cache_set() invalidating existing data
+[  508.479494] bcache: register_cache() registered cache device xvdc
+[  985.180857] XFS (bcache0): Mounting V4 Filesystem
+[  985.190099] XFS (bcache0): Ending clean mount
+[ 1038.827372] bcache: bch_cached_dev_attach() Caching xvdb as bcache0 on set c400d68c-14a6-4967-a4aa-bde86608c006
+
+
+# lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+xvdc        202:32   0    1G  0 disk 
+└─bcache0   253:0    0 1024M  0 disk /mnt
+xvda        202:0    0   10G  0 disk 
+├─xvda2     202:2    0    9G  0 part 
+│ ├─ol-swap 252:1    0    1G  0 lvm  [SWAP]
+│ └─ol-root 252:0    0    8G  0 lvm  /
+└─xvda1     202:1    0    1G  0 part /boot
+xvdb        202:16   0    1G  0 disk 
+└─bcache0   253:0    0 1024M  0 disk /mnt
+
+
+# cat /sys/block/bcache0/bcache/cache_mode
+[writethrough] writeback writearound none
+
+
+# echo "c400d68c-14a6-4967-a4aa-bde86608c006" > /sys/block/bcache0/bcache/detach
+
+# echo 1 > /sys/fs/bcache/c400d68c-14a6-4967-a4aa-bde86608c006/unregister
+
+# umount /mnt
+
+# echo 1 > /sys/block/bcache0/bcache/stop
+
+==========================================================
+
+A quick way to use xvdc as cache for xvdb
+
+# make-bcache -C /dev/xvdc -B /dev/xvdb
+UUID:			69b4e788-25b9-411f-8568-2630f16195c9
+Set UUID:		f635f4f7-d7b1-411c-beea-0bab2d46d553
+version:		0
+nbuckets:		2048
+block_size:		1
+bucket_size:		1024
+nr_in_set:		1
+nr_this_dev:		0
+first_bucket:		1
+UUID:			c3cabdfc-24cb-4a06-a85c-3035dbe2ec8d
+Set UUID:		f635f4f7-d7b1-411c-beea-0bab2d46d553
+version:		1
+block_size:		1
+data_offset:		16
+
+
+# # lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+xvdc        202:32   0    1G  0 disk 
+└─bcache0   253:0    0 1024M  0 disk 
+xvda        202:0    0   10G  0 disk 
+├─xvda2     202:2    0    9G  0 part 
+│ ├─ol-swap 252:1    0    1G  0 lvm  [SWAP]
+│ └─ol-root 252:0    0    8G  0 lvm  /
+└─xvda1     202:1    0    1G  0 part /boot
+xvdb        202:16   0    1G  0 disk 
+└─bcache0   253:0    0 1024M  0 disk
