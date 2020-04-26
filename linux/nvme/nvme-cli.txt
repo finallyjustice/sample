@@ -1,0 +1,80 @@
+# nvme list-subsys
+nvme-subsys0 - NQN=nqn.2014.08.org.nvmexpress:80861af4deadbeaf1           QEMU NVMe Ctrl                          
+\
+ +- nvme0 pcie 0000:00:05.0
+
+=================================================================
+
+# nvme show-regs -H /dev/nvme0
+nvme0    nvme0n1  
+root@vm:/home/oracle# nvme show-regs -H /dev/nvme0
+cap     : 4000200f0107ff
+	Memory Page Size Maximum      (MPSMAX): 65536 bytes
+	Memory Page Size Minimum      (MPSMIN): 4096 bytes
+	Command Sets Supported           (CSS): NVM command set is supported
+	NVM Subsystem Reset Supported  (NSSRS): No
+	Doorbell Stride                (DSTRD): 4 bytes
+	Timeout                           (TO): 7500 ms
+	Arbitration Mechanism Supported  (AMS): Weighted Round Robin with Urgent Priority Class is not supported
+	Contiguous Queues Required       (CQR): Yes
+	Maximum Queue Entries Supported (MQES): 2048
+
+version : 10200
+	NVMe specification 1.2
+
+cc      : 460001
+	I/O Completion Queue Entry Size (IOCQES): 16 bytes
+	I/O Submission Queue Entry Size (IOSQES): 64 bytes
+	Shutdown Notification              (SHN): No notification; no effect
+	Arbitration Mechanism Selected     (AMS): Round Robin
+	Memory Page Size                   (MPS): 4096 bytes
+	I/O Command Sets Selected          (CSS): NVM Command Set
+	Enable                              (EN): Yes
+
+csts    : 1
+	Processing Paused               (PP): No
+	NVM Subsystem Reset Occurred (NSSRO): No
+	Shutdown Status               (SHST): Normal operation (no shutdown has been requested)
+	Controller Fatal Status        (CFS): False
+	Ready                          (RDY): Yes
+
+nssr    : 0
+	NVM Subsystem Reset Control (NSSRC): 0
+
+intms   : 0
+	Interrupt Vector Mask Set (IVMS): 0
+
+intmc   : 0
+	Interrupt Vector Mask Clear (IVMC): 0
+
+aqa     : 1f001f
+	Admin Completion Queue Size (ACQS): 32
+	Admin Submission Queue Size (ASQS): 32
+
+asq     : 2359f9000
+	Admin Submission Queue Base (ASQB): 2359f9000
+
+acq     : 2359f8000
+	Admin Completion Queue Base (ACQB): 2359f8000
+
+cmbloc  : 2
+	Offset                 (OFST): 0 (See cmbsz.szu for granularity)
+	Base Indicator Register (BIR): 2
+
+cmbsz   : 40219
+	Size                      (SZ): 64
+	Size Units               (SZU): 1 MB
+	Write Data Support       (WDS): Write Data and metadata transfer in Controller Memory Buffer is Supported
+	Read Data Support        (RDS): Read Data and metadata transfer in Controller Memory Buffer is Supported
+	PRP SGL List Support   (LISTS): PRP/SG Lists in Controller Memory Buffer is Not supported
+	Completion Queue Support (CQS): Admin and I/O Completion Queues in Controller Memory Buffer is Not supported
+	Submission Queue Support (SQS): Admin and I/O Submission Queues in Controller Memory Buffer is Supported
+
+bpinfo  : 0
+	Boot Partition feature is not supported
+
+bprsel  : 0
+	Boot Partition feature is not supported
+
+bpmbl   : 0
+	Boot Partition feature is not supported
