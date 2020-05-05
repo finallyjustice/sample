@@ -42,6 +42,8 @@ guest# cat /sys/block/vdb/size
 
 ---------------------------------------------------
 
+To resize with 'qcow2' format.
+
 1. To create image file in 'qcow2' format.
 
 guest@ # qemu-img create -f qcow2 test.qcow2 64M
@@ -77,6 +79,8 @@ guest# cat /sys/block/vdb/size
 [ 1765.768611] vdb: detected capacity change from 67108864 to 134217728
 
 ---------------------------------------------------
+
+To resize with loop device.
 
 1. To create image file as loop device.
 
