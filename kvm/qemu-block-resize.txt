@@ -1,0 +1,122 @@
+
+---------------------------------------------------
+
+To resize with 'raw' format.
+
+1. To create image file in 'raw' format.
+
+guest# dd if=/dev/zero of=test.raw bs=1M count=64 oflag=direct
+
+2. To boot VM with QEMU.
+
+host# qemu-system-x86_64 -m 4000M -enable-kvm -smp 4 -vnc :5 \
+  -net nic -net user,hostfwd=tcp::5025-:22 \
+  -device virtio-blk-pci,drive=drive0,id=virtblk0,num-queues=16 \
+  -drive file=ol7.qcow2,if=none,id=drive0 \
+  -device virtio-blk-pci,drive=drive1,id=virtblk1,num-queues=16 \
+  -drive file=test.raw,if=none,id=drive1 \
+  -monitor stdio -cpu host
+QEMU 4.2.0 monitor - type 'help' for more information
+(qemu)
+
+3. To view disk size within VM.
+
+guest# cat /sys/block/vdb/size
+131072
+
+4 (optional). To extend the host image file from 64M to 128M. This step is optional as 'block_resize' in QEMU shell would be able to do that.
+
+host# dd if=/dev/zero of=test.raw bs=1M count=64 oflag=append conv=notrunc
+
+5. To extend the host image file from 64M to 128M and propagate the change to guest via QEMU.
+
+(qemu) block_resize drive1 128M
+
+6. Now the new disk size is available within VM.
+
+guest# cat /sys/block/vdb/size 
+262144
+
+[  124.446907] virtio_blk virtio1: [vdb] new size: 262144 512-byte logical blocks (134 MB/128 MiB)
+[  124.448132] vdb: detected capacity change from 67108864 to 134217728
+
+---------------------------------------------------
+
+1. To create image file in 'qcow2' format.
+
+guest@ # qemu-img create -f qcow2 test.qcow2 64M
+Formatting 'test.qcow2', fmt=qcow2 size=67108864 cluster_size=65536 lazy_refcounts=off refcount_bits=16
+
+2. To boot VM with QEMU.
+
+host# qemu-system-x86_64 -m 4000M -enable-kvm -smp 4 -vnc :5 \
+  -net nic -net user,hostfwd=tcp::5025-:22 \
+  -device virtio-blk-pci,drive=drive0,id=virtblk0,num-queues=16 \
+  -drive file=ol7.qcow2,if=none,id=drive0 \
+  -device virtio-blk-pci,drive=drive1,id=virtblk1,num-queues=16 \
+  -drive file=test.qcow2,if=none,id=drive1 \
+  -monitor stdio -cpu host
+QEMU 4.2.0 monitor - type 'help' for more information
+(qemu)
+
+3. To view disk size within VM.
+
+guest# cat /sys/block/vdb/size
+131072
+
+4. To extend the host image file from 64M to 128M and propagate the change to guest via QEMU.
+
+(qemu) block_resize drive1 128M
+
+5. Now the new disk size is available within VM.
+
+guest# cat /sys/block/vdb/size
+262144
+
+[ 1765.767347] virtio_blk virtio1: [vdb] new size: 262144 512-byte logical blocks (134 MB/128 MiB)
+[ 1765.768611] vdb: detected capacity change from 67108864 to 134217728
+
+---------------------------------------------------
+
+1. To create image file as loop device.
+
+# dd if=/dev/zero of=test.raw bs=1M count=64 oflag=direct
+
+# losetup /dev/loop0 test.raw
+
+2. To boot VM with QEMU.
+
+host# qemu-system-x86_64 -m 4000M -enable-kvm -smp 4 -vnc :5 \
+  -net nic -net user,hostfwd=tcp::5025-:22 \
+  -device virtio-blk-pci,drive=drive0,id=virtblk0,num-queues=16 \
+  -drive file=ol7.qcow2,if=none,id=drive0 \
+  -device virtio-blk-pci,drive=drive1,id=virtblk1,num-queues=16 \
+  -drive file=/dev/loop0,format=raw,if=none,id=drive1 \
+  -monitor stdio -cpu host
+QEMU 4.2.0 monitor - type 'help' for more information
+(qemu)
+
+3. To view disk size within VM.
+
+guest# cat /sys/block/vdb/size
+131072
+
+4. To extend the host image file from 64M to 128M.
+
+host# dd if=/dev/zero of=test.raw bs=1M count=64 oflag=append conv=notrunc
+
+5. To re-detect the file size.
+
+host# losetup -c /dev/loop0
+
+6. To propagate the change to guest via QEMU.
+
+(qemu) block_resize drive1 128M
+
+7. Now the new disk size is available within VM.
+
+guest# cat /sys/block/vdb/size
+262144
+
+[  403.390288] virtio_blk virtio1: [vdb] new size: 262144 512-byte logical blocks (134 MB/128 MiB)
+[  403.391882] vdb: detected capacity change from 67108864 to 134217728
