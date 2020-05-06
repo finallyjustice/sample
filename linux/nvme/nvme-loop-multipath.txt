@@ -1,0 +1,96 @@
+# git clone git://git.infradead.org/users/hch/nvmetcli.git
+
+Change "import configshell_fb as configshell" to "import configshell" in nvmetcli, if there is python error related to configshell_fb.
+
+
+1. Create loop.json as below as loop target:
+
+-----------------------------------------
+
+# cat loop.json 
+{
+  "hosts": [
+    {
+      "nqn": "hostnqn"
+    }
+  ], 
+  "ports": [
+    {
+      "addr": {
+        "adrfam": "ipv4", 
+        "traddr": "10.0.2.15", 
+        "treq": "not specified", 
+        "trsvcid": "", 
+        "trtype": "loop"
+      }, 
+      "portid": 1, 
+      "referrals": [], 
+      "subsystems": [
+        "testnqn"
+      ]
+    }
+  ], 
+  "subsystems": [
+    {
+      "allowed_hosts": [
+        "hostnqn"
+      ], 
+      "attr": {
+        "allow_any_host": "0"
+      }, 
+      "namespaces": [
+	{
+          "device": {
+            "nguid": "ef90689c-6c46-d44c-89c1-4067801309a3", 
+            "path": "/home/test/disk.img"
+          }, 
+          "enable": 1, 
+          "nsid": 1
+        }
+      ], 
+      "nqn": "testnqn"
+    }
+  ]
+}
+
+-----------------------------------------
+
+2. Create the target with loop.json with nvmetcli:
+
+# ./nvmetcli restore loop.json
+
+[   93.172147] nvmet: adding nsid 1 to subsystem testnqn
+
+
+3. Create 3 controllers:
+
+# echo "transport=loop,hostnqn=hostnqn,nqn=testnqn" > /dev/nvme-fabrics
+
+[  118.882033] nvmet: creating controller 1 for subsystem testnqn for NQN hostnqn.
+[  118.884798] nvme nvme0: creating 4 I/O queues.
+[  118.885407] nvme nvme0: new ctrl: "testnqn"
+[  118.886144] nvme0n1: detected capacity change from 0 to 33554432
+
+# echo "transport=loop,hostnqn=hostnqn,nqn=testnqn,traddr=10.0.2.15" > /dev/nvme-fabrics
+
+[  150.009288] nvmet: creating controller 2 for subsystem testnqn for NQN hostnqn.
+[  150.011546] nvme nvme1: creating 4 I/O queues.
+[  150.011898] nvme nvme1: new ctrl: "testnqn"
+
+# echo "transport=loop,hostnqn=hostnqn,nqn=testnqn,traddr=10.0.2.15" > /dev/nvme-fabrics
+
+[  174.769001] nvmet: creating controller 3 for subsystem testnqn for NQN hostnqn.
+[  174.770684] nvme nvme2: creating 4 I/O queues.
+[  174.770887] nvme nvme2: new ctrl: "testnqn"
+
+
+4. Now we have 3 controllers using the same namespace:
+
+# ls /sys/block | grep nvme
+nvme0c0n1
+nvme0c1n1
+nvme0c2n1
+nvme0n1
+
+# ls /sys/block/nvme0n1/device
+firmware_rev  iopolicy  model  nvme0  nvme0n1  nvme1  nvme2  power  serial  subsysnqn  subsystem  uevent
