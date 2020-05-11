@@ -1,0 +1,145 @@
+This is with linux kernel v5.5.
+
+Build kernel with below configs:
+
+CONFIG_CONFIGFS_FS=m
+
+# NVME Support
+CONFIG_NVME_CORE=m
+CONFIG_BLK_DEV_NVME=m
+CONFIG_NVME_MULTIPATH=y
+CONFIG_NVME_HWMON=y
+CONFIG_NVME_FABRICS=m
+CONFIG_NVME_FC=m
+CONFIG_NVME_TCP=m
+CONFIG_NVME_TARGET=m
+CONFIG_NVME_TARGET_LOOP=m
+CONFIG_NVME_TARGET_FC=m
+CONFIG_NVME_TARGET_FCLOOP=m
+CONFIG_NVME_TARGET_TCP=m
+# end of NVME Support
+
+
+Download nvmetcli and nvme-cli.
+
+# git clone git://git.infradead.org/users/hch/nvmetcli.git
+# git clone https://github.com/linux-nvme/nvme-cli
+
+
+Create a disk file with dd and this would be used as target storage.
+
+
+# modprobe nvme_fcloop
+
+# lsmod | grep nvme
+nvme_fcloop            20480  0
+nvmet_fc               32768  1 nvme_fcloop
+nvme_fc                40960  1 nvme_fcloop
+nvmet                  90112  1 nvmet_fc
+configfs               36864  2 nvmet
+nvme_fabrics           24576  1 nvme_fc
+nvme_core              90112  2 nvme_fc,nvme_fabrics
+
+
+step 1: create local port, target port and remote port.
+
+# echo "wwnn=0x2222222222222222,wwpn=0x1111111111111111" > /sys/class/fcloop/ctl/add_local_port
+
+# echo "wwnn=0x3333333333333333,wwpn=0x1111111111111111" > /sys/class/fcloop/ctl/add_target_port
+
+# echo "wwnn=0x3333333333333333,wwpn=0x1111111111111111,roles=64,lpwwnn=0x2222222222222222,lpwwpn=0x1111111111111111" > /sys/class/fcloop/ctl/add_remote_port
+
+
+step 2: create a fc.json.
+
+# cat fc.json 
+{
+  "hosts": [
+    {
+      "nqn": "hostnqn"
+    }
+  ], 
+  "ports": [
+    {
+      "addr": {
+        "adrfam": "fc", 
+        "traddr": "nn-0x3333333333333333:pn-0x1111111111111111", 
+        "treq": "not specified", 
+        "trsvcid": "none", 
+        "trtype": "fc"
+      }, 
+      "portid": 3, 
+      "referrals": [], 
+      "subsystems": [
+        "testnqn"
+      ]
+    }
+  ], 
+  "subsystems": [
+    {
+      "allowed_hosts": [], 
+      "attr": {
+        "allow_any_host": "1"
+      }, 
+      "namespaces": [
+        {
+          "device": {
+            "nguid": "ef90689c-6c46-d44c-89c1-4067801309a8", 
+            "path": "/home/test/disk.img"
+          }, 
+          "enable": 1, 
+          "nsid": 1
+        }
+      ], 
+      "nqn": "testnqn"
+    }
+  ]
+}
+
+
+step 3: create the nvme target with fc.json.
+
+# ./nvmetcli restore fc.json
+
+[  564.749164] nvmet: adding nsid 1 to subsystem testnqn
+
+
+step 4: discover the nvme target.
+
+# nvme discover --transport=fc --traddr=nn-0x3333333333333333:pn-0x1111111111111111 --host-traddr=nn-0x2222222222222222:pn-0x1111111111111111
+
+Discovery Log Number of Records 1, Generation counter 2
+=====Discovery Log Entry 0======
+trtype:  fibre-channel
+adrfam:  fibre-channel
+subtype: nvme subsystem
+treq:    unrecognized
+portid:  3
+trsvcid: none
+subnqn:  testnqn
+traddr:  nn-0x3333333333333333:pn-0x1111111111111111
+
+[  611.129918] nvme nvme0: NVME-FC{0}: create association : host wwpn 0x1111111111111111  rport wwpn 0x1111111111111111: NQN "nqn.2014-08.org.nvmexpress.discovery"
+[  611.130024] nvmet: creating controller 1 for subsystem nqn.2014-08.org.nvmexpress.discovery for NQN nqn.2014-08.org.nvmexpress:uuid:be055b00-ca29-4a04-8cdf-910372298271.
+[  611.130119] nvme-fabrics ctl: Failed to read smart log (error -5)
+[  611.130128] nvme nvme0: NVME-FC{0}: controller connect complete
+[  611.130139] nvme nvme0: NVME-FC{0}: new ctrl: NQN "nqn.2014-08.org.nvmexpress.discovery"
+[  611.130226] nvme nvme0: Removing ctrl: NQN "nqn.2014-08.org.nvmexpress.discovery"
+
+
+
+step 5: connect the nvme target.
+
+# nvme connect --transport=fc --traddr=nn-0x3333333333333333:pn-0x1111111111111111 --host-traddr=nn-0x2222222222222222:pn-0x1111111111111111 -n testnqn
+
+[  658.544540] nvme nvme0: NVME-FC{0}: create association : host wwpn 0x1111111111111111  rport wwpn 0x1111111111111111: NQN "testnqn"
+[  658.544611] nvmet: creating controller 1 for subsystem testnqn for NQN nqn.2014-08.org.nvmexpress:uuid:be055b00-ca29-4a04-8cdf-910372298271.
+[  658.545154] nvme nvme0: NVME-FC{0}: controller connect complete
+[  658.545161] nvme nvme0: NVME-FC{0}: new ctrl: NQN "testnqn"
+[  658.545224] nvme0n1: detected capacity change from 0 to 67108864
+
+
+step 6: now nvme fcloop is ready. The transport is fc.
+
+# cat /sys/block/nvme0n1/device/nvme0/transport
+fc
