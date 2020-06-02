@@ -8,3 +8,32 @@
 (gdb) thread 2
 
 (gdb) delete bread #n
+
+--------------------------------------------------------
+
+(gdb) set print symbol-filename
+
+(gdb) x/i blk_mq_put_tag
+   0xffffffff813cdd70 <blk_mq_put_tag at block/blk-mq-tag.c:196>:	mov    %edx,%eax
+
+(gdb) disassemble blk_mq_put_tag
+Dump of assembler code for function blk_mq_put_tag:
+   0xffffffff813cdd70 <+0>:	mov    %edx,%eax
+   0xffffffff813cdd72 <+2>:	mov    0x4(%rdi),%edx
+   0xffffffff813cdd75 <+5>:	cmp    %eax,%edx
+   0xffffffff813cdd77 <+7>:	ja     0xffffffff813cdd8d <blk_mq_put_tag+29 at block/blk-mq-tag.c:204>
+   0xffffffff813cdd79 <+9>:	sub    %edx,%eax
+   0xffffffff813cdd7b <+11>:	cmp    (%rdi),%eax
+   0xffffffff813cdd7d <+13>:	jae    0xffffffff813cdd9b <blk_mq_put_tag+43 at block/blk-mq-tag.c:204>
+   0xffffffff813cdd7f <+15>:	mov    0x40(%rsi),%edx
+   0xffffffff813cdd82 <+18>:	add    $0x10,%rdi
+   0xffffffff813cdd86 <+22>:	mov    %eax,%esi
+   0xffffffff813cdd88 <+24>:	jmpq   0xffffffff814089c0 <sbitmap_queue_clear at lib/sbitmap.c:561>
+   0xffffffff813cdd8d <+29>:	mov    0x40(%rsi),%edx
+   0xffffffff813cdd90 <+32>:	add    $0x50,%rdi
+   0xffffffff813cdd94 <+36>:	mov    %eax,%esi
+   0xffffffff813cdd96 <+38>:	jmpq   0xffffffff814089c0 <sbitmap_queue_clear at lib/sbitmap.c:561>
+   0xffffffff813cdd9b <+43>:	ud2    
+End of assembler dump.
+
+--------------------------------------------------------
