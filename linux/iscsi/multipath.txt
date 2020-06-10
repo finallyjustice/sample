@@ -1,0 +1,92 @@
+# yum install targetcli
+# yum install iscsi-initiator-utils
+
+# dd if=/dev/zero of=disk.img bs=1M count=512 oflag=direct
+
+# targetcli /backstores/fileio create name=lun1 file_or_dev=/root/img/disk.img
+# targetcli /iscsi create iqn.2017-07.com.mydebug.www:zhang
+# targetcli /iscsi/iqn.2017-07.com.mydebug.www:zhang/tpg1/luns create /backstores/fileio/lun1
+# targetcli /iscsi/iqn.2017-07.com.mydebug.www:zhang/tpg1 set attribute generate_node_acls=1
+# targetcli /iscsi/iqn.2017-07.com.mydebug.www:zhang/tpg1 set attribute demo_mode_write_protect=0
+# iptables -F
+
+# iscsiadm -m discovery -t sendtargets -p 127.0.0.1
+# iscsiadm -m discovery -t sendtargets -p 10.0.2.15
+
+# iscsiadm -m node
+127.0.0.1:3260,1 iqn.2017-07.com.mydebug.www:zhang
+10.0.2.15:3260,1 iqn.2017-07.com.mydebug.www:zhang
+
+# iscsiadm -m node -T iqn.2017-07.com.mydebug.www:zhang --login
+Logging in to [iface: default, target: iqn.2017-07.com.mydebug.www:zhang, portal: 127.0.0.1,3260] (multiple)
+Logging in to [iface: default, target: iqn.2017-07.com.mydebug.www:zhang, portal: 10.0.2.15,3260] (multiple)
+Login to [iface: default, target: iqn.2017-07.com.mydebug.www:zhang, portal: 127.0.0.1,3260] successful.
+Login to [iface: default, target: iqn.2017-07.com.mydebug.www:zhang, portal: 10.0.2.15,3260] successful.
+
+
+[ 1206.842540] sd 3:0:0:0: alua: transition timeout set to 60 seconds
+[ 1206.843395] sd 3:0:0:0: [sda] 1048576 512-byte logical blocks: (537 MB/512 MiB)
+[ 1206.843432] sd 3:0:0:0: [sda] Write Protect is off
+[ 1206.843433] sd 3:0:0:0: [sda] Mode Sense: 43 00 10 08
+[ 1206.843503] sd 3:0:0:0: [sda] Write cache: enabled, read cache: enabled, supports DPO and FUA
+[ 1206.847607] sd 3:0:0:0: [sda] Attached SCSI disk
+[ 1206.849042] sd 3:0:0:0: alua: port group 00 state A non-preferred supports TOlUSNA
+[ 1206.851424] sd 2:0:0:0: [sdb] 1048576 512-byte logical blocks: (537 MB/512 MiB)
+[ 1206.852491] sd 2:0:0:0: [sdb] Write Protect is off
+[ 1206.853161] sd 2:0:0:0: [sdb] Mode Sense: 43 00 10 08
+[ 1206.853698] sd 2:0:0:0: [sdb] Write cache: enabled, read cache: enabled, supports DPO and FUA
+[ 1206.857715] sd 2:0:0:0: [sdb] Attached SCSI disk
+
+--------------------------------------------
+
+# yum install device-mapper-multipath
+
+# cat /etc/multipath.conf
+defaults {
+	user_friendly_names yes
+}
+blacklist {
+	devnode "^vd*"
+	devnode "sda"
+	devnode "nvme0n1"
+}
+
+# service multipathd start
+
+# multipath -l
+mpatha (360014055c79a7d1aee44c69a00ebc36c) dm-2 LIO-ORG ,lun1            
+size=512M features='0' hwhandler='0' wp=rw
+|-+- policy='service-time 0' prio=0 status=active
+| `- 3:0:0:0 sdc 8:32 active undef running
+`-+- policy='service-time 0' prio=0 status=enabled
+  `- 4:0:0:0 sdb 8:16 active undef running
+
+
+# lsblk 
+NAME        MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+nvme0n1     259:0    0    5G  0 disk  
+sdb           8:16   0  512M  0 disk  
+└─mpatha    252:2    0  512M  0 mpath 
+fd0           2:0    1    4K  0 disk  
+sdc           8:32   0  512M  0 disk  
+└─mpatha    252:2    0  512M  0 mpath 
+sda           8:0    0    5G  0 disk  
+vda         251:0    0   10G  0 disk  
+├─vda2      251:2    0    9G  0 part  
+│ ├─ol-swap 252:1    0    1G  0 lvm   [SWAP]
+│ └─ol-root 252:0    0    8G  0 lvm   /
+└─vda1      251:1    0    1G  0 part  /boot
+
+
+--------------------------------------------
+
+# service multipathd stop
+
+# iscsiadm -m node -T iqn.2017-07.com.mydebug.www:zhang --logout
+Logging out of session [sid: 1, target: iqn.2017-07.com.mydebug.www:zhang, portal: 127.0.0.1,3260]
+Logging out of session [sid: 2, target: iqn.2017-07.com.mydebug.www:zhang, portal: 10.0.2.15,3260]
+Logout of [sid: 1, target: iqn.2017-07.com.mydebug.www:zhang, portal: 127.0.0.1,3260] successful.
+Logout of [sid: 2, target: iqn.2017-07.com.mydebug.www:zhang, portal: 10.0.2.15,3260] successful.
+
+# iscsiadm -m node -o delete -p 127.0.0.1
+# iscsiadm -m node -o delete -p 10.0.2.15
