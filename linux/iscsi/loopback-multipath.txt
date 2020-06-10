@@ -1,0 +1,87 @@
+# yum install targetcli
+# yum install iscsi-initiator-utils
+
+# dd if=/dev/zero of=disk.img bs=1M count=512 oflag=direct
+
+
+# targetcli /backstores/fileio create name=lun1 file_or_dev=/root/img/disk.img 
+Warning: Could not load preferences file /root/.targetcli/prefs.bin.
+Created fileio lun1 with size 536870912
+
+
+# targetcli /loopback create
+Created target naa.5001405f07282ba3.
+
+# targetcli /loopback/naa.5001405f07282ba3/luns create /backstores/fileio/lun1
+Created LUN 0.
+
+
+# targetcli /loopback create
+Created target naa.500140567acfe38b.
+
+# targetcli /loopback/naa.500140567acfe38b/luns create /backstores/fileio/lun1
+Created LUN 0.
+
+
+# targetcli ls
+o- / ......................................................................................................................... [...]
+  o- backstores .............................................................................................................. [...]
+  | o- block .................................................................................................. [Storage Objects: 0]
+  | o- fileio ................................................................................................. [Storage Objects: 1]
+  | | o- lun1 ................................................................. [/root/img/disk.img (512.0MiB) write-back activated]
+  | |   o- alua ................................................................................................... [ALUA Groups: 1]
+  | |     o- default_tg_pt_gp ....................................................................... [ALUA state: Active/optimized]
+  | o- pscsi .................................................................................................. [Storage Objects: 0]
+  | o- ramdisk ................................................................................................ [Storage Objects: 0]
+  o- iscsi ............................................................................................................ [Targets: 0]
+  o- loopback ......................................................................................................... [Targets: 2]
+  | o- naa.500140567acfe38b ................................................................................. [naa.500140581b063b5e]
+  | | o- luns ............................................................................................................ [LUNs: 1]
+  | |   o- lun0 .............................................................. [fileio/lun1 (/root/img/disk.img) (default_tg_pt_gp)]
+  | o- naa.5001405f07282ba3 ................................................................................. [naa.5001405f8579db33]
+  |   o- luns ............................................................................................................ [LUNs: 1]
+  |     o- lun0 .............................................................. [fileio/lun1 (/root/img/disk.img) (default_tg_pt_gp)]
+  o- vhost ............................................................................................................ [Targets: 0]
+
+
+----------------------------------------------------------
+
+# cat /etc/multipath.conf
+defaults {
+	user_friendly_names yes
+}
+blacklist {
+	devnode "^vd*"
+	devnode "sda"
+	devnode "nvme0n1"
+}
+
+
+# lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+nvme0n1     259:0    0    5G  0 disk  
+sdb           8:16   0  512M  0 disk  
+└─mpatha    252:2    0  512M  0 mpath 
+fd0           2:0    1    4K  0 disk  
+sdc           8:32   0  512M  0 disk  
+└─mpatha    252:2    0  512M  0 mpath 
+sda           8:0    0    5G  0 disk  
+vda         251:0    0   10G  0 disk  
+├─vda2      251:2    0    9G  0 part  
+│ ├─ol-swap 252:1    0    1G  0 lvm   [SWAP]
+│ └─ol-root 252:0    0    8G  0 lvm   /
+└─vda1      251:1    0    1G  0 part  /boot
+
+
+# multipath -l
+mpatha (360014052982c79be2694cb0b752c63e2) dm-2 LIO-ORG ,lun1            
+size=512M features='0' hwhandler='0' wp=rw
+|-+- policy='service-time 0' prio=0 status=active
+| `- 3:0:1:0 sdb 8:16 active undef running
+`-+- policy='service-time 0' prio=0 status=enabled
+  `- 4:0:1:0 sdc 8:32 active undef running
+
+
+----------------------------------------------------------
+
+# systemctl disable multipathd
