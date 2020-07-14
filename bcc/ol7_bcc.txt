@@ -1,0 +1,28 @@
+
+yum install bcc
+
+
+# rpm -qa | grep bcc
+python-bcc-0.10.0-1.el7.x86_64
+bcc-0.10.0-1.el7.x86_64
+bcc-tools-0.10.0-1.el7.x86_64
+
+-----------------------------------------------------
+
+/usr/share/bcc/tools/stackcount -K  -T  'scsi_queue_rq'
+
+-----------------------------------------------------
+
+#!/bin/sh
+
+MAJ=$1
+MIN=$2
+MAJ=$(( $MAJ << 20 ))
+DEV=$(( $MAJ | $MIN ))
+
+/usr/share/bcc/tools/trace -t -C \
+    't:block:block_getrq (args->dev == '$DEV') "%s %d %d", args->rwbs, args->sector, args->nr_sector' \
+    't:block:block_rq_issue (args->dev == '$DEV') "%s %d %d", args->rwbs, args->sector, args->nr_sector' \
+    't:block:block_rq_complete (args->dev == '$DEV') "%s %d %d", args->rwbs, args->sector, args->nr_sector'
+
+-----------------------------------------------------

@@ -1,0 +1,67 @@
+### perf
+
+perf kvm --host record
+
+perf report -i perf.data.kvm
+
+perf kvm --host top
+
+
+   PerfTop:     180 irqs/sec  kernel:92.8% us: 6.7% guest kernel: 0.6% guest us: 0.0% exact: 99.2% [4000Hz cycles],  (all, 24 CPUs)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+     5.49%  [kernel]       [k] kvm_lapic_find_highest_irr
+     4.48%  [kernel]       [k] kvm_arch_vcpu_runnable
+     3.17%  [kernel]       [k] apic_find_highest_isr.part.38
+     2.39%  [kernel]       [k] kvm_vcpu_check_block
+     2.22%  [kernel]       [k] ktime_get
+     1.97%  [kernel]       [k] __apic_update_ppr
+     1.96%  [kernel]       [k] __srcu_read_lock
+     1.84%  [kernel]       [k] kvm_vcpu_block
+     1.79%  [kernel]       [k] read_tsc
+     1.73%  [kernel]       [k] vmx_sync_pir_to_irr
+     1.72%  [kernel]       [k] vmx_interrupt_allowed
+     1.67%  [kernel]       [k] _raw_spin_lock_irqsave
+     1.66%  [kernel]       [k] kvm_apic_has_interrupt
+     1.64%  [kernel]       [k] kvm_cpu_has_interrupt
+     1.55%  [kernel]       [k] kvm_apic_accept_pic_intr
+     1.42%  [kernel]       [k] do_sys_poll
+     1.40%  [kernel]       [k] __x86_indirect_thunk_rax
+     1.18%  [kernel]       [k] copy_user_enhanced_fast_string
+     1.07%  [kernel]       [k] __fget_files
+     1.06%  [kernel]       [k] vmx_vmexit
+     1.03%  [kernel]       [k] kvm_cpu_has_extint
+     0.86%  [kernel]       [k] menu_select
+     0.84%  [kernel]       [k] apic_has_pending_timer
+
+
+perf kvm stat record
+
+perf kvm stat report
+
+perf kvm stat live
+
+
+12:16:54.962059
+
+Analyze events for all VMs, all VCPUs:
+
+             VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time 
+
+  EXTERNAL_INTERRUPT        132    66.67%     0.00%      0.29us      1.79us      0.43us ( +-   8.07% )
+           MSR_WRITE         40    20.20%     0.00%      0.54us      4.82us      1.95us ( +-   9.22% )
+                 HLT         12     6.06%    99.99%  48066.64us 999956.96us 355980.95us ( +-  26.88% )
+       EPT_MISCONFIG         10     5.05%     0.00%      4.11us     30.05us     11.15us ( +-  25.89% )
+            MSR_READ          3     1.52%     0.00%      0.78us      2.04us      1.56us ( +-  25.24% )
+         EOI_INDUCED          1     0.51%     0.00%      1.25us      1.25us      1.25us ( +-   0.00% )
+
+Total Samples:198, Total events handled time:4272023.35us.
+
+
+
+perf record -a -e kvm:\*
+perf report
+
+
+
+./tools/kvm/kvm_stat/kvm_stat -1
