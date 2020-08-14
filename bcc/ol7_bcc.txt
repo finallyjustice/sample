@@ -11,6 +11,8 @@ bcc-tools-0.10.0-1.el7.x86_64
 
 /usr/share/bcc/tools/stackcount -K  -T  'scsi_queue_rq'
 
+/usr/share/bcc/tools/trace -t -C 'vhost_net_open'
+
 -----------------------------------------------------
 
 #!/bin/sh

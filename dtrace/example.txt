@@ -1,0 +1,3 @@
+dtrace -n 'fbt::scsi_queue_rq:entry /pid == 552/ { @[stack()] = count(); }'
+
+dtrace -n 'fbt::scsi_queue_rq:entry { @[stack()] = count(); }'
