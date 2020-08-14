@@ -1,0 +1,134 @@
+This is suggested by Si-Wei Liu.
+
+This is about how to read msix table from kernel.
+
+[root@vm ~]# lspci -vv -s 00:04.0
+00:04.0 Ethernet controller: Red Hat, Inc Virtio network device
+	Subsystem: Red Hat, Inc Device 0001
+	Physical Slot: 4
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 10
+	Region 0: I/O ports at c040 [size=32]
+	Region 1: Memory at febd2000 (32-bit, non-prefetchable) [size=4K]
+	Region 4: Memory at fe004000 (64-bit, prefetchable) [size=16K]
+	Expansion ROM at feb80000 [disabled] [size=256K]
+	Capabilities: [98] MSI-X: Enable+ Count=9 Masked-
+		Vector table: BAR=1 offset=00000000
+		PBA: BAR=1 offset=00000800
+	Capabilities: [84] Vendor Specific Information: Len=14 <?>
+	Capabilities: [70] Vendor Specific Information: Len=14 <?>
+	Capabilities: [60] Vendor Specific Information: Len=10 <?>
+	Capabilities: [50] Vendor Specific Information: Len=10 <?>
+	Capabilities: [40] Vendor Specific Information: Len=10 <?>
+	Kernel driver in use: virtio-pci
+	Kernel modules: virtio_pci
+
+
+The msix table is at bar=1 (0xfebd2000) and offset=0. There are 9 vectors as Count=9.
+
+vector = 0:
+
+[root@vm ~]# busybox devmem 0xfebd2000 32
+0xFEE00000
+[root@vm ~]# busybox devmem 0xfebd2004 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2008 32
+0x00004059
+[root@vm ~]# busybox devmem 0xfebd200c 32
+0x00000000
+
+vector = 1:
+
+[root@vm ~]# busybox devmem 0xfebd2010 32
+0xFEE00000
+[root@vm ~]# busybox devmem 0xfebd2014 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2018 32
+0x00004061
+[root@vm ~]# busybox devmem 0xfebd201c 32
+0x00000000
+
+vector = 2:
+
+[root@vm ~]# busybox devmem 0xfebd2020 32
+0xFEE00000
+[root@vm ~]# busybox devmem 0xfebd2024 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2028 32
+0x00004069
+[root@vm ~]# busybox devmem 0xfebd202c 32
+0x00000000
+
+vector = 3:
+
+[root@vm ~]# busybox devmem 0xfebd2030 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2034 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2038 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd203c 32
+0x00000001
+
+vector = 4:
+
+[root@vm ~]# busybox devmem 0xfebd2040 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2044 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2048 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd204c 32
+0x00000001
+
+vector = 5:
+
+[root@vm ~]# busybox devmem 0xfebd2050 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2054 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2058 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd205c 32
+0x00000001
+
+vector = 6:
+
+[root@vm ~]# busybox devmem 0xfebd2060 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2064 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2068 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd206c 32
+0x00000001
+
+vector = 7:
+
+[root@vm ~]# busybox devmem 0xfebd2070 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2074 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2078 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd207c 32
+0x00000001
+
+vector = 8:
+
+[root@vm ~]# busybox devmem 0xfebd2080 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2084 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd2088 32
+0x00000000
+[root@vm ~]# busybox devmem 0xfebd208c 32
+0x00000001
+
+------------------------------------------
+
+Another way is to 'dd'. It does not work on some OS.
+
+# dd if=/dev/mem bs=1 count=4 skip=<phys-addr> | hexdump
