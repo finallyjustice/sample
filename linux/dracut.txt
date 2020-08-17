@@ -1,0 +1,3 @@
+[  204.287810] dracut-initqueue[536]: Warning: dracut-initqueue timeout - starting timeout scripts
+[  204.287820] dracut-initqueue[536]: Warning: Could not boot.
+[  205.287830] dracut-initqueue[536]: Warning: /dev/md1p1 does not exist

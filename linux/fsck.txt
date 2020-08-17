@@ -1,0 +1,13 @@
+1. boot into maintenance mode with init=/bin/bash
+
+2. remount root fs in rw mode
+
+3. fix
+
+# lvm pvscan
+# lvm vgscan
+# lvm lvscan
+# fsck -n /dev/mapper/test1
+# fsck -y /dev/mapper/test1
+
+4. reboot !
