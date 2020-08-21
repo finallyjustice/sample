@@ -4,6 +4,10 @@ This is about how to panic on unknown NMI.
 
 # echo 1 > /proc/sys/kernel/unknown_nmi_panic
 
+Another way is to add below to /etc/sysctl.conf:
+
+kernel.unknown_nmi_panic = 1
+
 2. Trigger nmi from QEMU monitor:
 
 (qemu) help nmi
