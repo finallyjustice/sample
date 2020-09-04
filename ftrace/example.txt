@@ -1,3 +1,5 @@
-echo scsi_queue_rq:stacktrace > set_ftrace_filter
+echo scsi_queue_rq:stacktrace > /sys/kernel/debug/tracing/set_ftrace_filter
+
+echo '!vhost_scsi_handle_kick:stacktrace' >> /sys/kernel/debug/tracing/set_ftrace_filter
 
 cat /sys/kernel/debug/tracing/trace_pipe 2>&1 > FILE

@@ -1,0 +1,12 @@
+echo "file drivers/pci/* +pltm" > /sys/kernel/debug/dynamic_debug/control 
+echo "file drivers/acpi/pci* +pltm" > /sys/kernel/debug/dynamic_debug/control
+echo "file arch/x86/pci/* +pltm" > /sys/kernel/debug/dynamic_debug/control
+
+# Setup hang_task
+echo 1 > /proc/sys/kernel/hung_task_panic
+echo 20 > /proc/sys/kernel/hung_task_timeout_secs
+
+echo "file drivers/vhost/scsi.c line 1113 +p" > /sys/kernel/debug/dynamic_debug/control
+
+
+echo "file drivers/vhost/vhost.c +pltm" > /sys/kernel/debug/dynamic_debug/control
