@@ -1,0 +1,9 @@
+https://peeterjoot.wordpress.com/2010/07/07/avoiding-gdb-signal-noise/
+
+(gdb) info signal SIGUSR1
+Signal        Stop      Print   Pass to program Description
+SIGUSR1       Yes       Yes     Yes             User defined signal 1
+
+(gdb) handle SIGUSR1 noprint nostop
+Signal        Stop      Print   Pass to program Description
+SIGUSR1       No        No      Yes             User defined signal 1
