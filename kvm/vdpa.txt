@@ -1,0 +1,96 @@
+Only one of vhost-vdpa or virtio-vdpa can exist as they are mutually exclusive.
+
+======================================
+
+About vhost-vdpa "/dev/vhost-vdpa-0"
+
+# qemu-system-x86_64 -netdev vhost-vdpa,vhostdev=/dev/vhost-vdpa-0,id=vdpa0 -device virtio-net-pci,netdev=vdpa0 -vnc :0
+
+
+[0] vdpasim_kick_vq
+[0] vhost_poll_wakeup
+[0] __wake_up_common
+[0] eventfd_write
+[0] vfs_write
+[0] ksys_write
+[0] do_syscall_64
+[0] entry_SYSCALL_64_after_hwframe
+
+
+[0] vhost_vdpa_probe
+[0] really_probe
+[0] driver_probe_device
+[0] device_driver_attach
+[0] __driver_attach
+[0] bus_for_each_dev
+[0] bus_add_driver
+[0] driver_register
+[0] vhost_vdpa_init
+[0] do_one_initcall
+[0] kernel_init_freeable
+[0] kernel_init
+[0] ret_from_fork
+
+======================================
+
+About virtio-vdpa:
+
+# ethtool -i eth0
+driver: virtio_net
+version: 1.0.0
+firmware-version:
+expansion-rom-version:
+bus-info: vdpa0
+supports-statistics: yes
+supports-test: no
+supports-eeprom-access: no
+supports-register-dump: no
+supports-priv-flags: no
+
+# ifconfig eth0 192.168.1.1
+
+# ifconfig eth0
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.1.1  netmask 255.255.255.0  broadcast 192.168.1.255
+        ether 4e:89:e9:55:79:45  txqueuelen 1000  (Ethernet)
+        RX packets 104  bytes 16543 (16.5 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 104  bytes 16543 (16.5 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+# ping 192.168.1.1
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.031 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.033 ms
+
+
+[0] vdpasim_kick_vq
+[0] virtio_vdpa_notify
+[0] virtqueue_notify
+[0] start_xmit
+[0] dev_hard_start_xmit
+[0] sch_direct_xmit
+[0] __qdisc_run
+[0] __dev_queue_xmit
+[0] packet_sendmsg
+[0] sock_sendmsg
+[0] sock_write_iter
+[0] new_sync_write
+[0] vfs_write
+[0] ksys_write
+[0] do_syscall_64
+[0] entry_SYSCALL_64_after_hwframe
+
+
+[0] virtio_vdpa_probe
+[0] really_probe
+[0] driver_probe_device
+[0] bus_for_each_drv
+[0] __device_attach
+[0] bus_probe_device
+[0] device_add
+[0] vdpasim_dev_init
+[0] do_one_initcall
+[0] kernel_init_freeable
+[0] kernel_init
+[0] ret_from_fork
