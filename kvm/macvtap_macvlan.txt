@@ -1,0 +1,56 @@
+https://developers.redhat.com/blog/2018/10/22/introduction-to-linux-interfaces-for-virtual-networking
+
+-----------------------------------------------------
+
+A macvtap device can be on top of any device, e.g., regular NIC or vlan.
+
+# ip link add link ens3 name ens3.11 type vlan id 11
+
+# ip -d link show ens3.11
+3: ens3.11@ens3: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 52:54:00:12:34:56 brd ff:ff:ff:ff:ff:ff promiscuity 0 
+    vlan protocol 802.1Q id 11 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+
+# ip link add link ens3.11 name macvtap0 type macvtap
+
+# ip -d link show macvtap0
+4: macvtap0@ens3.11: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 500
+    link/ether 9a:0f:05:58:81:52 brd ff:ff:ff:ff:ff:ff promiscuity 0 
+    macvtap mode vepa addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+
+
+# ip netns add net1
+
+# ip link set mactap0 netns net1
+
+# ip netns exec net1 ip -d link show macvtap0
+4: macvtap0@if3: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 500
+    link/ether 9a:0f:05:58:81:52 brd ff:ff:ff:ff:ff:ff promiscuity 0 
+    macvtap mode vepa addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+
+-----------------------------------------------------
+
+A macvlan device can be on top of any device, e.g., regular NIC or vlan.
+
+# ip link add link ens3 name ens3.12 type vlan id 12
+
+# ip -d link show ens3.12
+3: ens3.12@ens3: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 52:54:00:12:34:56 brd ff:ff:ff:ff:ff:ff promiscuity 0 
+    vlan protocol 802.1Q id 12 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+
+# ip link add macvlan0 link ens3.12 type macvlan mode bridge
+
+# ip -d link show macvlan0
+4: macvlan0@ens3.12: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 5e:1b:b8:27:2e:bc brd ff:ff:ff:ff:ff:ff promiscuity 0 
+    macvlan mode bridge addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+
+# ip netns add net1
+
+# ip link set macvlan0 netns net1
+
+# ip netns exec net1 ip -d link show macvlan0
+4: macvlan0@if3: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 5e:1b:b8:27:2e:bc brd ff:ff:ff:ff:ff:ff link-netnsid 0 promiscuity 0 
+    macvlan mode bridge addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
