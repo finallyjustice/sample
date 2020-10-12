@@ -1,0 +1,188 @@
+
+# perf record -g <qemu-pid>
+# perf record <qemu-pid>
+# perf report -g
+# perf report
+
+# perf record -a -g -p 8893 sleep 20
+
+# strace -ttfp <qemu-pid> -o out.txt
+
+
+-------------------------------------------------
+To analye QEMU usage issue
+-------------------------------------------------
+
+# ps aux | grep qemu
+root      8893  0.6  5.6 19743664 14970616 ?   Sl   Oct05  57:27 /home/zhang/kvm/qemu-3.0.0/x86_64-softmmu/qemu-system-x86_64 -smp 8 -m 16G -enable-kvm -vnc :2 -net nic -net user,hostfwd=tcp::5022-:22 -device virtio-blk-pci,drive=drive0,id=virtblk0,num-queues=8 -drive file=desktop.img,if=none,id=drive0 -device virtio-blk-pci,drive=drive1,id=virtblk1,num-queues=8 -drive file=disk1.img,if=none,id=drive1 -cpu host
+root     23056  0.0  0.0 112732  2332 pts/0    S+   23:30   0:00 grep --color=auto qemu
+
+
+# ls /proc/8893/task/
+8893  8894  8895  8900  8901  8902  8903  8904  8905  8906  8907  8909
+
+
+# echo "kvm:kvm_pio" >> set_event
+# echo "kvm:kvm_mmio" >> set_event
+
+# cat set_event
+kvm:kvm_pio
+kvm:kvm_mmio
+
+
+# echo "8893  8894  8895  8900  8901  8902  8903  8904  8905  8906  8907  8909" > set_event_pid 
+
+# cat set_event_pid 
+8893
+8894
+8895
+8900
+8901
+8902
+8903
+8904
+8905
+8906
+8907
+8909
+
+
+# cat trace_pipe
+ qemu-system-x86-8904  [012] .... 808476.518380: kvm_mmio: mmio write len 4 gpa 0xfebc0020 val 0x8350000
+ qemu-system-x86-8904  [012] .... 808476.518435: kvm_mmio: mmio unsatisfied-read len 4 gpa 0xfebc0020 val 0x0
+ qemu-system-x86-8904  [012] .... 808476.518439: kvm_mmio: mmio read len 4 gpa 0xfebc0020 val 0x18350000
+ qemu-system-x86-8904  [012] .... 808476.518443: kvm_mmio: mmio unsatisfied-read len 4 gpa 0xfebc40bc val 0x0
+ qemu-system-x86-8904  [012] .... 808476.518446: kvm_mmio: mmio read len 4 gpa 0xfebc40bc val 0x0
+ qemu-system-x86-8904  [012] .... 808476.518450: kvm_mmio: mmio unsatisfied-read len 4 gpa 0xfebc40b4 val 0x0
+ qemu-system-x86-8904  [012] .... 808476.518453: kvm_mmio: mmio read len 4 gpa 0xfebc40b4 val 0x0
+ qemu-system-x86-8904  [012] .... 808476.518457: kvm_mmio: mmio unsatisfied-read len 4 gpa 0xfebc40b8 val 0x0
+ qemu-system-x86-8904  [012] .... 808476.518459: kvm_mmio: mmio read len 4 gpa 0xfebc40b8 val 0x0
+ qemu-system-x86-8904  [012] .... 808476.518463: kvm_mmio: mmio write len 4 gpa 0xfebc00c8 val 0x10
+ qemu-system-x86-8907  [016] .... 808476.518486: kvm_mmio: mmio unsatisfied-read len 4 gpa 0xfebc00c0 val 0x0
+ qemu-system-x86-8907  [016] .... 808476.518499: kvm_mmio: mmio read len 4 gpa 0xfebc00c0 val 0x10
+ qemu-system-x86-8907  [016] .... 808476.518505: kvm_mmio: mmio write len 4 gpa 0xfebc00d8 val 0xffffffff
+ qemu-system-x86-8907  [016] .... 808476.518521: kvm_mmio: mmio unsatisfied-read len 4 gpa 0xfebc0008 val 0x0
+ qemu-system-x86-8907  [016] .... 808476.518524: kvm_mmio: mmio read len 4 gpa 0xfebc0008 val 0x80080783
+ qemu-system-x86-8907  [016] .... 808476.518532: kvm_mmio: mmio write len 4 gpa 0xfebc00d0 val 0x9d
+ qemu-system-x86-8907  [016] .... 808476.518540: kvm_mmio: mmio unsatisfied-read len 4 gpa 0xfebc0008 val 0x0
+ qemu-system-x86-8907  [016] .... 808476.518542: kvm_mmio: mmio read len 4 gpa 0xfebc0008 val 0x80080783
+ qemu-system-x86-8900  [003] .... 808476.646009: kvm_pio: pio_read at 0x177 size 1 count 1 val 0x50
+ qemu-system-x86-8900  [003] .... 808476.646015: kvm_pio: pio_write at 0x176 size 1 count 1 val 0xa0
+ qemu-system-x86-8900  [003] .... 808476.646022: kvm_pio: pio_read at 0x376 size 1 count 1 val 0x50
+ qemu-system-x86-8900  [003] .... 808476.646037: kvm_pio: pio_read at 0x177 size 1 count 1 val 0x50
+ qemu-system-x86-8900  [003] .... 808476.646039: kvm_pio: pio_write at 0x171 size 1 count 1 val 0x0
+ qemu-system-x86-8900  [003] .... 808476.646044: kvm_pio: pio_write at 0x172 size 1 count 1 val 0x0
+ qemu-system-x86-8900  [003] .... 808476.646048: kvm_pio: pio_write at 0x173 size 1 count 1 val 0x0
+ qemu-system-x86-8900  [003] .... 808476.646051: kvm_pio: pio_write at 0x174 size 1 count 1 val 0x8
+ ... ...
+
+
+# echo '!kvm:kvm_mmio' >> set_event
+# echo '!kvm:kvm_pio' >> set_event
+# cat set_event
+
+# echo "" > set_event_pid 
+# cat set_event_pid
+
+
+-------------------------------------------------
+The VM EXIT data.
+-------------------------------------------------
+
+# perf kvm stat live
+
+12:41:36.812730
+
+Analyze events for all VMs, all VCPUs:
+
+             VM-EXIT    Samples  Samples%     Time%    Min Time    Max Time         Avg time
+
+       EPT_MISCONFIG         59    32.07%     0.01%      3.88us     14.20us      4.60us ( +-   4.55% )
+           MSR_WRITE         54    29.35%     0.00%      0.59us      5.62us      1.73us ( +-   9.88% )
+      IO_INSTRUCTION         37    20.11%     0.00%      1.40us     11.63us      4.19us ( +-   9.48% )
+                 HLT         16     8.70%    99.99%    117.78us 973030.31us 271525.22us ( +-  22.42% )
+   PAUSE_INSTRUCTION         13     7.07%     0.00%      0.42us      1.93us      0.62us ( +-  18.21% )
+            MSR_READ          4     2.17%     0.00%      0.68us      2.86us      1.27us ( +-  41.94% )
+  EXTERNAL_INTERRUPT          1     0.54%     0.00%      0.57us      0.57us      0.57us ( +-   0.00% )
+
+Total Samples:184, Total events handled time:4344937.52us.
+
+
+# perf stat -e 'kvm:*' -a sleep 10s
+
+ Performance counter stats for 'system wide':
+
+             1,428      kvm:kvm_entry                                               
+                 0      kvm:kvm_hypercall                                           
+                 0      kvm:kvm_hv_hypercall                                        
+               175      kvm:kvm_pio                                                 
+                 0      kvm:kvm_fast_mmio                                           
+                 0      kvm:kvm_cpuid                                               
+                52      kvm:kvm_apic                                                
+             1,428      kvm:kvm_exit                                                
+                 0      kvm:kvm_inj_virq                                            
+                 0      kvm:kvm_inj_exception                                       
+                 3      kvm:kvm_page_fault                                          
+               620      kvm:kvm_msr                                                 
+                 0      kvm:kvm_cr                                                  
+                60      kvm:kvm_pic_set_irq                                         
+                26      kvm:kvm_apic_ipi                                            
+               189      kvm:kvm_apic_accept_irq
+	       ... ...
+
+
+
+# perf kvm stat record
+# perf report -i perf.data.guest
+
+
+Suppose to infer why msr as exit.
+
+# echo "kvm:kvm_msr" > /sys/kernel/debug/tracing/set_event
+# cat /sys/kernel/debug/tracing/set_event
+kvm:kvm_msr
+
+
+
+# cat /sys/kernel/debug/tracing/trace_pipe
+           <...>-3167  [007] .... 848776.987007: kvm_msr: msr_write 838 = 0x1c98cc2
+           <...>-3162  [008] .... 848776.987088: kvm_msr: msr_read 3b = 0x0
+           <...>-3164  [011] .... 848778.449758: kvm_msr: msr_write 838 = 0x82a65f
+           <...>-3164  [011] .... 848778.449766: kvm_msr: msr_write 838 = 0xeda4
+           <...>-3164  [011] .... 848778.449811: kvm_msr: msr_read 3b = 0x0
+           <...>-3164  [011] .... 848778.449818: kvm_msr: msr_write 838 = 0x829704
+           <...>-3164  [011] .... 848778.586844: kvm_msr: msr_write 838 = 0x7089aec
+           <...>-3164  [011] .... 848778.586851: kvm_msr: msr_write 838 = 0xee6f0ff
+           <...>-3164  [011] .... 848778.586855: kvm_msr: msr_write 838 = 0x3b458
+           <...>-3164  [011] .... 848778.586868: kvm_msr: msr_write 838 = 0xee6ecbd
+           <...>-3164  [011] .... 848778.586872: kvm_msr: msr_write 838 = 0x708937d
+           <...>-3162  [007] .... 848778.605342: kvm_msr: msr_write 838 = 0xecdaced
+           <...>-3162  [007] .... 848778.605344: kvm_msr: msr_write 838 = 0x1545b
+           <...>-3167  [008] .... 848778.605346: kvm_msr: msr_write 838 = 0xee0bf2d
+           <...>-3167  [008] .... 848778.605348: kvm_msr: msr_write 838 = 0x15355
+	   ... ...
+
+
+-------------------------------------------------
+usage of kvm_stat
+-------------------------------------------------
+
+# ./kvm_stat -1 -p 3695
+kvm_ack_irq                                        0         0
+kvm_age_page                                       0         0
+kvm_apic                                           6         6
+kvm_apic_accept_irq                            10438     10241
+kvm_apic_ipi                                       3         3
+kvm_async_pf_completed                             0         0
+kvm_async_pf_doublefault                           0         0
+kvm_async_pf_not_present                           0         0
+kvm_async_pf_ready                                 0         0
+kvm_avic_incomplete_ipi                            0         0
+kvm_avic_unaccelerated_access                      0         0
+kvm_cpuid                                          0         0
+kvm_cr                                             0         0
+kvm_emulate_insn                                   6         6
+... ...
+
+
+# ./kvm_stat -p 3695 -L ~/file.txt --> does not format well
