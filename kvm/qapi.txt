@@ -10,3 +10,60 @@ Seems the "qmp_capabilities" is mandatory and prerequisite.
 {"timestamp": {"seconds": 1546915940, "microseconds": 65746}, "event": "STOP"}
 {"timestamp": {"seconds": 1546915952, "microseconds": 928319}, "event": "DUMP_COMPLETED", "data": {"result": {"total": 2114060288, "status": "completed", "completed": 2114060288}}}
 {"timestamp": {"seconds": 1546915952, "microseconds": 928450}, "event": "RESUME"}
+
+
+{ "execute": "query-status" }
+
+{ "execute": "query-block" }
+
+===============================================
+
+1. Boot QEMU with below command line (the VM is in 'prelaunch' state because of '-S' command line):
+
+# ./qemu-5.1.0/x86_64-softmmu/qemu-system-x86_64 -enable-kvm -smp 4 -m 3000M -vnc :7
+  -net nic -net user,hostfwd=tcp::5027-:22 \
+  -chardev socket,id=monitor0,server,path=monitor.sock,nowait \
+  -mon monitor0,mode=control -S
+
+
+2. Redirect the socket file in another terminal.
+
+# socat TCP-LISTEN:5028 UNIX-CONNECT:monitor.sock
+
+
+3. The status is in 'prelaunch'.
+
+{ "execute": "query-status" }
+{"return": {"status": "prelaunch", "singlestep": false, "running": false}}
+
+
+4. Hotadd the virtio-scsi.
+
+# telnet xx.xx.xx.xx 5028
+Trying xx.xx.xx.xx...
+Connected to xx.xx.xx.xx.
+Escape character is '^]'.
+{"QMP": {"version": {"qemu": {"micro": 0, "minor": 1, "major": 5}, "package": ""}, "capabilities": ["oob"]}}
+
+{ "execute": "qmp_capabilities" }
+
+{ "execute": "device_add", "arguments": { "driver": "virtio-scsi-pci", "id": "virtio-scsi-pci0", "num_queues": "4" } }
+
+{ "execute": "blockdev-add", "arguments": { "driver": "qcow2", "node-name": "drive0", "file": { "driver": "file", "filename": "/home/zhang/img/ol7/ol7.qcow2" } } }
+
+{ "execute": "device_add", "arguments": {"driver":"scsi-hd","drive":"drive0","id":"disk0","bus":"virtio-scsi-pci0.0","channel":"0","scsi-id":"0","lun":"0","bootindex":"1"} }
+
+
+5. Continue the VM in 'prelaunch' status.
+
+{ "execute": "cont" }
+
+
+6. The status is changed from 'prelaunch' to 'running'.
+
+{ "execute": "query-status" }
+{"return": {"status": "running", "singlestep": false, "running": true}}
+
+===============================================
+
+
