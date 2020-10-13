@@ -1,0 +1,64 @@
+This is about how to trace in QEMU with qemu-5.1.0.
+
+
+1. Built QEMU with trace enabled.
+
+# ./configure --enable-trace-backends=simple --enable-debug --target-list=x86_64-softmmu
+
+# make -j12 > /dev/null
+
+
+2. Boot QEMU with trace enabled.
+
+# cat /tmp/events 
+virtio_blk_req_complete
+virtio_blk_handle_write
+
+# qemu-5.1.0/x86_64-softmmu/qemu-system-x86_64 -enable-kvm -smp 8 -m 16G -vnc :7 \
+  -net nic -net user,hostfwd=tcp::5027-:22 \
+  -device virtio-blk-pci,drive=drive0,id=virtblk0,num-queues=8 \
+  -drive file=ol7.qcow2,if=none,id=drive0 \
+  -monitor stdio \
+  -trace events=/tmp/events,file=trace.bin
+
+
+3. There is local file trace.bin generated.
+
+# ll -h | grep trace
+-rw-r--r-- 1 root  root   22M Oct 12 22:43 trace.bin
+
+
+4. Parse the trace.bin.
+
+# ~/kvm/qemu-5.1.0/scripts/simpletrace.py ~/kvm/qemu-5.1.0/trace-events-all trace.bin
+virtio_blk_req_complete 0.000 pid=28431 vdev=0x555a365e1870 req=0x555a35de0860 status=0x0
+virtio_blk_req_complete 152.759 pid=28431 vdev=0x555a365e1870 req=0x555a35f08ee0 status=0x0
+virtio_blk_req_complete 163.852 pid=28431 vdev=0x555a365e1870 req=0x555a35eb5eb0 status=0x0
+virtio_blk_req_complete 62812.689 pid=28431 vdev=0x555a365e1870 req=0x555a3641f360 status=0x0
+virtio_blk_req_complete 151.326 pid=28431 vdev=0x555a365e1870 req=0x555a35e454b0 status=0x0
+virtio_blk_req_complete 155.997 pid=28431 vdev=0x555a365e1870 req=0x555a35e54940 status=0x0
+virtio_blk_req_complete 138.474 pid=28431 vdev=0x555a365e1870 req=0x555a35e54940 status=0x0
+virtio_blk_req_complete 158.434 pid=28431 vdev=0x555a365e1870 req=0x555a35e54940 status=0x0
+... ...
+virtio_blk_handle_write 29.025 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 sector=0xc8ad14 nsectors=0x4
+virtio_blk_req_complete 17.769 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 status=0x0
+virtio_blk_handle_write 23.897 pid=28431 vdev=0x555a365e1870 req=0x555a35f088c0 sector=0xc8ad16 nsectors=0x2
+virtio_blk_req_complete 21.489 pid=28431 vdev=0x555a365e1870 req=0x555a35f088c0 status=0x0
+virtio_blk_handle_write 33.887 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 sector=0xc8ad18 nsectors=0x8
+virtio_blk_req_complete 23.078 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 status=0x0
+virtio_blk_handle_write 28.033 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 sector=0xc8ad1a nsectors=0x6
+virtio_blk_req_complete 20.556 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 status=0x0
+virtio_blk_handle_write 26.494 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 sector=0xc8ad1c nsectors=0x4
+virtio_blk_req_complete 22.540 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 status=0x0
+virtio_blk_handle_write 25.149 pid=28431 vdev=0x555a365e1870 req=0x555a35f088c0 sector=0xc8ad1e nsectors=0x2
+virtio_blk_req_complete 21.777 pid=28431 vdev=0x555a365e1870 req=0x555a35f088c0 status=0x0
+virtio_blk_handle_write 34.059 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 sector=0xc8ad20 nsectors=0x8
+virtio_blk_req_complete 46.479 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 status=0x0
+virtio_blk_handle_write 28.254 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 sector=0xc8ad22 nsectors=0x6
+virtio_blk_req_complete 19.938 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 status=0x0
+virtio_blk_handle_write 26.135 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 sector=0xc8ad24 nsectors=0x4
+virtio_blk_req_complete 20.087 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 status=0x0
+virtio_blk_handle_write 25.396 pid=28431 vdev=0x555a365e1870 req=0x555a35f088c0 sector=0xc8ad26 nsectors=0x2
+virtio_blk_req_complete 36.314 pid=28431 vdev=0x555a365e1870 req=0x555a35f088c0 status=0x0
+virtio_blk_handle_write 37.274 pid=28431 vdev=0x555a365e1870 req=0x555a35dbd6d0 sector=0xc8ad28 nsectors=0x8
+... ...
