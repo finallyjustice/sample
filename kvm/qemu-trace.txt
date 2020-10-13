@@ -22,6 +22,15 @@ virtio_blk_handle_write
   -trace events=/tmp/events,file=trace.bin
 
 
+According to docs/devel/tracing.txt, there are following types of backend:
+
+- nop
+- log
+- simple
+- ftrace
+- syslog
+
+
 3. There is local file trace.bin generated.
 
 # ll -h | grep trace
