@@ -1,0 +1,50 @@
+
+====================================
+
+# dd if=/dev/zero of=/dev/vda bs=1M count=10 oflag=direct
+10+0 records in
+10+0 records out
+10485760 bytes (10 MB, 10 MiB) copied, 0.00933406 s, 1.1 GB/s
+
+
+# echo "253:0 1" > /sys/fs/cgroup/blkio/blkio.throttle.write_iops_device
+
+# cat /sys/fs/cgroup/blkio/blkio.throttle.write_iops_device
+253:0 1
+
+# dd if=/dev/zero of=/dev/vda bs=1M count=10 oflag=direct
+10+0 records in
+10+0 records out
+10485760 bytes (10 MB, 10 MiB) copied, 18.0057 s, 582 kB/s
+
+====================================
+
+# dd if=/dev/zero of=/dev/vda bs=1M count=10 oflag=direct
+10+0 records in
+10+0 records out
+10485760 bytes (10 MB, 10 MiB) copied, 0.00566419 s, 1.9 GB/s
+
+
+# mkdir /sys/fs/cgroup/blkio/test
+
+
+# echo "253:0 1" > /sys/fs/cgroup/blkio/test/blkio.throttle.write_iops_device
+
+# cat /sys/fs/cgroup/blkio/test/blkio.throttle.write_iops_device 
+253:0 1
+
+# cgexec -g blkio:test dd if=/dev/zero of=/dev/vda bs=1M count=10 oflag=direct
+10+0 records in
+10+0 records out
+10485760 bytes (10 MB, 10 MiB) copied, 18.0088 s, 582 kB/s
+
+
+# echo "253:0 1000" > /sys/fs/cgroup/blkio/test/blkio.throttle.write_iops_device
+
+# cat /sys/fs/cgroup/blkio/test/blkio.throttle.write_iops_device
+253:0 1000
+
+# cgexec -g blkio:test dd if=/dev/zero of=/dev/vda bs=1M count=10 oflag=direct
+10+0 records in
+10+0 records out
+10485760 bytes (10 MB, 10 MiB) copied, 0.00706769 s, 1.5 GB/s
