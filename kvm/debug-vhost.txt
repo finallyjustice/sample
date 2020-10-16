@@ -1,0 +1,28 @@
+
+# cat script/bridge.sh 
+brctl addbr br0
+brctl addif br0 enp0s3
+ifconfig br0 up
+dhclient br0
+ifconfig enp0s3 0.0.0.0
+
+
+# cat script/qemu-ifup 
+#! /bin/sh
+# Script to bring a network (tap) device for qemu up.
+
+br="br0"
+ifconfig $1 up
+brctl addif $br "$1"
+exit
+
+
+# ./qemu-5.1.0/x86_64-softmmu/qemu-system-x86_64 -enable-kvm -smp 4 -netdev tap,id=tapnet,ifname=tap0,script=/home/oracle/script/qemu-ifup,downscript=no,queues=4,vhost=on -vnc :0
+
+
+# ps aux | grep vhost-
+root      1129  0.0  0.0      0     0 ?        S    15:37   0:00 [vhost-1116]
+root      1131  0.0  0.0      0     0 ?        S    15:37   0:00 [vhost-1116]
+root      1133  0.0  0.0      0     0 ?        S    15:37   0:00 [vhost-1116]
+root      1134  0.0  0.0      0     0 ?        S    15:37   0:00 [vhost-1116]
+oracle    1323  0.0  0.0  14432  1072 pts/1    S+   15:57   0:00 grep --color=auto vhost-
