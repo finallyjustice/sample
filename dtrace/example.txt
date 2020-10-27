@@ -1,3 +1,8 @@
+dtrace tutorial from Oracle Linux.
+
+https://docs.oracle.com/en/operating-systems/oracle-linux/dtrace-tutorial/E50705.pdf
+
+
 dtrace -n 'fbt::scsi_queue_rq:entry /pid == 552/ { @[stack()] = count(); }'
 
 dtrace -n 'fbt::scsi_queue_rq:entry { @[stack()] = count(); }'
