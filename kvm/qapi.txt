@@ -18,6 +18,8 @@ Seems the "qmp_capabilities" is mandatory and prerequisite.
 
 { "execute": "query-commands" }
 
+{ "execute": "device_del", "arguments": { "id": "vscsi0"} }
+
 ===============================================
 
 1. Boot QEMU with below command line (the VM is in 'prelaunch' state because of '-S' command line):
