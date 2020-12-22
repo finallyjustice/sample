@@ -1,0 +1,75 @@
+This is my experience to inject MCE to Xen (running as KVM guest) via QEMU, although I am still not familiar with the MCE registers/status.
+
+1. Boot Xen with QEMU/KVM (qemu-5.2.0).
+
+host# qemu-system-x86_64 -enable-kvm -vnc :4 -hda disk.img \
+      -net nic -net user,hostfwd=tcp::5024-:22 \
+      -smp 4 -m 3000M -monitor stdio \
+      -chardev socket,id=serial0,server,path=/tmp/serial.sock,nowait \
+      -device isa-serial,chardev=serial0
+
+
+2. Please add "mce_verbosity=verbose loglvl=all guest_loglvl=all com1=9600,8n1 console=com1" to Xen command line and reboot (in order to enable serial console for Xen hypervisor).
+
+3. Connect to serial console (created as /tmp/serial.sock by QEMU) from host via nc.
+
+host# nc -U /tmp/serial.sock
+
+4. Connect to VM (Xen) via ssh. There was never any Xen paravirtualized mce irq.
+
+host# ssh root@<host-ip> -p 5024
+
+vm# cat /proc/interrupts | grep mce
+ 54:          0          0          0          0   xen-dyn-virq      mce
+
+
+5. Inject corrected error via QEMU monitor. The mce irq is increased by one.
+
+(qemu) mce 0 1 0x8000000000000000 0x0 0x0 0x0
+
+vm# cat /proc/interrupts | grep mce
+ 54:          1          0          0          0   xen-dyn-virq      mce
+
+We have below in /var/log/messages on VM (Xen).
+
+Dec 22 08:20:00 localhost mcelog: Hardware event. This is not a software error.
+Dec 22 08:20:00 localhost mcelog: MCE 0
+Dec 22 08:20:00 localhost mcelog: CPU 0 BANK 1
+Dec 22 08:20:00 localhost mcelog: TIME 1608654000 Tue Dec 22 08:20:00 2020
+Dec 22 08:20:00 localhost mcelog: MCG status:
+Dec 22 08:20:00 localhost mcelog: MCi status:
+Dec 22 08:20:00 localhost mcelog: Corrected error
+Dec 22 08:20:00 localhost mcelog: MCA: No Error
+Dec 22 08:20:00 localhost mcelog: STATUS 8000000000000000 MCGSTATUS 0
+Dec 22 08:20:00 localhost mcelog: MCGCAP 100010a APICID 0 SOCKETID 0
+
+
+6. Inject the uncorrected error via QEMU monitor and Xen hypervisor is panic.
+
+(qemu) mce 0 1 0xb200000000000000 0x0 0x0 0x0
+
+
+(XEN) Fatal machine check: MCE: Fatal error happened on CPUs 1
+(XEN)
+(XEN) ****************************************
+(XEN)
+(XEN)    The processor has reported a hardware error which cannot
+(XEN)    be recovered from.  Xen will now reboot the machine.
+(XEN) mce.c:1533: Begin dump mc_info
+(XEN) CPU0: Machine Check Exception:                0
+(XEN) Bank 1: b200000000000000
+(XEN) mce.c:1536: End dump mc_info, 1 mcinfo dumped
+(XEN)
+(XEN) ****************************************
+(XEN) Panic on CPU 0:
+(XEN) HARDWARE ERROR
+(XEN) ****************************************
+(XEN)
+(XEN) Reboot in five seconds...
+(XEN) Executing kexec image on cpu0
+(XEN) Shot down all CPUs
+
+
+References:
+
+- https://patchwork.kernel.org/project/kvm/patch/1245722714.22246.424.camel@yhuang-dev.sh.intel.com/
