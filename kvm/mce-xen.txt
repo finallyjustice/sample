@@ -73,3 +73,9 @@ Dec 22 08:20:00 localhost mcelog: MCGCAP 100010a APICID 0 SOCKETID 0
 References:
 
 - https://patchwork.kernel.org/project/kvm/patch/1245722714.22246.424.camel@yhuang-dev.sh.intel.com/
+
+- http://linuxperf.com/?p=105
+
+- https://www.jianshu.com/p/7b3f89ee967c
+
+- https://www.cnblogs.com/zhangxinglong/p/10886697.html
