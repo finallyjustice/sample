@@ -1,0 +1,53 @@
+This is about how to use qemu_log_mask() based on qemu-5.2.0.
+
+1. Apply below patch to QEMU to print "hello world!" at bootup.
+
+diff --git a/softmmu/vl.c b/softmmu/vl.c
+index e6e0ad5..25b1fe9 100644
+--- a/softmmu/vl.c
++++ b/softmmu/vl.c
+@@ -4445,6 +4445,8 @@ void qemu_init(int argc, char **argv, char **envp)
+ 
+     qdev_machine_creation_done();
+ 
++    qemu_log_mask(LOG_UNIMP, "hello world!\n");
++
+     /* TODO: once all bus devices are qdevified, this should be done
+      * when bus is created by qdev.c */
+     /*
+
+
+2. Boot QEMU with "-D /tmp/qemu-debug-log -d unimp". The 'unimp' is corresponding to 'LOG_UNIMP'.
+
+3. Once QEMU bootup, the log is redirected to /tmp/qemu-debug-log.
+
+# cat /tmp/qemu-debug-log 
+hello world!
+
+
+The list of supported log can be obtained via ...
+
+# qemu-system-x86_64 -d help
+Log items (comma separated):
+out_asm         show generated host assembly code for each compiled TB
+in_asm          show target assembly code for each compiled TB
+op              show micro ops for each compiled TB
+op_opt          show micro ops after optimization
+op_ind          show micro ops before indirect lowering
+int             show interrupts/exceptions in short format
+exec            show trace before each executed TB (lots of logs)
+cpu             show CPU registers before entering a TB (lots of logs)
+fpu             include FPU registers in the 'cpu' logging
+mmu             log MMU-related activities
+pcall           x86 only: show protected mode far calls/returns/exceptions
+cpu_reset       show CPU state before CPU resets
+unimp           log unimplemented functionality
+guest_errors    log when the guest OS does something invalid (eg accessing a
+non-existent register)
+page            dump pages at beginning of user mode emulation
+nochain         do not chain compiled TBs so that "exec" and "cpu" show
+complete traces
+strace          log every user-mode syscall, its input, and its result
+trace:PATTERN   enable trace events
+
+Use "-d trace:help" to get a list of trace events.
