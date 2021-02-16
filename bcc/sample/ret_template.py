@@ -8,9 +8,9 @@ prog = """
 
 int mmu_shrink_count_ret(struct pt_regs *ctx)
 {
-	int ret = PT_REGS_RC(ctx);
+    int ret = PT_REGS_RC(ctx);
     bpf_trace_printk("mmu_shrink_count() ret=%d\\n", ret);
-	return 0;
+    return 0;
 }
 
 """
