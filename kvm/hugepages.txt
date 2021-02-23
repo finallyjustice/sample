@@ -1,0 +1,68 @@
+This is about how to boot QEMU VM with hugepage (without libvirt), based on qemu-5.2.0.
+
+1. Pre-allocate hugepages.
+
+# echo 10240 > /proc/sys/vm/nr_hugepages
+
+# cat /proc/meminfo
+... ...
+HugePages_Total:   10240
+HugePages_Free:    10240
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      162136 kB
+DirectMap2M:    12285952 kB
+DirectMap1G:    257949696 kB
+
+
+2. Mount hugepages.
+
+# mkdir /dev/hugepages_test
+
+# mount -t hugetlbfs none /dev/hugepages_test
+
+# mount | grep test
+none on /dev/hugepages_test type hugetlbfs (rw,relatime,pagesize=2M)
+
+
+3. Create QEMU instance.
+
+# qemu-system-x86_64 -machine q35 -enable-kvm -smp 4 -vnc :7 \
+  -net nic -net user,hostfwd=tcp::5027-:22 -hda ol7.qcow2 \
+  -m 4000M \
+  -object memory-backend-file,id=mem0,size=4000M,mem-path=/dev/hugepages_test,share=on \
+  -numa node,memdev=mem0 \
+  -serial stdio
+
+
+
+To create QEMU instance with multiple NUMA nodes:
+
+# qemu-system-x86_64 -machine q35 -enable-kvm -vnc :7 \
+  -net nic -net user,hostfwd=tcp::5027-:22 -hda ol7.qcow2 \
+  -object memory-backend-file,id=mem0,prealloc=yes,size=4000M,mem-path=/dev/hugepages_test,share=on,host-nodes=0,policy=preferred \
+  -object memory-backend-file,id=mem1,prealloc=yes,size=4000M,mem-path=/dev/hugepages_test,share=on,host-nodes=1,policy=preferred \
+  -smp 4,sockets=2,cores=2,threads=1 \
+  -m 8000M -numa node,memdev=mem0,cpus=0-1 -numa node,memdev=mem1,cpus=2-3 \
+  -serial stdio
+
+
+VM# dmesg | grep node
+[    0.047291] Movable zone start for each node
+[    0.047892] Early memory node ranges
+[    0.048395]   node   0: [mem 0x0000000000001000-0x000000000009efff]
+[    0.049280]   node   0: [mem 0x0000000000100000-0x000000007ffdefff]
+[    0.050160]   node   0: [mem 0x0000000100000000-0x0000000179ffffff]
+[    0.051043]   node   1: [mem 0x000000017a000000-0x0000000273ffffff]
+[    0.052136] Initmem setup node 0 [mem 0x0000000000001000-0x0000000179ffffff]
+[    0.053996] On node 0 totalpages: 1023869
+[    0.065626] Initmem setup node 1 [mem 0x000000017a000000-0x0000000273ffffff]
+[    0.066660] On node 1 totalpages: 1024000
+[    0.092144] setup_percpu: NR_CPUS:8192 nr_cpumask_bits:4 nr_cpu_ids:4 nr_node_ids:2
+[    0.311492] Inode-cache hash table entries: 524288 (order: 10, 4194304 bytes, vmalloc)
+[    0.438422] .... node  #0, CPUs:      #1
+[    0.443546] .... node  #1, CPUs:   #2
+[    0.453511] smp: Brought up 2 nodes, 4 CPUs
+[    0.462385] node 0 deferred pages initialised in 4ms
+[    0.466975] node 1 deferred pages initialised in 10ms
