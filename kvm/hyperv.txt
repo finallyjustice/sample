@@ -23,3 +23,7 @@ HVS:          0          0          0          0   Hyper-V stimer0 interrupts
 [    0.050614] Booting paravirtualized kernel on Hyper-V
 [    0.983757] hv_utils: Registering HyperV Utility Driver
 
+------------------------------------
+
+"ENLIGHTENING" KVM HYPER-V EMULATION, FOSDEM 2019
+https://archive.fosdem.org/2019/schedule/event/vai_enlightening_kvm/attachments/slides/2860/export/events/attachments/vai_enlightening_kvm/slides/2860/vkuznets_fosdem2019_enlightening_kvm.pdf
