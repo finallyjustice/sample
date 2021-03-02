@@ -9,3 +9,17 @@ qemu-system-x86_64 -smp 4 -m 8G -enable-kvm -cpu host,kvm_pv_unhalt,hv_stimer,hv
 HYP:          0          0          0          0   Hypervisor callback interrupts
 HRE:          0          0          0          0   Hyper-V reenlightenment interrupts
 HVS:          0          0          0          0   Hyper-V stimer0 interrupts
+
+-------------------------------------
+
+-cpu host,-kvm,+hv-relaxed,+hv-time
+
+
+# dmesg | grep Hyper
+[    0.000000] Hypervisor detected: Microsoft Hyper-V
+[    0.000000] Hyper-V: features 0x222, hints 0x20, misc 0x8
+[    0.000000] Hyper-V Host Build:7100-6.1-0-0.0
+[    0.000000] tsc: Marking TSC unstable due to running on Hyper-V
+[    0.050614] Booting paravirtualized kernel on Hyper-V
+[    0.983757] hv_utils: Registering HyperV Utility Driver
+
