@@ -1,0 +1,4 @@
+
+-machine max-ram-below-4g=2G
+
+-global i440FX-pcihost.pci-hole64-size=20G
