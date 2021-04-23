@@ -34,6 +34,7 @@ GRUB_DISABLE_RECOVERY="true"
 GRUB_TERMINAL="serial console"
 GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1"
 
+The above two lines are significant for grub.
 
 The most significant is the below:
 
