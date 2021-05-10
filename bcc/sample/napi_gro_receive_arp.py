@@ -1,12 +1,21 @@
 #!/usr/bin/python
 
-# # sudo ./arp.py 
+# About ARP type: 1 is REQUEST while 2 is REPLY
+#
+# sudo ./arp.py 
 # Tracing napi_gro_receive() ... Ctrl-C to end.
-# 21/11/2020 07:15:01 src:10.0.0.1(00.00.xx.xx.xx.a7)->tgt:10.0.0.21(00.00.00.00.00.00)
-# 21/11/2020 07:15:16 src:10.0.0.1(00.00.xx.xx.xx.a7)->tgt:10.0.0.21(00.00.00.00.00.00)
-# 21/11/2020 07:15:31 src:10.0.0.254(00.00.xx.xx.xx.a7)->tgt:10.0.0.21(xx.xx.xx.xx.xx.81)
-# 21/11/2020 07:15:46 src:10.0.0.1(00.00.xx.xx.xx.a7)->tgt:10.0.0.21(00.00.00.00.00.00)
-# 21/11/2020 07:16:01 src:10.0.0.1(00.00.xx.xx.xx.a7)->tgt:10.0.0.21(00.00.00.00.00.00)
+# 10/05/2021 21:28:12 (2) src:10.0.48.1(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(xx.xx.xx.xx.xx.21)
+# 10/05/2021 21:28:14 (2) src:10.0.48.1(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(xx.xx.xx.xx.xx.21)
+# 10/05/2021 21:28:15 (2) src:10.0.48.1(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(xx.xx.xx.xx.xx.21)
+# 10/05/2021 21:28:16 (2) src:10.0.48.1(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(xx.xx.xx.xx.xx.21)
+# 10/05/2021 21:28:17 (2) src:10.0.48.1(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(xx.xx.xx.xx.xx.21)
+# 10/05/2021 21:28:18 (2) src:10.0.48.1(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(xx.xx.xx.xx.xx.21)
+# 10/05/2021 21:28:19 (2) src:10.0.48.1(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(xx.xx.xx.xx.xx.21)
+# 10/05/2021 21:28:19 (2) src:169.0.0.254(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(xx.xx.xx.xx.xx.21)
+# 10/05/2021 21:28:20 (2) src:10.0.248.1(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(xx.xx.xx.xx.xx.21)
+# 10/05/2021 21:28:35 (2) src:169.0.0.254(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(xx.00.xx.xx.xx.21)
+# 10/05/2021 21:28:44 (1) src:10.0.48.1(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(00.00.00.00.00.00)
+# 10/05/2021 21:29:14 (1) src:10.0.48.1(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(00.00.00.00.00.00)
 
 from bcc import BPF
 from datetime import datetime
@@ -22,6 +31,7 @@ struct data_t {
 	unsigned char tip[4];
 	unsigned char smac[6];
 	unsigned char tmac[6];
+        unsigned char type;
 };
 
 BPF_PERF_OUTPUT(events);
@@ -56,6 +66,13 @@ int bpf_napi_gro_receive(struct pt_regs *ctx, struct napi_struct *napi,
 				memcpy(&data.sip,  arp_ptr + 6,  4);
 				memcpy(&data.tmac, arp_ptr + 10, 6);
 				memcpy(&data.tip,  arp_ptr + 16, 4);
+
+				if (arp->ar_op == htons(ARPOP_REQUEST))
+					data.type = 1;
+				else if (arp->ar_op == htons(ARPOP_REPLY))
+					data.type = 2;
+				else
+					data.type = 3;
 				
 				events.perf_submit(ctx, &data, sizeof(data));
 		}
@@ -75,7 +92,8 @@ def print_event(cpu, data, size):
         now = datetime.now()
         dt = now.strftime("%d/%m/%Y %H:%M:%S")
 
-        print("%s src:%u.%u.%u.%u(%02x.%02x.%02x.%02x.%02x.%02x)->tgt:%u.%u.%u.%u(%02x.%02x.%02x.%02x.%02x.%02x)" % (dt,
+        print("%s (%u) src:%u.%u.%u.%u(%02x.%02x.%02x.%02x.%02x.%02x)->tgt:%u.%u.%u.%u(%02x.%02x.%02x.%02x.%02x.%02x)" % (dt,
+              event.type,
               event.sip[0], event.sip[1],event.sip[2], event.sip[3],
               event.smac[0], event.smac[1], event.smac[2], event.smac[3], event.smac[4], event.smac[5],
               event.tip[0], event.tip[1], event.tip[2], event.tip[3],
