@@ -2,7 +2,7 @@
 
 # About ARP type: 1 is REQUEST while 2 is REPLY
 #
-# sudo ./arp.py 
+# sudo ./napi_gro_receive_arp.py 
 # Tracing napi_gro_receive() ... Ctrl-C to end.
 # 10/05/2021 21:28:12 (2) src:10.0.48.1(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(xx.xx.xx.xx.xx.21)
 # 10/05/2021 21:28:14 (2) src:10.0.48.1(xx.xx.xx.xx.xx.a7)->tgt:10.0.48.210(xx.xx.xx.xx.xx.21)
