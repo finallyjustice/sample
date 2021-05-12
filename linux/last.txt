@@ -1,0 +1,9 @@
+This is an example of last.
+
+# date
+Wed May 12 09:48:32 PDT 2021
+
+# last | grep reboot
+reboot   system boot  5.4.17-2036.104. Wed May 12 09:34 - 09:48  (00:14)
+
+09:34 is when the OS reboot. It has been 00:14 (14 minutes). Current time is 09:48.
