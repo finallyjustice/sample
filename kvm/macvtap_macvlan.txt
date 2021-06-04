@@ -1,5 +1,7 @@
 https://developers.redhat.com/blog/2018/10/22/introduction-to-linux-interfaces-for-virtual-networking
 
+https://zhuanlan.zhihu.com/p/53038354
+
 -----------------------------------------------------
 
 A macvtap device can be on top of any device, e.g., regular NIC or vlan.
