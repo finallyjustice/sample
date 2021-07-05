@@ -1,0 +1,317 @@
+# ./check 
+QEMU          -- "/home/zhang/kvm/test/qemu-6.0.0/build/tests/qemu-iotests/../../qemu-system-x86_64" -nodefaults -display none -accel qtest
+QEMU_IMG      -- "/home/zhang/kvm/test/qemu-6.0.0/build/tests/qemu-iotests/../../qemu-img" 
+QEMU_IO       -- "/home/zhang/kvm/test/qemu-6.0.0/build/tests/qemu-iotests/../../qemu-io" --cache writeback --aio threads -f raw
+QEMU_NBD      -- "/home/zhang/kvm/test/qemu-6.0.0/build/tests/qemu-iotests/../../qemu-nbd" 
+IMGFMT        -- raw
+IMGPROTO      -- file
+PLATFORM      -- Linux/x86_64 xxx.xxx.xxx.xxx 4.14.35-2047.501.2.el7uek.x86_64
+TEST_DIR      -- /home/zhang/kvm/test/qemu-6.0.0/build/tests/qemu-iotests/scratch
+SOCK_DIR      -- /tmp/tmpnbmi6koc
+SOCKET_SCM_HELPER -- /home/zhang/kvm/test/qemu-6.0.0/build/tests/qemu-iotests/socket_scm_helper
+
+001                             pass       [21:37:22] [21:37:23]   1.1s                 
+002                             pass       [21:37:23] [21:37:24]   1.2s                 
+003                             pass       [21:37:24] [21:37:25]   1.1s                 
+004                             pass       [21:37:25] [21:37:25]   0.1s                 
+005                             pass       [21:37:25] [21:37:25]   0.1s                 
+007                             not run    [21:37:25] [21:37:25]   ...                  not suitable for this image format: raw
+008                             pass       [21:37:25] [21:37:27]   1.1s                 
+009                             pass       [21:37:27] [21:37:27]   0.1s                 
+010                             pass       [21:37:27] [21:37:27]   ...                  
+011                             pass       [21:37:27] [21:37:27]   0.1s                 
+012                             pass       [21:37:27] [21:37:27]   ...                  
+013                             not run    [21:37:27] [21:37:27]   ...                  not suitable for this image format: raw
+014                             not run    [21:37:27] [21:37:27]   ...                  not suitable for this image format: raw
+015                             not run    [21:37:27] [21:37:27]   ...                  not suitable for this image format: raw
+017                             not run    [21:37:27] [21:37:27]   ...                  not suitable for this image format: raw
+018                             not run    [21:37:27] [21:37:27]   ...                  not suitable for this image format: raw
+019                             not run    [21:37:27] [21:37:27]   ...                  not suitable for this image format: raw
+020                             not run    [21:37:27] [21:37:27]   ...                  not suitable for this image format: raw
+021                             pass       [21:37:27] [21:37:27]   0.2s                 
+022                             not run    [21:37:27] [21:37:27]   ...                  not suitable for this image format: raw
+023                             not run    [21:37:27] [21:37:27]   ...                  not suitable for this image format: raw
+024                             not run    [21:37:27] [21:37:27]   ...                  not suitable for this image format: raw
+025                             pass       [21:37:27] [21:37:29]   1.4s                 
+026                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+027                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+028                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+029                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+030                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+031                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+032                             pass       [21:37:29] [21:37:29]   0.1s                 
+033                             pass       [21:37:29] [21:37:29]   0.5s                 
+034                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+035                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+036                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+037                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+038                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+039                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+040                             not run    [21:37:29] [21:37:29]   ...                  not suitable for this image format: raw
+041                             not run    [21:37:29] [21:37:30]   ...                  not suitable for this image format: raw
+042                             not run    [21:37:30] [21:37:30]   ...                  not suitable for this image format: raw
+043                             not run    [21:37:30] [21:37:30]   ...                  not suitable for this image format: raw
+044                             not run    [21:37:30] [21:37:30]   ...                  not suitable for this image format: raw
+045                             pass       [21:37:30] [21:37:30]   0.8s                 
+046                             not run    [21:37:30] [21:37:30]   ...                  not suitable for this image format: raw
+047                             not run    [21:37:30] [21:37:30]   ...                  not suitable for this image format: raw
+048                             pass       [21:37:30] [21:37:31]   0.2s                 
+049                             not run    [21:37:31] [21:37:31]   ...                  not suitable for this image format: raw
+050                             not run    [21:37:31] [21:37:31]   ...                  not suitable for this image format: raw
+051                             not run    [21:37:31] [21:37:31]   ...                  not suitable for this image format: raw
+052                             pass       [21:37:31] [21:37:31]   0.5s                 
+053                             not run    [21:37:31] [21:37:31]   ...                  not suitable for this image format: raw
+054                             not run    [21:37:31] [21:37:31]   ...                  not suitable for this image format: raw
+055                             pass       [21:37:31] [21:37:41]   9.5s                 
+056                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+057                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+058                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+059                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+060                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+061                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+062                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+063                             pass       [21:37:41] [21:37:41]   0.2s                 
+064                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+065                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+066                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+068                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+069                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+070                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+071                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+072                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+073                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+074                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+075                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+076                             not run    [21:37:41] [21:37:41]   ...                  not suitable for this image format: raw
+077                             pass       [21:37:41] [21:37:42]   1.1s                 
+078                             not run    [21:37:42] [21:37:42]   ...                  not suitable for this image format: raw
+079                             not run    [21:37:42] [21:37:42]   ...                  not suitable for this image format: raw
+080                             not run    [21:37:42] [21:37:42]   ...                  not suitable for this image format: raw
+081                             pass       [21:37:42] [21:37:44]   2.0s                 
+082                             not run    [21:37:44] [21:37:44]   ...                  not suitable for this image format: raw
+083                             not run    [21:37:44] [21:37:44]   ...                  not suitable for this image protocol: file
+084                             not run    [21:37:44] [21:37:44]   ...                  not suitable for this image format: raw
+085                             not run    [21:37:44] [21:37:44]   ...                  not suitable for this image format: raw
+086                             pass       [21:37:44] [21:37:45]   0.1s                 
+087                             not run    [21:37:45] [21:37:45]   ...                  not suitable for this image format: raw
+088                             not run    [21:37:45] [21:37:45]   ...                  not suitable for this image format: raw
+089                             not run    [21:37:45] [21:37:45]   ...                  not suitable for this image format: raw
+090                             not run    [21:37:45] [21:37:45]   ...                  not suitable for this image format: raw
+091                             not run    [21:37:45] [21:37:45]   ...                  not suitable for this image format: raw
+092                             not run    [21:37:45] [21:37:45]   ...                  not suitable for this image format: raw
+093                             pass       [21:37:45] [21:38:02]   17.7s                
+094                             not run    [21:38:02] [21:38:02]   ...                  not suitable for this image protocol: file
+095                             not run    [21:38:02] [21:38:02]   ...                  not suitable for this image format: raw
+096                             not run    [21:38:02] [21:38:02]   ...                  not suitable for this image format: raw
+097                             not run    [21:38:02] [21:38:03]   ...                  not suitable for this image format: raw
+098                             not run    [21:38:03] [21:38:03]   ...                  not suitable for this image format: raw
+099                             not run    [21:38:03] [21:38:03]   ...                  not suitable for this image format: raw
+101                             pass       [21:38:03] [21:38:03]   ...                  
+102                             not run    [21:38:03] [21:38:03]   ...                  not suitable for this image format: raw
+103                             not run    [21:38:03] [21:38:03]   ...                  not suitable for this image format: raw
+104                             pass       [21:38:03] [21:38:03]   0.1s                 
+105                             not run    [21:38:03] [21:38:03]   ...                  not suitable for this image format: raw
+106                             pass       [21:38:03] [21:38:03]   0.4s                 
+107                             not run    [21:38:03] [21:38:03]   ...                  not suitable for this image format: raw
+108                             not run    [21:38:03] [21:38:03]   ...                  not suitable for this image format: raw
+109                             pass       [21:38:03] [21:38:06]   3.3s                 
+110                             not run    [21:38:06] [21:38:06]   ...                  not suitable for this image format: raw
+111                             not run    [21:38:06] [21:38:06]   ...                  not suitable for this image format: raw
+112                             not run    [21:38:06] [21:38:06]   ...                  not suitable for this image format: raw
+113                             pass       [21:38:06] [21:38:07]   0.1s                 
+114                             not run    [21:38:07] [21:38:07]   ...                  not suitable for this image format: raw
+115                             not run    [21:38:07] [21:38:07]   ...                  not suitable for this image format: raw
+116                             not run    [21:38:07] [21:38:07]   ...                  not suitable for this image format: raw
+117                             not run    [21:38:07] [21:38:07]   ...                  not suitable for this image format: raw
+118                             pass       [21:38:07] [21:38:15]   8.3s                 
+    [case not run] test_snapshot_and_commit (__main__.TestBlockJobsAfterCycle): Skipped for format raw
+
+119                             not run    [21:38:15] [21:38:15]   ...                  not suitable for this image protocol: file
+120                             pass       [21:38:15] [21:38:15]   0.1s                 
+121                             not run    [21:38:15] [21:38:15]   ...                  not suitable for this image format: raw
+122                             not run    [21:38:15] [21:38:15]   ...                  not suitable for this image format: raw
+123                             not run    [21:38:15] [21:38:15]   ...                  not suitable for this image protocol: file
+124                             not run    [21:38:15] [21:38:15]   ...                  not suitable for this image format: raw
+125                             not run    [21:38:15] [21:38:15]   ...                  not suitable for this image format: raw
+126                             not run    [21:38:15] [21:38:15]   ...                  not suitable for this image format: raw
+127                             not run    [21:38:15] [21:38:15]   ...                  not suitable for this image format: raw
+[sudo] password for zhang:      ...        [21:38:15]              ...                  
+128                             not run    [21:38:15] [21:40:28]   ...                  root privileges required to run dmsetup
+129                             not run    [21:40:28] [21:40:28]   ...                  not suitable for this image format: raw
+130                             not run    [21:40:28] [21:40:28]   ...                  not suitable for this image format: raw
+131                             not run    [21:40:28] [21:40:28]   ...                  not suitable for this image format: raw
+132                             pass       [21:40:28] [21:40:28]   0.2s                 
+133                             not run    [21:40:28] [21:40:28]   ...                  not suitable for this image format: raw
+134                             not run    [21:40:28] [21:40:28]   ...                  not suitable for this image format: raw
+135                             not run    [21:40:28] [21:40:28]   ...                  not suitable for this image format: raw
+136                             pass       [21:40:28] [21:40:31]   2.7s                 
+137                             not run    [21:40:31] [21:40:31]   ...                  not suitable for this image format: raw
+138                             not run    [21:40:31] [21:40:31]   ...                  not suitable for this image format: raw
+139                             not run    [21:40:31] [21:40:31]   ...                  not suitable for this image format: raw
+140                             pass       [21:40:31] [21:40:31]   0.1s                 
+141                             not run    [21:40:31] [21:40:31]   ...                  not suitable for this image format: raw
+142                             not run    [21:40:31] [21:40:31]   ...                  not suitable for this image format: raw
+143                             pass       [21:40:31] [21:40:31]   0.1s                 
+144                             not run    [21:40:31] [21:40:31]   ...                  not suitable for this image format: raw
+145                             pass       [21:40:31] [21:40:31]   0.1s                 
+146                             not run    [21:40:31] [21:40:31]   ...                  not suitable for this image format: raw
+147                             not run    [21:40:31] [21:40:31]   ...                  not suitable for this protocol: file
+148                             pass       [21:40:31] [21:40:32]   0.3s                 
+149                             not run    [21:40:32] [21:40:32]   ...                  not suitable for this image format: raw
+150                             pass       [21:40:32] [21:40:32]   0.1s                 
+151                             pass       [21:40:32] [21:40:35]   3.1s                 
+152                             pass       [21:40:35] [21:40:35]   0.3s                 
+153                             not run    [21:40:35] [21:40:35]   ...                  not suitable for this image format: raw
+154                             not run    [21:40:35] [21:40:35]   ...                  not suitable for this image format: raw
+155                             not run    [21:40:35] [21:40:35]   ...                  not suitable for this image format: raw
+156                             not run    [21:40:35] [21:40:35]   ...                  not suitable for this image format: raw
+157                             pass       [21:40:35] [21:40:36]   0.4s                 
+158                             not run    [21:40:36] [21:40:36]   ...                  not suitable for this image format: raw
+159                             pass       [21:40:36] [21:40:41]   5.4s                 
+160                             pass       [21:40:41] [21:40:41]   0.4s                 
+161                             not run    [21:40:41] [21:40:41]   ...                  not suitable for this image format: raw
+162                             pass       [21:40:41] [21:40:42]   0.2s                 
+163                             pass       [21:40:42] [21:40:45]   3.8s                 
+165                             not run    [21:40:45] [21:40:46]   ...                  not suitable for this image format: raw
+170                             pass       [21:40:46] [21:40:46]   0.1s                 
+171                             pass       [21:40:46] [21:40:46]   0.7s                 
+172                             not run    [21:40:46] [21:40:46]   ...                  not suitable for this image format: raw
+173                             not run    [21:40:46] [21:40:46]   ...                  not suitable for this image format: raw
+174                             not run    [21:40:46] [21:40:46]   ...                  not suitable for this image format: raw
+175                             pass       [21:40:46] [21:40:47]   0.2s                 
+176                             not run    [21:40:47] [21:40:47]   ...                  not suitable for this image format: raw
+177                             not run    [21:40:47] [21:40:47]   ...                  not suitable for this image format: raw
+178                             pass       [21:40:47] [21:41:01]   14.3s                
+179                             not run    [21:41:01] [21:41:01]   ...                  not suitable for this image format: raw
+181                             pass       [21:41:01] [21:41:02]   1.2s                 
+182                             not run    [21:41:02] [21:41:02]   ...                  not suitable for this image format: raw
+183                             pass       [21:41:02] [21:41:03]   0.8s                 
+184                             pass       [21:41:03] [21:41:03]   0.2s                 
+185                             not run    [21:41:03] [21:41:03]   ...                  not suitable for this image format: raw
+186                             not run    [21:41:03] [21:41:03]   ...                  not suitable for this image format: raw
+187                             not run    [21:41:03] [21:41:03]   ...                  not suitable for this image format: raw
+188                             not run    [21:41:03] [21:41:03]   ...                  not suitable for this image format: raw
+189                             not run    [21:41:03] [21:41:03]   ...                  not suitable for this image format: raw
+190                             not run    [21:41:03] [21:41:03]   ...                  not suitable for this image format: raw
+191                             not run    [21:41:03] [21:41:03]   ...                  not suitable for this image format: raw
+192                             pass       [21:41:03] [21:41:04]   0.1s                 
+194                             pass       [21:41:04] [21:41:04]   0.2s                 
+195                             not run    [21:41:04] [21:41:04]   ...                  not suitable for this image format: raw
+196                             not run    [21:41:04] [21:41:04]   ...                  not suitable for this image format: raw
+197                             not run    [21:41:04] [21:41:04]   ...                  Suspicious TEST_DIR='/home/zhang/kvm/test/qemu-6.0.0/build/tests/qemu-iotests/scratch', cowardly refusing to run
+198                             not run    [21:41:04] [21:41:04]   ...                  not suitable for this image format: raw
+200                             not run    [21:41:04] [21:41:04]   ...                  not suitable for this image format: raw
+201                             not run    [21:41:04] [21:41:04]   ...                  not suitable for this image format: raw
+202                             not run    [21:41:04] [21:41:04]   ...                  not suitable for this image format: raw
+203                             not run    [21:41:04] [21:41:04]   ...                  not suitable for this image format: raw
+204                             not run    [21:41:04] [21:41:04]   ...                  not suitable for this image format: raw
+205                             not run    [21:41:04] [21:41:04]   ...                  not suitable for this protocol: file
+206                             not run    [21:41:04] [21:41:04]   ...                  not suitable for this image format: raw
+207                             not run    [21:41:04] [21:41:04]   ...                  not suitable for this protocol: file
+208                             pass       [21:41:04] [21:41:04]   0.2s                 
+209                             not run    [21:41:04] [21:41:04]   ...                  not suitable for this image format: raw
+210                             not run    [21:41:04] [21:41:05]   ...                  not suitable for this image format: raw
+211                             not run    [21:41:05] [21:41:05]   ...                  not suitable for this image format: raw
+212                             not run    [21:41:05] [21:41:05]   ...                  not suitable for this image format: raw
+213                             not run    [21:41:05] [21:41:05]   ...                  not suitable for this image format: raw
+214                             not run    [21:41:05] [21:41:05]   ...                  not suitable for this image format: raw
+215                             not run    [21:41:05] [21:41:05]   ...                  Suspicious TEST_DIR='/home/zhang/kvm/test/qemu-6.0.0/build/tests/qemu-iotests/scratch', cowardly refusing to run
+216                             not run    [21:41:05] [21:41:05]   ...                  not suitable for this image format: raw
+217                             not run    [21:41:05] [21:41:05]   ...                  not suitable for this image format: raw
+218                             pass       [21:41:05] [21:41:06]   0.7s                 
+219                             not run    [21:41:06] [21:41:06]   ...                  not suitable for this image format: raw
+220                             not run    [21:41:06] [21:41:06]   ...                  not suitable for this image format: raw
+221                             pass       [21:41:06] [21:41:06]   0.1s                 
+222                             pass       [21:41:06] [21:41:06]   0.4s                 
+223                             not run    [21:41:06] [21:41:06]   ...                  not suitable for this image format: raw
+224                             not run    [21:41:06] [21:41:06]   ...                  not suitable for this image format: raw
+225                             not run    [21:41:06] [21:41:06]   ...                  not suitable for this image format: raw
+226                             pass       [21:41:06] [21:41:06]   0.1s                 
+227                             pass       [21:41:06] [21:41:06]   0.2s                 
+228                             not run    [21:41:06] [21:41:07]   ...                  not suitable for this image format: raw
+229                             not run    [21:41:07] [21:41:07]   ...                  not suitable for this image format: raw
+231                             not run    [21:41:07] [21:41:07]   ...                  not suitable for this image protocol: file
+232                             pass       [21:41:07] [21:41:08]   1.3s                 
+233                             pass       [21:41:08] [21:41:10]   2.0s                 
+234                             not run    [21:41:10] [21:41:10]   ...                  not suitable for this image format: raw
+235                             not run    [21:41:10] [21:41:10]   ...                  not suitable for this image format: raw
+236                             pass       [21:41:10] [21:41:10]   0.2s                 
+237                             not run    [21:41:10] [21:41:10]   ...                  not suitable for this image format: raw
+238                             pass       [21:41:10] [21:41:11]   0.3s                 
+239                             not run    [21:41:11] [21:41:11]   ...                  not suitable for this image format: raw
+240                             pass       [21:41:11] [21:41:12]   1.4s                 
+241                             not run    [21:41:12] [21:41:12]   ...                  not suitable for this image protocol: file
+242                             not run    [21:41:12] [21:41:12]   ...                  not suitable for this image format: raw
+243                             not run    [21:41:12] [21:41:12]   ...                  not suitable for this image format: raw
+244                             not run    [21:41:12] [21:41:12]   ...                  not suitable for this image format: raw
+245                             not run    [21:41:12] [21:41:12]   ...                  not suitable for this image format: raw
+246                             not run    [21:41:12] [21:41:12]   ...                  not suitable for this image format: raw
+247                             not run    [21:41:12] [21:41:12]   ...                  not suitable for this image format: raw
+248                             not run    [21:41:12] [21:41:12]   ...                  not suitable for this image format: raw
+249                             not run    [21:41:12] [21:41:12]   ...                  not suitable for this image format: raw
+250                             not run    [21:41:12] [21:41:12]   ...                  not suitable for this image format: raw
+251                             pass       [21:41:12] [21:41:13]   0.7s                 
+252                             not run    [21:41:13] [21:41:13]   ...                  not suitable for this image format: raw
+253                             pass       [21:41:13] [21:41:13]   0.1s                 
+254                             not run    [21:41:13] [21:41:13]   ...                  not suitable for this image format: raw
+255                             not run    [21:41:13] [21:41:13]   ...                  not suitable for this image format: raw
+256                             not run    [21:41:13] [21:41:13]   ...                  not suitable for this image format: raw
+257                             not run    [21:41:13] [21:41:13]   ...                  not suitable for this image format: raw
+258                             not run    [21:41:13] [21:41:14]   ...                  not suitable for this image format: raw
+259                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image protocol: file
+260                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+261                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+262                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+263                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+264                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+265                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+266                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+267                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+268                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+270                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+271                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+272                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+273                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+274                             not run    [21:41:14] [21:41:14]   ...                  not suitable for this image format: raw
+277                             pass       [21:41:14] [21:41:15]   1.2s                 
+279                             not run    [21:41:15] [21:41:15]   ...                  not suitable for this image format: raw
+280                             not run    [21:41:15] [21:41:15]   ...                  not suitable for this image format: raw
+281                             not run    [21:41:15] [21:41:15]   ...                  not suitable for this image format: raw
+282                             not run    [21:41:15] [21:41:15]   ...                  not suitable for this image format: raw
+283                             not run    [21:41:15] [21:41:15]   ...                  not suitable for this image format: raw
+284                             not run    [21:41:15] [21:41:15]   ...                  not suitable for this image format: raw
+286                             not run    [21:41:15] [21:41:15]   ...                  not suitable for this image format: raw
+287                             not run    [21:41:15] [21:41:15]   ...                  not suitable for this image format: raw
+288                             not run    [21:41:15] [21:41:15]   ...                  not suitable for this image format: raw
+289                             not run    [21:41:15] [21:41:15]   ...                  not suitable for this image format: raw
+290                             not run    [21:41:15] [21:41:16]   ...                  not suitable for this image format: raw
+291                             not run    [21:41:16] [21:41:16]   ...                  not suitable for this image format: raw
+292                             not run    [21:41:16] [21:41:16]   ...                  not suitable for this image format: raw
+293                             not run    [21:41:16] [21:41:16]   ...                  not suitable for this image format: raw
+294                             not run    [21:41:16] [21:41:16]   ...                  not suitable for this image format: raw
+295                             not run    [21:41:16] [21:41:18]   ...                  not suitable for this image format: raw
+296                             not run    [21:41:18] [21:41:18]   ...                  not suitable for this image format: raw
+297                             not run    [21:41:18] [21:41:18]   ...                  pylint-3 not found
+298                             not run    [21:41:18] [21:41:19]   ...                  not suitable for this image format: raw
+299                             not run    [21:41:19] [21:41:19]   ...                  not suitable for this image format: raw
+300                             pass       [21:41:19] [21:41:25]   6.2s                 
+301                             not run    [21:41:25] [21:41:25]   ...                  not suitable for this image format: raw
+302                             not run    [21:41:25] [21:41:25]   ...                  not suitable for this image format: raw
+303                             not run    [21:41:25] [21:41:25]   ...                  not suitable for this image format: raw
+304                             not run    [21:41:25] [21:41:25]   ...                  not suitable for this image format: raw
+305                             not run    [21:41:25] [21:41:25]   ...                  not suitable for this image format: raw
+307                             pass       [21:41:25] [21:41:25]   0.4s                 
+308                             not run    [21:41:25] [21:41:26]   ...                  No FUSE support
+309                             not run    [21:41:26] [21:41:26]   ...                  not suitable for this image format: raw
+310                             not run    [21:41:26] [21:41:26]   ...                  not suitable for this image format: raw
+312                             not run    [21:41:26] [21:41:26]   ...                  not suitable for this image format: raw
+313                             not run    [21:41:26] [21:41:26]   ...                  not suitable for this image format: raw
+migrate-bitmaps-postcopy-test   not run    [21:41:26] [21:41:26]   ...                  not suitable for this image format: raw
+migrate-bitmaps-test            not run    [21:41:26] [21:41:26]   ...                  not suitable for this image format: raw
+mirror-top-perms                pass       [21:41:26] [21:41:27]   0.2s                 
+parallels-read-bitmap           not run    [21:41:27] [21:41:27]   ...                  not suitable for this image format: raw
+qsd-jobs                        not run    [21:41:27] [21:41:27]   ...                  not suitable for this image format: raw
+remove-bitmap-from-backing      not run    [21:41:27] [21:41:27]   ...                  not suitable for this image format: raw
+Not run: 007 013 014 015 017 018 019 020 022 023 024 026 027 028 029 030 031 034 035 036 037 038 039 040 041 042 043 044 046 047 049 050 051 053 054 056 057 058 059 060 061 062 064 065 066 068 069 070 071 072 073 074 075 076 078 079 080 082 083 084 085 087 088 089 090 091 092 094 095 096 097 098 099 102 103 105 107 108 110 111 112 114 115 116 117 119 121 122 123 124 125 126 127 128 129 130 131 133 134 135 137 138 139 141 142 144 146 147 149 153 154 155 156 158 161 165 172 173 174 176 177 179 182 185 186 187 188 189 190 191 195 196 197 198 200 201 202 203 204 205 206 207 209 210 211 212 213 214 215 216 217 219 220 223 224 225 228 229 231 234 235 237 239 241 242 243 244 245 246 247 248 249 250 252 254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 270 271 272 273 274 279 280 281 282 283 284 286 287 288 289 290 291 292 293 294 295 296 297 298 299 301 302 303 304 305 308 309 310 312 313 migrate-bitmaps-postcopy-test migrate-bitmaps-test parallels-read-bitmap qsd-jobs remove-bitmap-from-backing
+Some cases not run in: /home/zhang/kvm/test/qemu-6.0.0/tests/qemu-iotests/118
+Passed all 70 iotests

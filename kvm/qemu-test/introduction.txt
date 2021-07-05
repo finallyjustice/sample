@@ -1,0 +1,112 @@
+QEMU Test Framework
+
+This is the simple explanation on the QEMU test framework.
+
+
+The below command "make check-help" is to list the supported commands.
+
+# make check-help 
+  GIT     
+Regression testing targets:
+ make check                Run block, qapi-schema, unit, softfloat, qtest and decodetree tests
+ make bench                Run speed tests
+
+Individual test suites:
+ make check-qtest-TARGET   Run qtest tests for given target
+ make check-qtest          Run qtest tests
+ make check-unit           Run qobject tests
+ make check-qapi-schema    Run QAPI schema tests
+ make check-block          Run block tests
+ make check-tcg            Run TCG tests
+ make check-softfloat      Run FPU emulation tests
+ make check-acceptance     Run all acceptance (functional) tests
+
+ make check-report.tap     Generates an aggregated TAP test report
+ make check-venv           Creates a Python venv for tests
+ make check-clean          Clean the tests and related data
+
+The following are useful for CI builds
+ make check-build          Build most test binaris
+ make get-vm-images        Downloads all images used by acceptance tests, according to configured targets (~350 MB each, 1.5 GB max)
+
+
+The variable SPEED can be set to control the gtester speed setting.
+Default options are -k and (for make V=1) --verbose; they can be
+changed with variable GTESTER_OPTIONS.
+
+
+This is the list of sub-folders.
+
+# ls -l tests/
+total 204
+drwxr-xr-x 26 zhang zhang  4096 Jul  4 14:33 ./
+drwxr-xr-x 59 zhang zhang  4096 Jul  2 16:20 ../
+drwxr-xr-x  4 zhang zhang  4096 Jul  4 14:32 acceptance/
+drwxr-xr-x  2 zhang zhang  4096 Jul  4 14:32 bench/
+-rwxr-xr-x  1 zhang zhang  2320 Apr 29 10:18 check-block.sh*
+drwxr-xr-x  6 zhang zhang  4096 Apr 29 10:18 data/
+-rwxr-xr-x  1 zhang zhang  3058 Apr 29 10:18 dbus-vmstate-daemon.sh*
+drwxr-xr-x  2 zhang zhang  4096 Apr 29 10:18 decode/
+drwxr-xr-x  3 zhang zhang  4096 Apr 29 10:18 docker/
+drwxr-xr-x  4 zhang zhang  4096 Apr 29 10:18 fp/
+drwxr-xr-x  2 zhang zhang  4096 Apr 29 10:18 guest-debug/
+drwxr-xr-x  3 zhang zhang  4096 Apr 29 10:18 image-fuzzer/
+drwxr-xr-x  2 zhang zhang  4096 Apr 29 10:18 include/
+drwxr-xr-x  2 zhang zhang  4096 Apr 29 10:18 keys/
+-rw-r--r--  1 zhang zhang  5899 Apr 29 10:18 Makefile.include
+-rw-r--r--  1 zhang zhang  2795 Apr 29 10:18 meson.build
+drwxr-xr-x  6 zhang zhang  4096 Apr 29 10:18 migration/
+drwxr-xr-x  2 zhang zhang  4096 Apr 29 10:18 multiboot/
+drwxr-xr-x  3 zhang zhang  4096 Apr 29 10:18 perf/
+drwxr-xr-x  2 zhang zhang  4096 Apr 29 10:18 plugin/
+drwxr-xr-x  3 zhang zhang 36864 Apr 29 10:18 qapi-schema/
+drwxr-xr-x  4 zhang zhang 20480 Apr 29 10:18 qemu-iotests/
+drwxr-xr-x  4 zhang zhang  4096 Jul  4 00:20 qtest/
+-rw-r--r--  1 zhang zhang   225 Apr 29 10:18 requirements.txt
+drwxr-xr-x  2 zhang zhang  4096 Apr 29 10:18 rocker/
+drwxr-xr-x 24 zhang zhang  4096 Apr 29 10:18 tcg/
+-rw-r--r--  1 zhang zhang  1263 Apr 29 10:18 test-qht-par.c
+drwxr-xr-x  2 zhang zhang  4096 Apr 29 10:18 tsan/
+drwxr-xr-x  3 zhang zhang  4096 Apr 29 10:18 uefi-test-tools/
+drwxr-xr-x  2 zhang zhang  4096 Jul  4 18:43 unit/
+-rw-r--r--  1 zhang zhang 20656 Apr 29 10:18 vhost-user-bridge.c
+drwxr-xr-x  2 zhang zhang  4096 Jul  4 11:46 vm/
+drwxr-xr-x  2 zhang zhang  4096 Apr 29 10:18 vmstate-static-checker-data/
+
+
+- Unit tests, which can be invoked with make check-unit, are simple C tests that typically link to individual QEMU object files and exercise them by calling exported functions.
+
+# make check-unit
+
+
+- QTest is a device emulation testing framework. It can be very useful to test device models; it could also control certain aspects of QEMU (such as virtual clock stepping), with a special purpose “qtest” protocol. Refer to QTest Device Emulation Testing Framework for more details.
+
+# make check-qtest
+
+
+- The QAPI schema tests validate the QAPI parser used by QMP, by feeding predefined input to the parser and comparing the result with the reference output.
+
+# make check-qapi-schema V=1
+
+
+- "make check-block" runs a _subset_ of the block layer iotests. QEMU iotests, under the directory tests/qemu-iotests, is the testing framework widely used to test block layer related features. It is higher level than “make check” tests and 99% of the code is written in bash or Python scripts. The testing success criteria is golden output comparison, and the test files are named with numbers.
+
+To run iotests, make sure QEMU is built successfully, then switch to the tests/qemu-iotests directory under the build directory, and run ./check with desired arguments from there.
+
+By default, “raw” format and “file” protocol is used; all tests will be executed, except the unsupported ones. You can override the format and protocol with arguments:
+
+# make check-block
+
+# ./check
+
+# ./check 002
+
+
+Please refer to the devel docs for the "acceptance".
+
+
+References:
+
+- https://qemu.readthedocs.io/en/latest/devel/testing.html
+
+- https://wiki.qemu.org/Testing
