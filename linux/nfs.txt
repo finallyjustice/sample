@@ -1,0 +1,5 @@
+
+# cat /etc/exports
+/home/nfs *(rw,no_root_squash,no_all_squash)
+
+# service nfs start
