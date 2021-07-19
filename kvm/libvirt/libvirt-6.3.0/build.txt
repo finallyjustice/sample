@@ -1,0 +1,60 @@
+To build libvirt-6.3.0 on Oracle Linux 7
+
+
+This is about how I build libvirt-6.3.0 on Oracle Linux in order to diagnose libvirt issue.
+
+Please do not 'su' or 'sudo', unless they are explicitly suggested. By default, all commands are with 'user' privilege.
+
+1. Create "/soft" and change permission to user.
+
+$ sudo mkdir /soft
+$ sudo chown zhang:zhang /soft
+
+
+2. To build libvirt.
+
+$ cd libvirt-6.3.0
+$ mkdir build
+$ ../configure --prefix=/soft/libvirt --with-dtrace=no --enable-debug
+
+Please install prerequisite packages reported by 'configure'.
+
+$ make -j24 > /dev/null
+$ make install
+
+The libvirt will be installed to "/soft/libvirt"
+
+
+3. Please switch to 'su'.
+
+$ su
+#
+
+
+4. To confirm the 'kvm' capability is available. (It is interesting that I do not see 'kvm' capability on VM as hypervisor).
+
+# /soft/libvirt/bin/virsh capabilities | grep kvm
+      <baselabel type='kvm'>+0:+0</baselabel>
+      <domain type='kvm'/>
+      <domain type='kvm'/>
+
+
+5. Please open 3 bash sessions. The 1st is for 'virtlogd'. The 2nd is for 'libvirtd'. The 3rd is for 'virsh'.
+
+(1) To start 'virtlogd':
+
+# /soft/libvirt/sbin/virtlogd -v
+
+(2) To start 'libvirtd':
+
+# /soft/libvirt/sbin/libvirtd -v
+
+
+6. This is to create a VM.
+
+# /soft/libvirt/bin/virsh create vm.xml
+
+# /soft/libvirt/bin/virsh list
+ Id   Name          State
+-----------------------------
+ 1    libvirt-ol7   running
