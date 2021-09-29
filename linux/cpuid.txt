@@ -1,0 +1,6 @@
+# cpuid -1 -r -l 0x1 -s 1
+Disclaimer: cpuid may not support decoding of all cpuid registers.
+CPU:
+   0x00000001 0x01: eax=0x00050654 ebx=0x01200800 ecx=0xfffa3223 edx=0x1f8bfbff
+
+
