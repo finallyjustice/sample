@@ -1,3 +1,12 @@
+qemu-system-x86_64 -smp 4 -m 32G -enable-kvm \
+-cpu host,-kvm,hv_stimer,+hv-relaxed,+hv-vpindex,+hv-ipi,hv_spinlocks=0xfff,+hv-vapic,+hv-tlbflush,+hv-reset,+hv-crash,+hv-synic,+hv-time \
+-vnc :0 -net nic -net user,hostfwd=tcp::5027-:22 \
+-device virtio-blk-pci,drive=drive0,id=virtblk0,num-queues=4 \
+-drive file=ol7.qcow2,if=none,id=drive0 \
+-serial stdio
+
+------------------------------------------------------
+
 qemu-system-x86_64 -smp 4 -m 8G -enable-kvm -cpu host,kvm_pv_unhalt,hv_stimer,hv_relaxed,hv_vpindex,hv_ipi,hv_spinlocks=0xfff,hv_vapic,hv_tlbflush,hv_reset,hv_crash,hv_synic,hv_time -vnc :0 -net nic -net user,hostfwd=tcp::5023-:22 -device virtio-blk-pci,drive=drive0,id=virtblk0,num-queues=4 -drive file=ubuntu1804.img,if=none,id=drive0 -serial stdio
 
 ------------------------------------------------------
