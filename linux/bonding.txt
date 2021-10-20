@@ -1,0 +1,17 @@
+# ip link add bond0 type bond
+RTNETLINK answers: File exists
+
+# ip link set bond0 type bond miimon 100 mode active-backup
+
+# ip link set eth0 down
+
+# ip link set eth0 master bond0
+
+# ip link set bond0 up
+
+# ip addr flush dev eth0
+
+Reference:
+
+10.6. VLAN ON BOND AND BRIDGE USING IP COMMANDS
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/networking_guide/sec-vlan_on_bond_and_bridge_using_ip_commands
