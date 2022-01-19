@@ -1,3 +1,942 @@
 [  204.287810] dracut-initqueue[536]: Warning: dracut-initqueue timeout - starting timeout scripts
 [  204.287820] dracut-initqueue[536]: Warning: Could not boot.
 [  205.287830] dracut-initqueue[536]: Warning: /dev/md1p1 does not exist
+
+-----------------------------
+
+Here is the output if we add 'rd.shell rd.debug loglevel=8' and REMOVE 'rhgb quiet':
+
+
+[    1.055389] dracut-pre-udev[282]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh ']'
+[    1.055471] dracut-pre-udev[282]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh
+[    1.055572] dracut-cmdline[171]: /lib/dracut-lib.sh@242(getargbool): _b=
+[    1.055675] dracut-cmdline[171]: /lib/dracut-lib.sh@243(getargbool): '[' 0 -ne 0 -a -z '' ']'
+[    1.060572] dracut-cmdline[171]: /lib/dracut-lib.sh@244(getargbool): '[' -n '' ']'
+[    1.060654] dracut-cmdline[171]: /lib/dracut-lib.sh@249(getargbool): return 0
+[    1.060727] dracut-cmdline[171]: /lib/dracut-lib.sh@472(check_quiet): DRACUT_QUIET=no
+[    1.060797] dracut-cmdline[171]: /lib/dracut-lib.sh@473(check_quiet): '[' -z 1 ']'
+[    1.060868] dracut-cmdline[171]: /lib/dracut-lib.sh@478(check_quiet): export DRACUT_QUIET
+[    1.060937] dracut-cmdline[171]: /lib/dracut-lib.sh@72(info): '[' no '!=' yes ']'
+[    1.061037] dracut-cmdline[171]: /lib/dracut-lib.sh@73(info): echo 'dracut-7.7 dracut-033-564.0.3.el7'
+[    1.061127] dracut-cmdline[171]: dracut-7.7 dracut-033-564.0.3.el7
+[    1.061475] dracut-pre-udev[282]: ////lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh@4(source): cat /proc/misc
+[    1.061598] dracut-cmdline[171]: //bin/dracut-cmdline@18(): getcmdline
+[    1.061676] dracut-cmdline[171]: //lib/dracut-lib.sh@123(getcmdline): local _line
+[    1.061749] dracut-cmdline[171]: //lib/dracut-lib.sh@124(getcmdline): local _i
+[    1.061819] dracut-cmdline[171]: //lib/dracut-lib.sh@125(getcmdline): local CMDLINE_ETC_D
+[    1.061888] dracut-cmdline[171]: //lib/dracut-lib.sh@126(getcmdline): local CMDLINE_ETC
+[    1.061958] dracut-cmdline[171]: //lib/dracut-lib.sh@127(getcmdline): local CMDLINE_PROC
+[    1.062057] dracut-cmdline[171]: //lib/dracut-lib.sh@128(getcmdline): unset _line
+[    1.062128] dracut-cmdline[171]: //lib/dracut-lib.sh@130(getcmdline): '[' -e /etc/cmdline ']'
+[    1.062196] dracut-cmdline[171]: //lib/dracut-lib.sh@135(getcmdline): for _i in '/etc/cmdline.d/*.conf'
+[    1.062274] dracut-cmdline[171]: //lib/dracut-lib.sh@136(getcmdline): '[' -e '/etc/cmdline.d[    1.087519] ACPI: PCI Interrupt Link [LNKC] enabled at IRQ 10
+/*.conf' ']'
+[    1.062345] dracut-cmdline[171]: //lib/dracut-lib.sh@136(getcmdline): continue
+[    1.062434] dracut-cmdline[171]: //lib/dracut-lib.sh@141(getcmdline): '[' -e /proc/cmdline ']'
+[    1.062508] dracut-cmdline[171]: //lib/dracut-lib.sh@142(getcmdline): read -r _line
+[    1.062586] dracut-cmdline[171]: //lib/dracut-lib.sh@143(getcmdline): CMDLINE_PROC=' BOOT_IMAGE=/vmlinuz-4.14.35-1902.306.2.10.el7uek.x86_64 root=/dev/mapper/ol-root ro crashkernel=auto rd.lvm.lv=ol/root rd.lvm.lv=ol/swap console=ttyS0,115200n8 console=tty0 earlyprintk=ttyS0,115200n8 loglevel=8 rd.shell rd.debug LANG=en_US.UTF-8'
+[    1.062659] dracut-cmdline[171]: //lib/dracut-lib.sh@142(getcmdline): read -r _line
+[    1.062728] dracut-cmdline[171]: //lib/dracut-lib.sh@142(getcmdline): '[' -n '' ']'
+[    1.062806] dracut-cmdline[171]: //lib/dracut-lib.sh@145(getcmdline): CMDLINE='   BOOT_IMAGE=/vmlinuz-4.14.35-1902.306.2.10.el7uek.x86_64 root=/dev/mapper/ol-root ro crashkernel=auto rd.lvm.lv=ol/root rd.lvm.lv=ol/swap console=ttyS0,115200n8 console=tty0 earlyprintk=ttyS0,115200n8 loglevel=8 rd.shell rd.debug LANG=en_US.UTF-8'
+[    1.062878] dracut-cmdline[171]: //lib/dracut-lib.sh@147(getcmdline): printf %s '   BOOT_IMAGE=/vmlinuz-4.14.35-1902.306.2.10.el7uek.x86_64 root=/dev/mapper/ol-root ro crashkernel=auto rd.lvm.lv=ol/root rd.lvm.lv=ol/swap console=ttyS0,115200n8 console=tty0 earlyprintk=ttyS0,115200n8 loglevel=8 rd.shell rd.debug LANG=en_US.UTF-8'
+[    1.063240] dracut-pre-udev[282]: ///lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh@4(source): strstr ' 59 memory_bandwidth
+[    1.065757] dracut-pre-udev[282]: 60 network_throughput
+[    1.065832] dracut-pre-udev[282]: 61 network_latency
+[    1.065901] dracut-pre-udev[282]: 62 cpu_dma_latency
+[    1.065968] dracut-pre-udev[282]: 227 mcelog
+[    1.066061] dracut-pre-udev[282]: 196 vfio
+[    1.066130] dracut-pre-udev[282]: 183 hw_random
+[    1.066198] dracut-pre-udev[282]: 144 nvram
+[    1.066276] dracut-pre-udev[282]: 228 hpet
+[    1.066343] dracut-pre-udev[282]: 235 autofs
+[    1.066414] dracut-pre-udev[282]: 231 snapshot
+[    1.066482] dracut-pre-udev[282]: 63 vga_arbiter' device-mapper
+[    1.066549] dracut-pre-udev[282]: //lib/dracut-lib.sh@29(strstr): '[' ' 59 memory_bandwidth
+[    1.066617] dracut-pre-udev[282]: 60 network_throughput
+[    1.066683] dracut-pre-udev[282]: 61 network_latency
+[    1.066749] dracut-pre-udev[282]: 62 cpu_dma_latency
+[    1.066815] dracut-pre-udev[282]: 227 mcelog
+[    1.066881] dracut-pre-udev[282]: 196 vfio
+[    1.066947] dracut-pre-udev[282]: 183 hw_random
+[    1.067036] dracut-pre-udev[282]: 144 nvram
+[    1.067106] dracut-pre-udev[282]: 228 hpet
+[    1.067175] dracut-pre-udev[282]: 235 autofs
+[    1.067248] dracut-pre-udev[282]: 231 snapshot
+[    1.067317] dracut-pre-udev[282]: 63 vga_arbiter' '!=' ' 59 memory_bandwidth
+[    1.067387] dracut-pre-udev[282]: 60 network_throughput
+[    1.067454] dracut-pre-udev[282]: 61 network_latency
+[    1.067522] dracut-pre-udev[282]: 62 cpu_dma_latency
+[    1.067590] dracut-pre-udev[282]: 227 mcelog
+[    1.067655] dracut-pre-udev[282]: 196 vfio
+[    1.067723] dracut-pre-udev[282]: 183 hw_random
+[    1.067790] dracut-pre-udev[282]: 144 nvram
+[    1.067857] dracut-pre-udev[282]: 228 hpet
+[    1.067923] dracut-pre-udev[282]: 235 autofs
+[    1.068008] dracut-pre-udev[282]: 231 snapshot
+[    1.068082] dracut-pre-udev[282]: 63 vga_arbiter' ']'
+[    1.068154] dracut-pre-udev[282]: ///lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh@4(source): modprobe dm_mod
+[    1.068223] dracut-pre-udev[282]: ///lib/dracut/hooks/pre-udev/30-dm-pre-udev.sh@5(source): modprobe dm_mirror
+[    1.068295] dracut-pre-udev[282]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    1.068364] dracut-pre-udev[282]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/pre-udev/50-ifname-genrules.sh ']'
+[    1.068434] dracut-pre-udev[282]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/pre-udev/50-ifname-genrules.sh
+[    1.068504] dracut-pre-udev[282]: ///lib/dracut/hooks/pre-udev/50-ifname-genrules.sh@6(source): getarg ifname=
+[    1.068574] dracut-pre-udev[282]: //lib/dracut-lib.sh@187(getarg): debug_off
+[    1.068643] dracut-pre-udev[282]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.068713] dracut-pre-udev[282]: //lib/dracut-lib.sh@227(getarg): return 1
+[    1.068782] dracut-pre-udev[282]: ///lib/dracut/hooks/pre-udev/50-ifname-genrules.sh@7(source): return
+[    1.068853] dracut-pre-udev[282]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    1.068922] dracut-pre-udev[282]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/pre-udev/60-net-genrules.sh ']'
+[    1.069012] dracut-pre-udev[282]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/pre-udev/60-net-genrules.sh
+[    1.069088] dracut-pre-udev[282]: [    1.165166] virtio_blk virtio0: [vda] 20971520 512-byte logical blocks (10.7 GB/10.0 GiB)
+[    1.169343]  vda: vda1 vda2
+///lib/dracut/hooks/pre-udev/60-net-genrules.sh@3(source): getargbool 0 rd.neednet
+[    1.070914] dracut-pre-udev[282]: //lib/dracut-lib.sh@238(getargbool): local _b
+[    1.070966] dracut-pre-udev[282]: //lib/dracut-lib.sh@239(getargbool): unset _b
+[    1.071032] dracut-pre-udev[282]: //lib/dracut-lib.sh@240(getargbool): local _default
+[    1.071079] dracut-pre-udev[282]: //lib/dracut-lib.sh@241(getargbool): _default=0
+[    1.071124] dracut-pre-udev[282]: //lib/dracut-lib.sh@241(getargbool): shift
+[    1.071201] dracut-cmdline[171]: /bin/dracut-cmdline@18(): info 'Using kernel command line parameters:' BOOT_IMAGE=/vmlinuz-4.14.35-1902.306.2.10.el7uek.x86_64 root=/dev/mapper/ol-root ro crashkernel=auto rd.lvm.lv=ol/root rd.lvm.lv=ol/swap console=ttyS0,115200n8 console=tty0 earlyprintk=ttyS0,115200n8 loglevel=8 rd.shell rd.debug LANG=en_US.UTF-8
+[    1.071258] dracut-cmdline[171]: /lib/dracut-lib.sh@71(info): check_quiet
+[    1.071304] dracut-cmdline[171]: /lib/dracut-lib.sh@469(check_quiet): '[' -z no ']'
+[    1.071350] dracut-cmdline[171]: /lib/dracut-lib.sh@72(info): '[' no '!=' yes ']'
+[    1.071394] dracut-cmdline[171]: /lib/dracut-lib.sh@73(info): echo 'Using kernel command line parameters: BOOT_IMAGE=/vmlinuz-4.14.35-1902.306.2.10.el7uek.x86_64 root=/dev/mapper/ol-root ro crashkernel=auto rd.lvm.lv=ol/root rd.lvm.lv=ol/swap console=ttyS0,115200n8 console=tty0 earlyprintk=ttyS0,115200n8 loglevel=8 rd.shell rd.debug LANG=en_US.UTF-8'
+[    1.071440] dracut-cmdline[171]: Using kernel command line parameters: BOOT_IMAGE=/vmlinuz-4.14.35-1902.306.2.10.el7uek.x86_64 root=/dev/mapper/ol-root ro crashkernel=auto rd.lvm.lv=ol/root rd.lvm.lv=ol/swap console=ttyS0,115200n8 console=tty0 earlyprintk=ttyS0,115200n8 loglevel=8 rd.shell rd.debug LANG=en_US.UTF-8
+[    1.071485] dracut-cmdline[171]: /bin/dracut-cmdline@20(): getargbool 0 rd.udev.log-priority=info -d rd.udev.info -d -n -y rdudevinfo
+[    1.071530] dracut-cmdline[171]: /lib/dracut-lib.sh@238(getargbool): local _b
+[    1.071575] dracut-cmdline[171]: /lib/dracut-lib.sh@239(getargbool): unset _b
+[    1.071620] dracut-cmdline[171]: /lib/dracut-lib.sh@240(getargbool): local _default
+[    1.071666] dracut-cmdline[171]: /lib/dracut-lib.sh@241(getargbool): _default=0
+[    1.071715] dracut-cmdline[171]: /lib/dracut-lib.sh@241(getargbool): shift
+[    1.072040] dracut-pre-udev[282]: ///lib/dracut-lib.sh@242(getargbool): getarg rd.neednet
+[    1.072158] dracut-pre-udev[282]: ///lib/dracut-lib.sh@187(getarg): debug_off
+[    1.072207] dracut-pre-udev[282]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.072254] dracut-pre-udev[282]: ///lib/dracut-lib.sh@227(getarg): return 1
+[    1.072310] dracut-cmdline[171]: //lib/dracut-lib.sh@242(getargbool): getarg rd.udev.log-priority=info -d rd.udev.info -d -n -y rdudevinfo
+[    1.072359] dracut-cmdline[171]: //lib/dracut-lib.sh@187(getarg): debug_off
+[    1.072405] dracut-cmdline[171]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.072451] dracut-cmdline[171]: //lib/dracut-lib.sh@227(getarg): return 1
+[    1.072745] dracut-pre-udev[282]: //lib/dracut-lib.sh@242(getargbool): _b=
+[    1.072801] dracut-pre-udev[282]: //lib/dracut-lib.sh@243(getargbool): '[' 1 -ne 0 -a -z '' ']'
+[    1.072849] dracut-pre-udev[282]: //lib/dracut-lib.sh@243(getargbool): _b=0
+[    1.072894] dracut-pre-udev[282]: //lib/dracut-lib.sh@244(getargbool): '[' -n 0 ']'
+[    1.072939] dracut-pre-udev[282]: //lib/dracut-lib.sh@245(getargbool): '[' 0 = 0 ']'
+[    1.072996] dracut-pre-udev[282]: //lib/dracut-lib.sh@245(getargbool): return 1
+[    1.073057] dracut-pre-udev[282]: ///lib/dracut/hooks/pre-udev/60-net-genrules.sh@6(source): '[' -z '' ']'
+[    1.073105] dracut-pre-udev[282]: ///lib/dracut/hooks/pre-udev/60-net-genrules.sh@6(source): '[' '!' -e /tmp/net.ifaces ']'
+[    1.073153] dracut-pre-udev[282]: ///lib/dracut/hooks/pre-udev/60-net-genrules.sh@6(source): '[' '' '!=' 1 ']'
+[    1.073204] dracut-pre-udev[282]: ///lib/dracut/hooks/pre-udev/60-net-genrules.sh@7(source): return
+[    1.073250] dracut-pre-udev[282]: /bin/dracut-pre-udev@18(): _modprobe_d=/etc/modprobe.d
+[    1.073295] dracut-pre-udev[282]: /bin/dracut-pre-udev@19(): '[' -d /usr/lib/modprobe.d ']'
+[    1.073339] dracut-pre-udev[282]: /bin/dracut-pre-udev@20(): _modprobe_d=/usr/lib/modprobe.d
+[    1.073403] dracut-cmdline[171]: /lib/dracut-lib.sh@242(getargbool): _b=
+[    1.073455] dracut-cmdline[171]: /lib/dracut-lib.sh@243(getargbool): '[' 1 -ne 0 -a -z '' ']'
+[    1.073503] dracut-cmdline[171]: /lib/dracut-lib.sh@243(getargbool): _b=0
+[    1.073550] dracut-cmdline[171]: /lib/dracut-lib.sh@244(getargbool): '[' -n 0 ']'
+[    1.073946] dracut-cmdline[171]: /lib/dracut-lib.sh@245(getargbool): '[' 0 = 0 ']'
+[    1.074015] dracut-cmdline[171]: /lib/dracut-lib.sh@245(getargbool): return 1
+[    1.074068] dracut-cmdline[171]: /bin/dracut-cmdline@21(): getargbool 0 rd.udev.log-priority=debug -d rd.udev.debug -d -n -y rdudevdebug
+[    1.074115] dracut-cmdline[171]: /lib/dracut-lib.sh@238(getargbool): local _b
+[    1.074160] dracut-cmdline[171]: /lib/dracut-lib.sh@239(getargbool): unset _b
+[    1.074203] dracut-cmdline[171]: /lib/dracut-lib.sh@240(getargbool): local _default
+[    1.074253] dracut-cmdline[171]: /lib/dracut-lib.sh@241(getargbool): _default=0
+[    1.074297] dracut-cmdline[171]: /lib/dracut-lib.sh@241(getargbool): shift
+[    1.074583] dracut-pre-udev[282]: //bin/dracut-pre-udev@34(): getargs rd.driver.pre -d rdloaddriver=
+[    1.074643] dracut-pre-udev[282]: //lib/dracut-lib.sh@305(getargs): debug_off
+[    1.074690] dracut-pre-udev[282]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.074733] dracut-pre-udev[282]: //lib/dracut-lib.sh@337(getargs): return 1
+[    1.074787] dracut-cmdline[171]: //lib/dracut-lib.sh@242(getargbool): getarg rd.udev.log-priority=debug -d rd.udev.debug -d -n -y rdudevdebug
+[    1.074834] dracut-cmdline[171]: //lib/dracut-lib.sh@187(getarg): debug_off
+[    1.074878] dracut-cmdline[171]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.074922] dracut-cmdline[171]: //lib/dracut-lib.sh@227(getarg): return 1
+[    1.075061] dracut-initqueue[338]: //lib/dracut-lib.sh@421(): hookdir=/lib/dracut/hooks
+[    1.075231] dracut-initqueue[338]: //lib/dracut-lib.sh@422(): export hookdir
+[    1.075378] dracut-initqueue[338]: //lib/dracut-lib.sh@549(): command -v findmnt
+[    1.075523] dracut-initqueue[338]: //lib/dracut-lib.sh@1013(): command -v pidof
+[    1.075664] dracut-initqueue[338]: //lib/dracut-lib.sh@1203(): setmemdebug
+[    1.075806] dracut-initqueue[338]: //lib/dracut-lib.sh@1198(setmemdebug): '[' -z 0 ']'
+[    1.075953] dracut-initqueue[338]: /bin/dracut-initqueue@11(): source_conf /etc/conf.d
+[    1.076114] dracut-initqueue[338]: /lib/dracut-lib.sh@440(source_conf): local f
+[    1.076256] dracut-initqueue[338]: /lib/dracut-lib.sh@441(source_conf): '[' /etc/conf.d ']'
+[    1.076396] dracut-initqueue[338]: /lib/dracut-lib.sh@441(source_conf): '[' -d //etc/conf.d ']'
+[    1.076537] dracut-initqueue[338]: /lib/dracut-lib.sh@442(source_conf): for f in '"/$1"/*.conf'
+[    1.076677] dracut-initqueue[338]: /lib/dracut-lib.sh@442(source_conf): '[' -e //etc/conf.d/systemd.conf ']'
+[    1.076819] dracut-initqueue[338]: /lib/dracut-lib.sh@442(source_conf): . //etc/conf.d/systemd.conf
+[    1.076960] dracut-initqueue[338]: ///etc/conf.d/systemd.conf@1(source): systemdutildir=/usr/lib/systemd
+[    1.077132] dracut-initqueue[338]: ///etc/conf.d/systemd.conf@2(source): systemdsystemunitdir=/usr/lib/systemd/system
+[    1.077278] dracut-initqueue[338]: ///etc/conf.d/systemd.conf@3(source): systemdsystemconfdir=/etc/systemd/system
+[    1.077423] dracut-initqueue[338]: /bin/dracut-initqueue@13(): make_trace_mem 'hook initqueue' 1:shortmem 2+:mem 3+:slab
+[    1.077569] dracut-initqueue[338]: /lib/dracut-lib.sh@1216(make_trace_mem): local msg
+[    1.077711] dracut-initqueue[338]: /lib/dracut-lib.sh@1217(make_trace_mem): msg='hook initqueue'
+[    1.077853] dracut-initqueue[338]: /lib/dracut-lib.sh@1218(make_trace_mem): shift
+[    1.078012] dracut-initqueue[338]: /lib/dracut-lib.sh@1219(make_trace_mem): '[' -n 0 ']'
+[    1.078165] dracut-initqueue[338]: /lib/dracut-lib.sh@1219(make_trace_mem): '[' 0 -gt 0 ']'
+[    1.078309] dracut-initqueue[338]: /bin/dracut-initqueue@14(): getarg rd.break=initqueue -d rdbreak=initqueue
+[    1.078452] dracut-initqueue[338]: /lib/dracut-lib.sh@187(getarg): debug_off
+[    1.078595] dracut-initqueue[338]: /lib/dracut-lib.sh@20(debug_off): set +x
+[    1.078742] dracut-initqueue[338]: /lib/dracut-lib.sh@227(getarg): return 1
+[    1.079954] dracut-pre-udev[282]: /bin/dracut-pre-udev@37(): '[' -d /etc/modprobe.d ']'
+[    1.080047] dracut-cmdline[171]: /lib/dracut-lib.sh@242(getargbool): _b=
+[    1.080105] dracut-cmdline[171]: /lib/dracut-lib.sh@243(getargbool): '[' 1 -ne 0 -a -z '' ']'
+[    1.080152] dracut-cmdline[171]: /lib/dracut-lib.sh@243(getargbool): _b=0
+[    1.080199] dracut-cmdline[171]: /lib/dracut-lib.sh@244(getargbool): '[' -n 0 ']'
+[    1.080245] dracut-cmdline[171]: /lib/dracut-lib.sh@245(getargbool): '[' 0 = 0 ']'
+[    1.080290] dracut-cmdline[171]: /lib/dracut-lib.sh@245(getargbool): return 1
+[    1.080336] dracut-cmdline[171]: /bin/dracut-cmdline@23(): source_conf /etc/conf.d
+[    1.080382] dracut-cmdline[171]: /lib/dracut-lib.sh@440(source_conf): local f
+[    1.080428] dracut-cmdline[171]: /lib/dracut-lib.sh@441(source_conf): '[' /etc/conf.d ']'
+[    1.080473] dracut-cmdline[171]: /lib/dracut-lib.sh@441(source_conf): '[' -d //etc/conf.d ']'
+[    1.080519] dracut-cmdline[171]: /lib/dracut-lib.sh@442(source_conf): for f in '"/$1"/*.conf'
+[    1.080564] dracut-cmdline[171]: /lib/dracut-lib.sh@442(source_conf): '[' -e //etc/conf.d/systemd.conf ']'
+[    1.080610] dracut-cmdline[171]: /lib/dracut-lib.sh@442(source_conf): . //etc/conf.d/systemd.conf
+[    1.080655] dracut-cmdline[171]: ///etc/conf.d/systemd.conf@1(source): systemdutildir=/usr/lib/systemd
+[    1.080701] dracut-cmdline[171]: ///etc/conf.d/systemd.conf@2(source): systemdsystemunitdir=/usr/lib/systemd/system
+[    1.080746] dracut-cmdline[171]: ///etc/conf.d/systemd.conf@3(source): systemdsystemconfdir=/etc/systemd/system
+[    1.080873] dracut-initqueue[338]: //bin/dracut-initqueue@16(): getarg rd.retry -d rd_retry=
+[    1.081052] dracut-initqueue[338]: //lib/dracut-lib.sh@187(getarg): debug_off
+[    1.081265] dracut-initqueue[338]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.081408] dracut-initqueue[338]: //lib/dracut-lib.sh@227(getarg): return 1
+[    1.081697] dracut-pre-udev[282]: //bin/dracut-pre-udev@46(): getargs rd.driver.blacklist -d rdblacklist=
+[    1.081759] dracut-pre-udev[282]: //lib/dracut-lib.sh@305(getargs): debug_off
+[    1.081806] dracut-pre-udev[282]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.081853] dracut-pre-udev[282]: //lib/dracut-lib.sh@337(getargs): return 1
+[    1.081906] dracut-cmdline[171]: //bin/dracut-cmdline@28(): getarg root=
+[    1.081954] dracut-cmdline[171]: //lib/dracut-lib.sh@187(getarg): debug_off
+[    1.082082] dracut-cmdline[171]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.082136] dracut-cmdline[171]: //lib/dracut-lib.sh@220(getarg): return 0
+[    1.082258] dracut-initqueue[338]: /bin/dracut-initqueue@16(): RDRETRY=
+[    1.082413] dracut-initqueue[338]: /bin/dracut-initqueue@17(): RDRETRY=180
+[    1.082624] dracut-initqueue[338]: /bin/dracut-initqueue@18(): RDRETRY=360
+[    1.082768] dracut-initqueue[338]: /bin/dracut-initqueue@19(): export RDRETRY
+[    1.082910] dracut-initqueue[338]: /bin/dracut-initqueue@21(): main_loop=0
+[    1.083075] dracut-initqueue[338]: /bin/dracut-initqueue@22(): export main_loop
+[    1.083220] dracut-initqueue[338]: /bin/dracut-initqueue@24(): :
+[    1.083361] dracut-initqueue[338]: /bin/dracut-initqueue@26(): check_finished
+[    1.083506] dracut-initqueue[338]: /lib/dracut-lib.sh@431(check_finished): local f
+[    1.083651] dracut-initqueue[338]: /lib/dracut-lib.sh@432(check_finished): for f in '$hookdir/initqueue/finished/*.sh'
+[    1.083799] dracut-initqueue[338]: /lib/dracut-lib.sh@433(check_finished): '[' '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fmapper\x2fol-root.sh' = '/lib/dracut/hooks/initqueue/finishe[    1.447847] NOHZ: local_softirq_pending 282
+[    1.447852] NOHZ: local_softirq_pending 282
+[    1.467914] e1000 0000:00:03.0 eth0: (PCI:33MHz:32-bit) 52:54:00:12:34:56
+[    1.467918] e1000 0000:00:03.0 eth0: Intel(R) PRO/1000 Network Connection
+[    1.467982] ata_piix 0000:00:01.1: version 2.13
+[    1.470117] e1000 0000:00:03.0 ens3: renamed from eth0
+[    1.470188] scsi host0: ata_piix
+[    1.470588] scsi host1: ata_piix
+[    1.470612] ata1: PATA max MWDMA2 cmd 0x1f0 ctl 0x3f6 bmdma 0xc0c0 irq 14
+[    1.470613] ata2: PATA max MWDMA2 cmd 0x170 ctl 0x376 bmdma 0xc0c8 irq 15
+[    1.470825] [drm] Found bochs VGA, ID 0xb0c0.
+[    1.470826] [drm] Framebuffer size 16384 kB @ 0xfd000000, mmio @ 0xfebf0000.
+[    1.470910] [TTM] Zone  kernel: Available graphics memory: 1881990 kiB
+[    1.470910] [TTM] Initializing pool allocator
+[    1.470913] [TTM] Initializing DMA pool allocator
+[    1.486114] fbcon: bochsdrmfb (fb0) is primary device
+[    1.497067] Console: switching to colour frame buffer device 128x48
+[    1.499991] bochs-drm 0000:00:02.0: fb0: bochsdrmfb frame buffer device
+d/*.sh' ']'
+[    1.083943] dracut-initqueue[338]: /lib/dracut-lib.sh@434(check_finished): '[' -e '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fmapper\x2fol-root.sh' ']'
+[    1.084253] dracut-pre-udev[282]: //bin/dracut-pre-udev@51(): getargs rd.driver.post -d rdinsmodpost=
+[    1.084313] dracut-pre-udev[282]: //lib/dracut-lib.sh@305(getargs): debug_off
+[    1.084361] dracut-pre-udev[282]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.084407] dracut-pre-udev[282]: //lib/dracut-lib.sh@337(getargs): return 1
+[    1.084459] dracut-cmdline[171]: /bin/dracut-cmdline@28(): root=/dev/mapper/ol-root
+[    1.084511] dracut-initqueue[338]: /lib/dracut-lib.sh@434(check_finished): . '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fmapper\x2fol-root.sh'
+[    1.084660] dracut-initqueue[338]: //lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fmapper\x2fol-root.sh@1(source): '[' -e /dev/mapper/ol-root ']'
+[    1.084957] dracut-pre-udev[282]: /bin/dracut-pre-udev@53(): '[' -n '' ']'
+[    1.085030] dracut-pre-udev[282]: /bin/dracut-pre-udev@54(): unset _do_insmodpost _modprobe_d
+[    1.085085] dracut-pre-udev[282]: /bin/dracut-pre-udev@55(): unset i
+[    1.085133] dracut-pre-udev[282]: /bin/dracut-pre-udev@57(): export -p
+[    1.085178] dracut-pre-udev[282]: /bin/dracut-pre-udev@58(): exit 0
+[    1.085232] dracut-cmdline[171]: //bin/dracut-cmdline@32(): getarg rootflags=
+[    1.085284] dracut-cmdline[171]: //lib/dracut-lib.sh@187(getarg): debug_off
+[    1.085331] dracut-cmdline[171]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.085376] dracut-cmdline[171]: //lib/dracut-lib.sh@227(getarg): return 1
+[    1.085432] dracut-initqueue[338]: /lib/dracut-lib.sh@434(check_finished): return 1
+[    1.085581] dracut-initqueue[338]: /bin/dracut-initqueue@28(): udevadm settle --exit-if-exists=/lib/dracut/hooks/initqueue/work
+[    1.085894] dracut-cmdline[171]: /bin/dracut-cmdline@32(): rflags=
+[    1.085956] dracut-cmdline[171]: /bin/dracut-cmdline@33(): getargbool 0 ro
+[    1.086025] dracut-cmdline[171]: /lib/dracut-lib.sh@238(getargbool): local _b
+[    1.086074] dracut-cmdline[171]: /lib/dracut-lib.sh@239(getargbool): unset _b
+[    1.086120] dracut-cmdline[171]: /lib/dracut-lib.sh@240(getargbool): local _default
+[    1.086166] dracut-cmdline[171]: /lib/dracut-lib.sh@241(getargbool): _default=0
+[    1.086212] dracut-cmdline[171]: /lib/dracut-lib.sh@241(getargbool): shift
+[    1.086272] dracut-cmdline[171]: //lib/dracut-lib.sh@242(getargbool): getarg ro
+[    1.086322] dracut-cmdline[171]: //lib/dracut-lib.sh@187(getarg): debug_off
+[    1.086368] dracut-cmdline[171]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.086413] dracut-cmdline[171]: //lib/dracut-lib.sh@220(getarg): return 0
+[    1.086475] dracut-cmdline[171]: /lib/dracut-lib.sh@242(getargbool): _b=
+[    1.086524] dracut-cmdline[171]: /lib/dracut-lib.sh@243(getargbool): '[' 0 -ne 0 -a -z '' ']'
+[    1.086570] dracut-cmdline[171]: /lib/dracut-lib.sh@244(getargbool): '[' -n '' ']'
+[    1.086615] dracut-cmdline[171]: /lib/dracut-lib.sh@249(getargbool): return 0
+[    1.086661] dracut-cmdline[171]: /bin/dracut-cmdline@33(): rflags=,ro
+[    1.086706] dracut-cmdline[171]: /bin/dracut-cmdline@34(): getargbool 0 rw
+[    1.086751] dracut-cmdline[171]: /lib/dracut-lib.sh@238(getargbool): local _b
+[    1.086799] dracut-cmdline[171]: /lib/dracut-lib.sh@239(getargbool): unset _b
+[    1.086846] dracut-cmdline[171]: /lib/dracut-lib.sh@240(getargbool): local _default
+[    1.086891] dracut-cmdline[171]: /lib/dracut-lib.sh@241(getargbool): _default=0
+[    1.086937] dracut-cmdline[171]: /lib/dracut-lib.sh@241(getargbool): shift
+[    1.087007] dracut-cmdline[171]: //lib/dracut-lib.sh@242(getargbool): getarg rw
+[    1.087060] dracut-cmdline[171]: //lib/dracut-lib.sh@187(getarg): debug_off
+[    1.087106] dracut-cmdline[171]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.087153] dracut-cmdline[171]: //lib/dracut-lib.sh@227(getarg): return 1
+[    1.087210] dracut-cmdline[171]: /lib/dracut-lib.sh@242(getargbool): _b=
+[    1.087263] dracut-cmdline[171]: /lib/dracut-lib.sh@243(getargbool): '[' 1 -ne 0 -a -z '' ']'
+[    1.087308] dracut-cmdline[171]: /lib/dracut-lib.sh@243(getargbool): _b=0
+[    1.087353] dracut-cmdline[171]: /lib/dracut-lib.sh@244(getargbool): '[' -n 0 ']'
+[    1.087400] dracut-cmdline[171]: /lib/dracut-lib.sh@245(getargbool): '[' 0 = 0 ']'
+[    1.087445] dracut-cmdline[171]: /lib/dracut-lib.sh@245(getargbool): return 1
+[    1.087490] dracut-cmdline[171]: /bin/dracut-cmdline@35(): rflags=ro
+[    1.087542] dracut-cmdline[171]: //bin/dracut-cmdline@37(): getarg rootfstype=
+[    1.090293] dracut-cmdline[171]: //lib/dracut-lib.sh@187(getarg): debug_off
+[    1.090353] dracut-cmdline[171]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.090414] dracut-cmdline[171]: //lib/dracut-lib.sh@227(getarg): return 1
+[    1.090493] dracut-cmdline[171]: /bin/dracut-cmdline@37(): fstype=
+[    1.090544] dracut-cmdline[171]: /bin/dracut-cmdline@38(): '[' -z '' ']'
+[    1.090598] dracut-cmdline[171]: /bin/dracut-cmdline@39(): fstype=auto
+[    1.090647] dracut-cmdline[171]: /bin/dracut-cmdline@42(): export root
+[    1.090692] dracut-cmdline[171]: /bin/dracut-cmdline@43(): export rflags
+[    1.090738] dracut-cmdline[171]: /bin/dracut-cmdline@44(): export fstype
+[    1.090784] dracut-cmdline[171]: /bin/dracut-cmdline@46(): make_trace_mem 'hook cmdline' 1+:mem 1+:iomem 3+:slab 4+:komem
+[    1.090831] dracut-cmdline[171]: /lib/dracut-lib.sh@1216(make_trace_mem): local msg
+[    1.090877] dracut-cmdline[171]: /lib/dracut-lib.sh@1217(make_trace_mem): msg='hook cmdline'
+[    1.090923] dracut-cmdline[171]: /lib/dracut-lib.sh@1218(make_trace_mem): shift
+[    1.090970] dracut-cmdline[171]: /lib/dracut-lib.sh@1219(make_trace_mem): '[' -n 0 ']'
+[    1.091035] dracut-cmdline[171]: /lib/dracut-lib.sh@1219(make_trace_mem): '[' 0 -gt 0 ']'
+[    1.091087] dracut-cmdline[171]: /bin/dracut-cmdline@48(): getarg rd.break=cmdline -d rdbreak=cmdline
+[    1.091137] dracut-cmdline[171]: /lib/dracut-lib.sh@187(getarg): debug_off
+[    1.091188] dracut-cmdline[171]: /lib/dracut-lib.sh@20(debug_off): set +x
+[    1.091236] dracut-cmdline[171]: /lib/dracut-lib.sh@227(getarg): return 1
+[    1.091282] dracut-cmdline[171]: /bin/dracut-cmdline@49(): source_hook cmdline
+[    1.091329] dracut-cmdline[171]: /lib/dracut-lib.sh@425(source_hook): local _dir
+[    1.091376] dracut-cmdline[171]: /lib/dracut-lib.sh@426(source_hook): _dir=cmdline
+[    1.091421] dracut-cmdline[171]: /lib/dracut-lib.sh@426(source_hook): shift
+[    1.091466] dracut-cmdline[171]: /lib/dracut-lib.sh@427(source_hook): source_all /lib/dracut/hooks/cmdline
+[    1.091511] dracut-cmdline[171]: /lib/dracut-lib.sh@414(source_all): local f
+[    1.091557] dracut-cmdline[171]: /lib/dracut-lib.sh@415(source_all): local _dir
+[    1.091602] dracut-cmdline[171]: /lib/dracut-lib.sh@416(source_all): _dir=/lib/dracut/hooks/cmdline
+[    1.091649] dracut-cmdline[171]: /lib/dracut-lib.sh@416(source_all): shift
+[  OK  ] Started Show Plymouth Boot Screen.
+[    1.217315] dracut-cmdline[171]: /lib/dracut-lib.sh@417(source_all): '[' /lib/dracut/hooks/cmdline ']'
+[    1.217368] dracut-cmdline[171]: /lib/dracut-lib.sh@417(source_all): '[' -d //lib/dracut/hooks/cmdline ']'
+[    1.217408] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    1.217447] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/cmdline/30-parse-lvm.sh ']'
+[    1.217489] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/cmdline/30-parse-lvm.sh
+[    1.217526] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/30-parse-lvm.sh@4(source): '[' -e /etc/lvm/lvm.conf ']'
+[  OK  ] Started Forward Password Requests to Plymouth Directory Watch.
+[    1.217564] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/30-parse-lvm.sh@4(source): getargbool 1 rd.lvm.conf -d -n rd_NO_LVMCONF
+[  OK  ] Reached target Paths.
+[  OK  ] [    1.217605] Reached target Basic System.dracut-cmdline
+[171]: //lib/dracut-lib.sh@238(getargbool): lo[    1.576822] serial8250: too much work for irq4
+[    1.577138] NOHZ: local_softirq_pending 282
+[    1.577152] NOHZ: local_softirq_pending 282
+[    1.578029] [drm] Initialized bochs-drm 1.0.0 20130925 for 0000:00:02.0 on minor 0
+cal _b
+[    1.217646] dracut-cmdline[171]: //lib/dracut-lib.sh@239(getargbool): unset _b
+[    1.217682] dracut-cmdline[171]: //lib/dracut-lib.sh@240(getargbool): local _default
+[    1.217720] dracut-cmdline[171]: //lib/dracut-lib.sh@241(getargbool): _default=1
+[    1.217756] dracut-cmdline[171]: //lib/dracut-lib.sh@241(getargbool): shift
+[    1.218114] dracut-cmdline[171]: ///lib/dracut-lib.sh@242(getargbool): getarg rd.lvm.conf -d -n rd_NO_LVMCONF
+[    1.218171] dracut-cmdline[171]: ///lib/dracut-lib.sh@187(getarg): debug_off
+[    1.218211] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.218252] dracut-cmdline[171]: ///lib/dracut-lib.sh@227(getarg): return 1
+[    1.218478] dracut-cmdline[171]: //lib/dracut-lib.sh@242(getargbool): _b=
+[    1.218544] dracut-cmdline[171]: //lib/dracut-lib.sh@243(getargbool): '[' 1 -ne 0 -a -z '' ']'
+[    1.218590] dracut-cmdline[171]: //lib/dracut-lib.sh@243(getargbool): _b=1
+[    1.218632] dracut-cmdline[171]: //lib/dracut-lib.sh@244(getargbool): '[' -n 1 ']'
+[    1.218678] dracut-cmdline[171]: //lib/dracut-lib.sh@245(getargbool): '[' 1 = 0 ']'
+[    1.218722] dracut-cmdline[171]: //lib/dracut-lib.sh@246(getargbool): '[' 1 = no ']'
+[    1.218765] dracut-cmdline[171]: //lib/dracut-lib.sh@247(getargbool): '[' 1 = off ']'
+[    1.218807] dracut-cmdline[171]: //lib/dracut-lib.sh@249(getargbool): return 0
+[    1.219029] dracut-cmdline[171]: ////lib/dracut/hooks/cmdline/30-parse-lvm.sh@8(source): getargs rd.lvm.vg -d rd_LVM_VG=
+[    1.219080] dracut-cmdline[171]: ///lib/dracut-lib.sh@305(getargs): debug_off
+[    1.219123] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.219166] dracut-cmdline[171]: ///lib/dracut-lib.sh@337(getargs): return 1
+[    1.219379] dracut-cmdline[171]: ////lib/dracut/hooks/cmdline/30-parse-lvm.sh@8(source): getargs rd.lvm.lv -d rd_LVM_LV=
+[    1.219428] dracut-cmdline[171]: ///lib/dracut-lib.sh@305(getargs): debug_off
+[    1.219472] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.219531] dracut-cmdline[171]: ///lib/dracut-lib.sh@334(getargs): return 0
+[    1.219721] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/30-parse-lvm.sh@8(source): LV_DEVS=' ol/root ol/swap'
+[    1.264556] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/30-parse-lvm.sh@10(source): getargbool 1 rd.lvm -d -n rd_NO_LVM
+[    1.265414] dracut-cmdline[171]: //lib/dracut-lib.sh@238(getargbool): local _b
+[    1.265550] dracut-cmdline[171]: //lib/dracut-lib.sh@239(getargbool): unset _b
+[    1.266104] dracut-cmdline[171]: //lib/dracut-lib.sh@240(getargbool): local _default
+[    1.266142] dracut-cmdline[171]: //lib/dracut-lib.sh@241(getargbool): _default=1
+[    1.319749] dracut-cmdline[171]: //lib/dracut-lib.sh@241(getargbool): shift
+[    1.319796] dracut-cmdline[171]: ///lib/dracut-lib.sh@242(getargbool): getarg rd.lvm -d -n rd_NO_LVM
+[    1.319834] dracut-cmdline[171]: ///lib/dracut-lib.sh@187(getarg): debug_off
+[    1.319868] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.319902] dracut-cmdline[171]: ///lib/dracut-lib.sh@227(getarg): return 1
+[    1.319949] dracut-cmdline[171]: //lib/dracut-lib.sh@242(getargbool): _b=
+[    1.320022] dracut-cmdline[171]: //lib/dracut-lib.sh@243(getargbool): '[' 1 -ne 0 -a -z '' ']'
+[    1.320062] dracut-cmdline[171]: //lib/dracut-lib.sh@243(getargbool): _b=1
+[    1.320098] dracut-cmdline[171]: //lib/dracut-lib.sh@244(getargbool): '[' -n 1 ']'
+[    1.320133] dracut-cmdline[171]: //lib/dracut-lib.sh@245(getargbool): '[' 1 = 0 ']'
+[    1.320169] dracut-cmdline[171]: //lib/dracut-lib.sh@246(getargbool): '[' 1 = no ']'
+[    1.320203] dracut-cmdline[171]: //lib/dracut-lib.sh@247(getargbool): '[' 1 = off ']'
+[    1.320244] dracut-cmdline[171]: //lib/dracut-lib.sh@249(getargbool): return 0
+[    1.320301] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/30-parse-lvm.sh@11(source): '[' -z ' ol/root ol/swap' ']'
+[    1.320351] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/30-parse-lvm.sh@15(source): for dev in '$LV_DEVS'
+[    1.320389] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/30-parse-lvm.sh@16(source): wait_for_dev -n /dev/ol/root
+[    1.320425] dracut-cmdline[171]: //lib/dracut-lib.sh@906(wait_for_dev): local _name
+[    1.320460] dracut-cmdline[171]: //lib/dracut-lib.sh@907(wait_for_dev): local _needreload
+[    1.320494] dracut-cmdline[171]: //lib/dracut-lib.sh@908(wait_for_dev): local _noreload
+[    1.320528] dracut-cmdline[171]: //lib/dracut-lib.sh@909(wait_for_dev): local _timeout
+[    1.320562] dracut-cmdline[171]: //lib/dracut-lib.sh@911(wait_for_dev): '[' -n = -n ']'
+[    1.320596] dracut-cmdline[171]: //lib/dracut-lib.sh@912(wait_for_dev): _noreload=1
+[    1.320633] dracut-cmdline[171]: //lib/dracut-lib.sh@913(wait_for_dev): shift
+[    1.320691] dracut-cmdline[171]: ///lib/dracut-lib.sh@916(wait_for_dev): str_replace /dev/ol/root / '\x2f'
+[    1.320741] dracut-cmdline[171]: ///lib/dracut-lib.sh@97(str_replace): local in=/dev/ol/root
+[    1.320777] dracut-cmdline[171]: ///lib/dracut-lib.sh@97(str_replace): local s=/
+[    1.320811] dracut-cmdline[171]: ///lib/dracut-lib.sh@97(str_replace): local 'r=\x2f'
+[    1.320844] dracut-cmdline[171]: ///lib/dracut-lib.sh@98(str_replace): local out=
+[    1.320878] dracut-cmdline[171]: ///lib/dracut-lib.sh@100(str_replace): strstr /dev/ol/root /
+[    1.320910] dracut-cmdline[171]: ///lib/dracut-lib.sh@29(strstr): '[' dev/ol/root '!=' /dev/ol/root ']'
+[    1.320944] dracut-cmdline[171]: ///lib/dracut-lib.sh@101(str_replace): chop=
+[    1.321005] dracut-cmdline[171]: ///lib/dracut-lib.sh@102(str_replace): out='\x2f'
+[    1.321054] dracut-cmdline[171]: ///lib/dracut-lib.sh@103(str_replace): in=dev/ol/root
+[    1.321090] dracut-cmdline[171]: ///lib/dracut-lib.sh@100(str_replace): strstr dev/ol/root /
+[    1.321125] dracut-cmdline[171]: ///lib/dracut-lib.sh@29(strstr): '[' ol/root '!=' dev/ol/root ']'
+[    1.321159] dracut-cmdline[171]: ///lib/dracut-lib.sh@101(str_replace): chop=dev
+[    1.321193] dracut-cmdline[171]: ///lib/dracut-lib.sh@102(str_replace): out='\x2fdev\x2f'
+[    1.321228] dracut-cmdline[171]: ///lib/dracut-lib.sh@103(str_replace): in=ol/root
+[    1.321261] dracut-cmdline[171]: ///lib/dracut-lib.sh@100(str_replace): strstr ol/root /
+[    1.321311] dracut-cmdline[171]: ///lib/dracut-lib.sh@29(strstr): '[' root '!=' ol/root ']'
+[    1.321345] dracut-cmdline[171]: ///lib/dracut-lib.sh@101(str_replace): chop=ol
+[    1.321379] dracut-cmdline[171]: ///lib/dracut-lib.sh@102(str_replace): out='\x2fdev\x2fol\x2f'
+[    1.400348] dracut-cmdline[171]: ///lib/dracut-lib.sh@103(str_replace): in=root
+[    1.400389] dracut-cmdline[171]: ///lib/dracut-lib.sh@100(str_replace): strstr root /
+[    1.400423] dracut-cmdline[171]: ///lib/dracut-lib.sh@29(strstr): '[' root '!=' root ']'
+[    1.400457] dracut-cmdline[171]: ///lib/dracut-lib.sh@105(str_replace): echo '\x2fdev\x2fol\x2froot'
+[    1.400507] dracut-cmdline[171]: //lib/dracut-lib.sh@916(wait_for_dev): _name='\x2fdev\x2fol\x2froot'
+[    1.400545] dracut-cmdline[171]: //lib/dracut-lib.sh@918(wait_for_dev): '[' -e '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fol\x2froot.sh' ']'
+[    1.400579] dracut-cmdline[171]: //lib/dracut-lib.sh@920(wait_for_dev): printf '[ -e "%s" ]\n' /dev/ol/root
+[    1.400614] dracut-cmdline[171]: //lib/dracut-lib.sh@923(wait_for_dev): printf '[ -e "%s" ] || ' /dev/ol/root
+[    1.400649] dracut-cmdline[171]: //lib/dracut-lib.sh@924(wait_for_dev): printf 'warn "\"%s\" does not exist"\n' /dev/ol/root
+[    1.400683] dracut-cmdline[171]: //lib/dracut-lib.sh@927(wait_for_dev): '[' -n 1 ']'
+[    1.400727] dracut-cmdline[171]: ///lib/dracut-lib.sh@928(wait_for_dev): dev_unit_name /dev/ol/root
+[    1.400763] dracut-cmdline[171]: ///lib/dracut-lib.sh@875(dev_unit_name): local dev=/dev/ol/root
+[    1.400797] dracut-cmdline[171]: ///lib/dracut-lib.sh@877(dev_unit_name): command -v systemd-escape
+[    1.400831] dracut-cmdline[171]: ///lib/dracut-lib.sh@878(dev_unit_name): systemd-escape -p -- /dev/ol/root
+[    1.400866] dracut-cmdline[171]: ///lib/dracut-lib.sh@879(dev_unit_name): return
+[[    1.658731] serial8250: too much work for irq4
+[    1.659012] NOHZ: local_softirq_pending 282
+[    1.659017] NOHZ: local_softirq_pending 282
+[    1.659737] ata2.01: NODEV after polling detection
+[    1.660287] ata2.00: ATAPI: QEMU DVD-ROM, 2.5+, max UDMA/100
+[    1.660841] ata2.00: configured for MWDMA2
+[    1.661476] scsi 1:0:0:0: CD-ROM            QEMU     QEMU DVD-ROM     2.5+ PQ: 0 ANSI: 5
+[    1.667022] NOHZ: local_softirq_pending 202
+    1.400916] dracut-cmdline[171]: //lib/dracut-lib.sh@928(wait_for_dev): _name=dev-ol-root
+[    1.400979] dracut-cmdline[171]: //lib/dracut-lib.sh@929(wait_for_dev): '[' -L /etc/systemd/system/initrd.target.wants/dev-ol-root.device ']'
+[    1.401025] dracut-cmdline[171]: //lib/dracut-lib.sh@930(wait_for_dev): '[' -d /etc/systemd/system/initrd.target.wants ']'
+[    1.401065] dracut-cmdline[171]: //lib/dracut-lib.sh@930(wait_for_dev): mkdir -p /etc/systemd/system/initrd.target.wants
+[    1.401103] dracut-cmdline[171]: //lib/dracut-lib.sh@931(wait_for_dev): ln -s ../dev-ol-root.device /etc/systemd/system/initrd.target.wants/dev-ol-root.device
+[    1.401143] dracut-cmdline[171]: //lib/dracut-lib.sh@932(wait_for_dev): _needreload=1
+[    1.401178] dracut-cmdline[171]: //lib/dracut-lib.sh@935(wait_for_dev): '[' -f /etc/systemd/system/dev-ol-root.device.d/timeout.conf ']'
+[    1.401226] dracut-cmdline[171]: ///lib/dracut-lib.sh@936(wait_for_dev): getarg rd.device.timeout
+[    1.401265] dracut-cmdline[171]: ///lib/dracut-lib.sh@187(getarg): debug_off
+[    1.401316] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.401351] dracut-cmdline[171]: ///lib/dracut-lib.sh@227(getarg): return 1
+[    1.401386] dracut-cmdline[171]: ///lib/dracut-lib.sh@936(wait_for_dev): printf 0
+[    1.401436] dracut-cmdline[171]: //lib/dracut-lib.sh@936(wait_for_dev): _timeout=0
+[    1.401474] dracut-cmdline[171]: //lib/dracut-lib.sh@937(wait_for_dev): mkdir -p /etc/systemd/system/dev-ol-root.device.d
+[    1.401508] dracut-cmdline[171]: //lib/dracut-lib.sh@939(wait_for_dev): echo '[Unit]'
+[    1.401547] dracut-cmdline[171]: //lib/dracut-lib.sh@940(wait_for_dev): echo JobTimeoutSec=0
+[    1.401583] dracut-cmdline[171]: //lib/dracut-lib.sh@942(wait_for_dev): _needreload=1
+[    1.401619] dracut-cmdline[171]: //lib/dracut-lib.sh@945(wait_for_dev): '[' -z '' ']'
+[    1.401655] dracut-cmdline[171]: //lib/dracut-lib.sh@945(wait_for_dev): '[' 1 = 1 ']'
+[    1.401690] dracut-cmdline[171]: //lib/dracut-lib.sh@945(wait_for_dev): '[' -z 1 ']'
+[    1.401723] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/30-parse-lvm.sh@15(source): for dev in '$LV_DEVS'
+[    1.401758] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/30-parse-lvm.sh@16(source): wait_for_dev -n /dev/ol/swap
+[    1.401794] dracut-cmdline[171]: //lib/dracut-lib.sh@906(wait_for_dev): local _name
+[    1.401829] dracut-cmdline[171]: //lib/dracut-lib.sh@907(wait_for_dev): local _needreload
+[    1.401863] dracut-cmdline[171]: //lib/dracut-lib.sh@908(wait_for_dev): local _noreload
+[    1.401897] dracut-cmdline[171]: //lib/dracut-lib.sh@909(wait_for_dev): local _timeout
+[    1.401932] dracut-cmdline[171]: //lib/dracut-lib.sh@911(wait_for_dev): '[' -n = -n ']'
+[    1.524707] dracut-cmdline[171]: //lib/dracut-lib.sh@912(wait_for_dev): _noreload=1
+[    1.524759] dracut-cmdline[171]: //lib/dracut-lib.sh@913(wait_for_dev): shift
+[    1.525361] dracut-cmdline[171]: ///lib/dracut-lib.sh@916(wait_for_dev): str_replace /dev/ol/swap / '\x2f'
+[    1.525413] dracut-cmdline[171]: ///lib/dracut-lib.sh@97(str_replace): local in=/dev/ol/swap
+[    1.525455] dracut-cmdline[171]: ///lib/dracut-lib.sh@97(str_replace): local s=/
+[    1.525496] dracut-cmdline[171]: ///lib/dracut-lib.sh@97(str_replace): local 'r=\x2f'
+[    1.525539] dracut-cmdline[171]: ///lib/dracut-lib.sh@98(str_replace): local out=
+[    1.525579] dracut-cmdline[171]: ///lib/dracut-lib.sh@100(str_replace): strstr /dev/ol/swap /
+[    1.525621] dracut-cmdline[171]: ///lib/dracut-lib.sh@29(strstr): '[' dev/ol/swap '!=' /dev/ol/swap ']'
+[    1.525667] dracut-cmdline[171]: ///lib/dracut-lib.sh@101(str_replace): chop=
+[    1.525719] dracut-cmdline[171]: ///lib/dracut-lib.sh@102(str_replace): out='\x2f'
+[    1.525764] dracut-cmdline[171]: ///lib/dracut-lib.sh@103(str_replace): in=dev/ol/swap
+[    1.525803] dracut-cmdline[171]: ///lib/dracut-lib.sh@100(str_replace): strstr dev/ol/swap /
+[    1.525846] dracut-cmdline[171]: ///lib/dracut-lib.sh@29(strstr): '[' ol/swap '!=' dev/ol/swap ']'
+[    1.525886] dracut-cmdline[171]: ///lib/dracut-lib.sh@101(str_replace): chop=dev
+[    1.525929] dracut-cmdline[171]: ///lib/dracut-lib.sh@102(str_replace): out='\x2fdev\x2f'
+[    1.525984] dracut-cmdline[171]: ///lib/dracut-lib.sh@103(str_replace): in=ol/swap
+[    1.526032] dracut-cmdline[171]: ///lib/dracut-lib.sh@100(str_replace): strstr ol/swap /
+[    1.526073] dracut-cmdline[171]: ///lib/dracut-lib.sh@29(strstr): '[' swap '!=' ol/swap ']'
+[    1.526112] dracut-cmdline[171]: ///lib/dracut-lib.sh@101(str_replace): chop=ol
+[    1.526152] dracut-cmdline[171]: ///lib/dracut-lib.sh@102(str_replace): out='\x2fdev\x2fol\x2f'
+[    1.526191] dracut-cmdline[171]: ///lib/dracut-lib.sh@103(str_replace): in=swap
+[    1.526231] dracut-cmdline[171]: ///lib/dracut-lib.sh@100(str_replace): strstr swap /
+[    1.526270] dracut-cmdline[171]: ///lib/dracut-lib.sh@29(strstr): '[' swap '!=' swap ']'
+[    1.526309] dracut-cmdline[171]: ///lib/dracut-lib.sh@105(str_replace): echo '\x2fdev\x2fol\x2fswap'
+[    1.526355] dracut-cmdline[171]: //lib/dracut-lib.sh@916(wait_for_dev): _name='\x2fdev\x2fol\x2fswap'
+[    1.526398] dracut-cmdline[171]: //lib/dracut-lib.sh@918(wait_for_dev): '[' -e '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fol\x2fswap.sh' ']'
+[    1.526438] dracut-cmdline[171]: //lib/dracut-lib.sh@920(wait_for_dev): printf '[ -e "%s" ]\n' /dev/ol/swap
+[    1.526477] dracut-cmdline[171]: //lib/dracut-lib.sh@923(wait_for_dev): printf '[ -e "%s" ] || ' /dev/ol/swap
+[    1.526515] dracut-cmdline[171]: //lib/dracut-lib.sh@924(wait_for_dev): printf 'warn "\"%s\" does not exist"\n' /dev/ol/swap
+[    1.526553] dracut-cmdline[171]: //lib/dracut-lib.sh@927(wait_for_dev): '[' -n 1 ']'
+[    1.526598] dracut-cmdline[171]: ///lib/dracut-lib.sh@928(wait_for_dev): dev_unit_name /dev/ol/swap
+[    1.526640] dracut-cmdline[171]: ///lib/dracut-lib.sh@875(dev_unit_name): local dev=/dev/ol/swap
+[    1.526679] dracut-cmdline[171]: ///lib/dracut-lib.sh@877(dev_unit_name): command -v systemd-escape
+[    1.526728] dracut-cmdline[171]: ///lib/dracut-lib.sh@878(dev_unit_name): systemd-escape -p -- /dev/ol/swap
+[    1.526767] dracut-cmdline[171]: ///lib/dracut-lib.sh@879(dev_unit_name): return
+[    1.526819] dracut-cmdline[171]: //lib/dracut-lib.sh@928(wait_for_dev): _name=dev-ol-swap
+[    1.526863] dracut-cmdline[171]: //lib/dracut-lib.sh@929(wait_for_dev): '[' -L /etc/systemd/system/initrd.target.wants/dev-ol-swap.device ']'
+[    1.526907] dracut-cmdline[171]: //lib/dracut-lib.sh@930(wait_for_dev): '[' -d /etc/systemd/system/initrd.target.wants ']'
+[    1.526960] dracut-cmdline[171]: //lib/dracut-lib.sh@931(wait_for_dev): ln -s ../dev-ol-swap.device /etc/systemd/system/initrd.target.wants/dev-ol-swap.device
+[    1.528197] dracut-cmdline[171]: //lib/dracut-lib.sh@932(wait_for_dev): _needreload=1
+[    1.528240] dracut-cmdline[171]: //lib/dracut-lib.sh@935(wait_for_dev): '[' -f /etc/systemd/system/dev-ol-swap.device.d/timeout.conf ']'
+[    1.528292] dracut-cmdline[171]: ///lib/dracut-lib.sh@936(wait_for_dev): getarg rd.device.timeout
+[    1.528332] dracut-cmdline[171]: ///lib/dracut-lib.sh@187(getarg): debug_off
+[    1.528368] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.528404] dracut-cmdline[171]: ///lib/dracut-lib.sh@227(getarg): return 1
+[    1.528438] dracut-cmdline[171]: ///lib/dracut-lib.sh@936(wait_for_dev): printf 0
+[    1.528484] dracut-cmdline[171]: //lib/dracut-lib.sh@936(wait_for_dev): _timeout=0
+[    1.528521] dracut-cmdline[171]: //lib/dracut-lib.sh@937(wait_for_dev): mkdir -p /etc/systemd/system/dev-ol-swap.device.d
+[    1.528557] dracut-cmdline[171]: //lib/dracut-lib.sh@939(wait_for_dev): echo '[Unit]'
+[    1.528593] dracut-cmdline[171]: //lib/dracut-lib.sh@940(wait_for_dev): echo JobTimeoutSec=0
+[    1.528627] dracut-cmdline[171]: //lib/dracut-lib.sh@942(wait_for_dev): _needreload=1
+[    1.528663] dracut-cmdline[171]: //lib/dracut-lib.sh@945(wait_for_dev): '[' -z '' ']'
+[    1.528697] dracut-cmdline[171]: //lib/dracut-lib.sh@945(wait_for_dev): '[' 1 = 1 ']'
+[    1.528735] dracut-cmdli[    1.749027] serial8250: too much work for irq4
+ne[171]: //lib/dracut-lib.sh@945(wait_for_dev): '[' -z 1 ']'
+[    1.528770] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    1.528805] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/cmdline/91-dhcp-root.sh ']'
+[    1.528840] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/cmdline/91-dhcp-root.sh
+[    1.528875] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/91-dhcp-root.sh@6(source): '[' -z /dev/mapper/ol-root ']'
+[    1.528910] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/91-dhcp-root.sh@8(source): '[' -z '' ']'
+[    1.528964] dracut-cmdline[171]: ////lib/dracut/hooks/cmdline/91-dhcp-root.sh@14(source): getargs netroot=
+[    1.529012] dracut-cmdline[171]: ///lib/dracut-lib.sh@305(getargs): debug_off
+[    1.529049] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.529084] dracut-cmdline[171]: ///lib/dracut-lib.sh@337(getargs): return 1
+[    1.529139] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/91-dhcp-root.sh@13(source): '[' '' = dhcp ']'
+[    1.529181] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/91-dhcp-root.sh@13(source): '[' '' = dhcp6 ']'
+[    1.529217] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/91-dhcp-root.sh@13(source): unset netroot
+[    1.529252] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/91-dhcp-root.sh@16(source): '[' /dev/mapper/ol-root = dhcp ']'
+[    1.529289] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/91-dhcp-root.sh@16(source): '[' /dev/mapper/ol-root = dhcp6 ']'
+[    1.529324] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/91-dhcp-root.sh@16(source): '[' '' = dhcp ']'
+[    1.529359] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/91-dhcp-root.sh@16(source): '[' '' = dhcp6 ']'
+[    1.529395] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    1.529430] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/cmdline/92-parse-ibft.sh ']'
+[    1.529466] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/cmdline/92-parse-ibft.sh
+[    1.529502] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/92-parse-ibft.sh@5(source): command -v getarg
+[    1.529540] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/92-parse-ibft.sh@6(source): command -v ibft_to_cmdline
+[    1.605448] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/92-parse-ibft.sh@6(source): . /lib/net-lib.sh
+[    1.605507] dracut-cmdline[171]: ///lib/net-lib.sh@697(source): type hostname
+[    1.605547] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/92-parse-ibft.sh@8(source): getargbool 0 rd.iscsi.ibft -d ip=ibft
+[    1.605582] dracut-cmdline[171]: //lib/dracut-lib.sh@238(getargbool): local _b
+[    1.605631] dracut-cmdline[171]: //lib/dracut-lib.sh@239(getargbool): unset _b
+[    1.605666] dracut-cmdline[171]: //lib/dracut-lib.sh@240(getargbool): local _default
+[    1.605721] dracut-cmdline[171]: //lib/dracut-lib.sh@241(getargbool): _default=0
+[    1.605763] dracut-cmdline[171]: //lib/dracut-lib.sh@241(getargbool): shift
+[    1.605890] dracut-cmdline[171]: ///lib/dracut-lib.sh@242(getargbool): getarg rd.iscsi.ibft -d ip=ibft
+[    1.605955] dracut-cmdline[171]: ///lib/dracut-lib.sh@187(getarg): debug_off
+[    1.606023] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.606084] dracut-cmdline[171]: ///lib/dracut-lib.sh@227(getarg): return 1
+[    1.606149] dracut-cmdline[171]: //lib/dracut-lib.sh@242(getargbool): _b=
+[    1.606193] dracut-cmdline[171]: //lib/dracut-lib.sh@243(getargbool): '[' 1 -ne 0 -a -z '' ']'
+[    1.606236] dracut-cmdline[171]: //lib/dracut-lib.sh@243(getargbool): _b=0
+[    1.606287] dracut-cmdline[171]: //lib/dracut-lib.sh@244(getargbool): '[' -n 0 ']'
+[    1.606328] dracut-cmdline[171]: //lib/dracut-lib.sh@245(getargbool): '[' 0 = 0 ']'
+[    1.606371] dracut-cmdline[171]: //lib/dracut-lib.sh@245(getargbool): return 1
+[    1.606415] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    1.606454] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/cmdline/95-parse-vlan.sh ']'
+[    1.606492] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/cmdline/95-parse-vlan.sh
+[    1.606536] dracut-cmdline[171]: ////lib/dracut/hooks/cmdline/95-parse-vlan.sh@29(source): getargs vlan=
+[    1.606575] dracut-cmdline[171]: ///lib/dracut-lib.sh@305(getargs): debug_off
+[    1.606619] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.606657] dracut-cmdline[171]: ///lib/dracut-lib.sh@337(getargs): return 1
+[    1.606706] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    1.606745] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/cmdline/96-parse-bond.sh ']'
+[    1.606783] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/cmdline/96-parse-bond.sh
+[    1.606828] dracut-cmdline[171]: ////lib/dracut/hooks/cmdline/96-parse-bond.sh@55(source): getargs bond=
+[    1.606867] dracut-cmdline[171]: ///lib/dracut-lib.sh@305(getargs): debug_off
+[    1.606908] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.606954] dracut-cmdline[171]: ///lib/dracut-lib.sh@337(getargs): return 1
+[    1.607015] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    1.607055] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/cmdline/96-parse-team.sh ']'
+[    1.607095] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/cmdline/96-parse-team.sh
+[    1.607140] dracut-cmdline[171]: ////lib/dracut/hooks/cmdline/96-parse-team.sh@35(source): getargs team=
+[    1.607180] dracut-cmdline[171]: ///lib/dracut-lib.sh@305(getargs): debug_off
+[    1.607224] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.607260] dracut-cmdline[171]: ///lib/dracut-lib.sh@337(getargs): return 1
+[    1.607308] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    1.607347] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/cmdline/97-parse-bridge.sh ']'
+[    1.607385] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/cmdline/97-parse-bridge.sh
+[    1.607432] dracut-cmdline[171]: ////lib/dracut/hooks/cmdline/97-parse-bridge.sh@41(source): getargs bridge=
+[    1.607471] dracut-cmdline[171]: ///lib/dracut-lib.sh@305(getargs): debug_off
+[    1.607508] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.607550] dracut-cmdline[171]: ///lib/dracut-lib.sh@337(getargs): return 1
+[    1.607598] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    1.607643] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/cmdline/98-parse-ip-opts.sh ']'
+[    1.607680] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/cmdline/98-parse-ip-opts.sh
+[    1.607716] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@17(source): command -v getarg
+[    1.607761] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@19(source): '[' -n '' ']'
+[    1.607799] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@25(source): '[' -z '' ']'
+[    1.607836] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@26(source): count=0
+[    1.607889] dracut-cmdline[171]: ////lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@35(source): getargs ip=
+[    1.607939] dracut-cmdline[171]: ///lib/dracut-lib.sh@305(getargs): debug_off
+[    1.607983] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.608033] dracut-cmdline[171]: ///lib/dracut-lib.sh@337(getargs): return 1
+[    1.608082] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@34(source): '[' 0 -gt 1 ']'
+[    1.608121] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@36(source): unset count
+[    1.608168] dracut-cmdline[171]: ////lib/dr[    1.830195] serial8250: too much work for irq4
+acut/hooks/cmdline/98-parse-ip-opts.sh@39(source): getarg bootdev=
+[    1.608209] dracut-cmdline[171]: ///lib/dracut-lib.sh@187(getarg): debug_off
+[    1.608245] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.608287] dracut-cmdline[171]: ///lib/dracut-lib.sh@227(getarg): return 1
+[    1.608334] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@39(source): BOOTDEV=
+[    1.608377] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@41(source): '[' -n '' ']'
+[    1.608416] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@46(source): unset NEEDBOOTDEV
+[    1.608461] dracut-cmdline[171]: ////lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@126(source): getargs ip=
+[    1.608504] dracut-cmdline[171]: ///lib/dracut-lib.sh@305(getargs): debug_off
+[    1.608545] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.608582] dracut-cmdline[171]: ///lib/dracut-lib.sh@337(getargs): return 1
+[    1.608630] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@129(source): getargbool 1 rd.bootif
+[    1.608681] dracut-cmdline[171]: //lib/dracut-lib.sh@238(getargbool): local _b
+[    1.608726] dracut-cmdline[171]: //lib/dracut-lib.sh@239(getargbool): unset _b
+[    1.608763] dracut-cmdline[171]: //lib/dracut-lib.sh@240(getargbool): local _default
+[    1.608801] dracut-cmdline[171]: //lib/dracut-lib.sh@241(getargbool): _default=1
+[    1.608849] dracut-cmdline[171]: //lib/dracut-lib.sh@241(getargbool): shift
+[    1.608896] dracut-cmdline[171]: ///lib/dracut-lib.sh@242(getargbool): getarg rd.bootif
+[    1.608942] dracut-cmdline[171]: ///lib/dracut-lib.sh@187(getarg): debug_off
+[    1.608980] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.609026] dracut-cmdline[171]: ///lib/dracut-lib.sh@227(getarg): return 1
+[    1.609079] dracut-cmdline[171]: //lib/dracut-lib.sh@242(getargbool): _b=
+[    1.609121] dracut-cmdline[171]: //lib/dracut-lib.sh@243(getargbool): '[' 1 -ne 0 -a -z '' ']'
+[    1.609159] dracut-cmdline[171]: //lib/dracut-lib.sh@243(getargbool): _b=1
+[    1.609197] dracut-cmdline[171]: //lib/dracut-lib.sh@244(getargbool): '[' -n 1 ']'
+[    1.609236] dracut-cmdline[171]: //lib/dracut-lib.sh@245(getargbool): '[' 1 = 0 ']'
+[    1.609280] dracut-cmdline[171]: //lib/dracut-lib.sh@246(getargbool): '[' 1 = no ']'
+[    1.674566] dracut-cmdline[171]: //lib/dracut-lib.sh@247(getargbool): '[' 1 = off ']'
+[    1.674608] dracut-cmdline[171]: //lib/dracut-lib.sh@249(getargbool): return 0
+[    1.674797] dracut-cmdline[171]: ////lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@129(source): getarg BOOTIF=
+[    1.674839] dracut-cmdline[171]: ///lib/dracut-lib.sh@187(getarg): debug_off
+[    1.674874] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.674913] dracut-cmdline[171]: ///lib/dracut-lib.sh@227(getarg): return 1
+[    1.674982] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@129(source): BOOTIF=
+[    1.675033] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@135(source): '[' -n '' ']'
+[    1.675069] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@141(source): '[' -n '' ']'
+[    1.675103] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/98-parse-ip-opts.sh@142(source): '[' -n '' ']'
+[    1.675137] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    1.675171] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/cmdline/99-parse-ifname.sh ']'
+[    1.675205] dracut-cmdline[171]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/cmdline/99-parse-ifname.sh
+[    1.675239] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/99-parse-ifname.sh@17(source): getarg ifname=
+[    1.675273] dracut-cmdline[171]: //lib/dracut-lib.sh@187(getarg): debug_off
+[    1.675307] dracut-cmdline[171]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.675345] dracut-cmdline[171]: //lib/dracut-lib.sh@227(getarg): return 1
+[    1.675380] dracut-cmdline[171]: ///lib/dracut/hooks/cmdline/99-parse-ifname.sh@18(source): return
+[    1.675414] dracut-cmdline[171]: /bin/dracut-cmdline@51(): '[' -f /lib/dracut/parse-resume.sh ']'
+[    1.675448] dracut-cmdline[171]: /bin/dracut-cmdline@51(): . /lib/dracut/parse-resume.sh
+[    1.675489] dracut-cmdline[171]: ///lib/dracut/parse-resume.sh@5(): getarg resume=
+[    1.675525] dracut-cmdline[171]: ///lib/dracut-lib.sh@187(getarg): debug_off
+[    1.675558] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.675630] dracut-cmdline[171]: ///lib/dracut-lib.sh@227(getarg): return 1
+[    1.676335] dracut-cmdline[171]: //lib/dracut/parse-resume.sh@5(): resume=
+[    1.677067] dracut-cmdline[171]: //lib/dracut/parse-resume.sh@9(): unset resume
+[    1.677784] dracut-cmdline[171]: //lib/dracut/parse-resume.sh@12(): case "$resume" in
+[    1.678616] dracut-cmdline[171]: ///lib/dracut/parse-resume.sh@24(): getarg splash=
+[    1.679266] dracut-cmdline[171]: ///lib/dracut-lib.sh@187(getarg): debug_off
+[    1.679802] dracut-cmdline[171]: ///lib/dracut-lib.sh@20(debug_off): set +x
+[    1.680344] dracut-cmdline[171]: ///lib/dracut-lib.sh@227(getarg): return 1
+[    1.680903] dracut-cmdline[171]: //lib/dracut/parse-resume.sh@24(): splash=
+[    1.681482] dracut-cmdline[171]: //lib/dracut/parse-resume.sh@27(): unset splash
+[    1.682127] dracut-cmdline[171]: //lib/dracut/parse-resume.sh@30(): case "$splash" in
+[    1.682789] dracut-cmdline[171]: //lib/dracut/parse-resume.sh@35(): a_splash='-P splash=n'
+[    1.683390] dracut-cmdline[171]: //lib/dracut/parse-resume.sh@39(): '[' -n '' ']'
+[    1.683982] dracut-cmdline[171]: //lib/dracut/parse-resume.sh@68(): getarg noresume
+[    1.684580] dracut-cmdline[171]: //lib/dracut-lib.sh@187(getarg): debug_off
+[    1.685161] dracut-cmdline[171]: //lib/dracut-lib.sh@20(debug_off): set +x
+[    1.685751] dracut-cmdline[171]: //lib/dracut-lib.sh@227(getarg): return 1
+[    1.686394] dracut-cmdline[171]: //lib/dracut/parse-resume.sh@70(): '[' -x /usr/sbin/resume ']'
+[    1.686984] dracut-cmdline[171]: //lib/dracut/parse-resume.sh@73(): echo 'SUBSYSTEM=="block", ACTION=="add|change", ENV{ID_FS_TYPE}=="suspend|swsuspend|swsupend",' ' RUN+="/sbin/initqueue --finished --unique --name 00resume echo %M:%m > /sys/power/resume"'
+[    1.687612] dracut-cmdline[171]: /bin/dracut-cmdline@53(): case "${root}${root_unset}" in
+[    1.688194] dracut-cmdline[171]: /bin/dracut-cmdline@72(): root=block:/dev/mapper/ol-root
+[    1.688784] dracut-cmdline[171]: /bin/dracut-cmdline@73(): rootok=1
+[    1.689410] dracut-cmdline[171]: /bin/dracut-cmdline@79(): '[' -z block:/dev/mapper/ol-root ']'
+[    1.701083] dracut-cmdline[171]: /bin/dracut-cmdline@80(): '[' -z 1 ']'
+[    1.701131] dracut-cmdline[171]: /bin/dracut-cmdline@82(): '[' block:/dev/mapper/ol-root = UNSET ']'
+[    1.701167] dracut-cmdline[171]: /bin/dracut-cmdline@84(): export root rflags fstype netroot NEWROOT
+[    1.701207] dracut-cmdline[171]: /bin/dracut-cmdline@86(): export -p
+[    1.701247] dracut-cmdline[171]: /bin/dracut-cmdline@88(): exit 0
+[    1.900142] NOHZ: local_softirq_pending 282
+[    1.901850] sr 1:0:0:0: [sr0] scsi3-mmc drive: 4x/4x cd/rw xa/form2 tray
+[    1.901851] cdrom: Uniform CD-ROM driver Revision: 3.20
+[    1.902304] sr 1:0:0:0: Attached scsi CD-ROM sr0
+[    1.904007] NOHZ: local_softirq_pending 02
+[    1.942121] NOHZ: local_softirq_pending 10
+[    2.041729] dracut-initqueue[338]: /bin/dracut-initqueue@30(): check_finished
+[    2.041940] dracut-initqueue[338]: /lib/dracut-lib.sh@431(check_finished): local f
+[    2.042104] dracut-initqueue[338]: /lib/dracut-lib.sh@432(check_finished): for f in '$hookdir/initqueue/finished/*.sh'
+[    2.042247] dracut-initqueue[338]: /lib/dracut-lib.sh@433(check_finished): '[' '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fmapper\x2fol-root.sh' = '/lib/dracut/hooks/initqueue/finished/*.sh' ']'
+[    2.043028] dracut-initqueue[338]: /lib/dracut-lib.sh@434(check_finished): '[' -e '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fmapper\x2fol-root.sh' ']'
+[    2.043194] dracut-initqueue[338]: /lib/dracut-lib.sh@434(check_finished): . '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fmapper\x2fol-root.sh'
+[    2.043339] dracut-initqueue[338]: //lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fmapper\x2fol-root.sh@1(source): '[' -e /dev/mapper/ol-root ']'
+[    2.043896] dracut-initqueue[338]: /lib/dracut-lib.sh@434(check_finished): return 1
+[    2.044409] dracut-initqueue[338]: /bin/dracut-initqueue@32(): '[' -f /lib/dracut/hooks/initqueue/work ']'
+[    2.044970] dracut-initqueue[338]: /bin/dracut-initqueue@36(): for job in '$hookdir/initqueue/*.sh'
+[    2.045539] dracut-initqueue[338]: /bin/dracut-initqueue@37(): '[' -e '/lib/dracut/hooks/initqueue/*.sh' ']'
+[    2.046149] dracut-initqueue[338]: /bin/dracut-initqueue@37(): break
+[    2.046716] dracut-initqueue[338]: /bin/dracut-initqueue@42(): udevadm settle --timeout=0
+[    2.060504] dracut-initqueue[338]: /bin/dracut-initqueue@44(): for job in '$hookdir/initqueue/settled/*.sh'
+[    2.060676] dracut-initqueue[338]: /bin/dracut-initqueue@45(): '[' -e /lib/dracut/hooks/initqueue/settled/lvm_scan.sh ']'
+[    2.060824] dracut-initqueue[338]: /bin/dracut-initqueue@46(): job=/lib/dracut/hooks/initqueue/settled/lvm_scan.sh
+[    2.060982] dracut-initqueue[338]: /bin/dracut-initqueue@46(): . /lib/dracut/hooks/initqueue/settled/lvm_scan.sh
+[    2.061161] dracut-initqueue[338]: //lib/dracut/hooks/initqueue/settled/lvm_scan.sh@1(): '[' -e /lib/dracut/hooks/initqueue/settled/lvm_scan.sh ']'
+[    2.061908] dracut-initqueue[338]: //lib/dracut/hooks/initqueue/settled/lvm_scan.sh@1(): rm -f -- /lib/dracut/hooks/initqueue/settled/lvm_scan.sh
+[    2.062082] dracut-initqueue[338]: //lib/dracut/hooks/initqueue/settled/lvm_scan.sh@2(): /sbin/lvm_scan
+[    2.064145] dracut-initqueue[338]: ++ hookdir=/lib/dracut/hooks
+[    2.064494] dracut-initqueue[338]: ++ export hookdir
+[    2.065251] dracut-initqueue[338]: ++ command -v findmnt
+[    2.065806] dracut-initqueue[338]: ++ command -v pidof
+[    2.066255] dracut-initqueue[338]: ++ setmemdebug
+[    2.066394] dracut-initqueue[338]: ++ '[' -z 0 ']'
+[    2.066733] dracut-initqueue[338]: ++ getargs rd.lvm.vg -d rd_LVM_VG=
+[    2.066900] dracut-initqueue[338]: ++ debug_off
+[    2.067059] dracut-initqueue[338]: ++ set +x
+[    2.077864] dracut-initqueue[338]: ++ return 1
+[    2.078069] dracut-initqueue[338]: + VGS=
+[    2.079845] dracut-initqueue[338]: ++ getargs rd.lvm.lv -d rd_LVM_LV=
+[    2.080031] dracut-initqueue[338]: ++ debug_off
+[    2.080181] dracut-initqueue[338]: ++ set +x
+[    2.084991] dracut-initqueue[338]: ++ return 0
+[    2.085182] dracut-initqueue[338]: + LVS='ol/root ol/swap'
+[    2.086948] dracut-initqueue[338]: ++ getargs rd.lvm.snapshot -d rd_LVM_SNAPSHOT=
+[    2.087122] dracut-initqueue[338]: ++ debug_off
+[    2.087267] dracut-initqueue[338]: ++ set +x
+[    2.092095] dracut-initqueue[338]: ++ return 1
+[    2.092332] dracut-initqueue[338]: + SNAPSHOT=
+[    2.092663] dracut-initqueue[338]: ++ getargs rd.lvm.snapsize -d rd_LVM_SNAPSIZE=
+[    2.092812] dracut-initqueue[338]: ++ debug_off
+[    2.092962] dracut-initqueue[338]: ++ set +x
+[    2.096498] dracut-initqueue[338]: ++ return 1
+[    2.096965] dracut-initqueue[338]: + SNAPSIZE=
+[    2.100326] random: fast init done
+[    2.097716] dracut-initqueue[338]: + '[' -d /etc/lvm ']'
+[    2.097863] dracut-initqueue[338]: ++ for f in '/tmp/.lvm_scan-*'
+[    2.098027] dracut-initqueue[338]: ++ '[' -e /tmp/.lvm_scan-vda2 ']'
+[    2.098169] dracut-initqueue[338]: ++ printf %s 'vda2 '
+[    2.098333] dracut-initqueue[338]: + lvmdevs='vda2 '
+[    2.098473] dracut-initqueue[338]: + '[' '!' -e /etc/lvm/lvm.conf ']'
+[    2.098614] dracut-initqueue[338]: + OLDIFS='
+[    2.099297] dracut-initqueue[338]: '
+[    2.099915] dracut-initqueue[338]: + IFS=.
+[    2.100085] dracut-initqueue[338]: ++ lvm version
+[    2.100752] dracut-initqueue[338]: + set '  LVM version:     2' 02 '185(2)-RHEL7 (2019-05-13)
+[    2.101516] dracut-initqueue[338]: Library version: 1' 02 '158-RHEL7 (2019-05-13)
+[    2.101659] dracut-initqueue[338]: Driver version:  4' 37 '0
+[    2.101802] dracut-initqueue[338]: Configuration:   ' '/configure --build=x86_64-redhat-linux-gnu --host=x86_64-redhat-linux-gnu --program-prefix= --disable-dependency-tracking --prefix=/usr --exec-prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --sysconfdir=/etc --datadir=/usr/share --includedir=/usr/include --libdir=/usr/lib64 --libexecdir=/usr/libexec --localstatedir=/var --sharedstatedir=/var/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-default-dm-run-dir=/run --with-default-run-dir=/run/lvm --with-default-pid-dir=/run --with-default-locking-dir=/run/lock/lvm --with-usrlibdir=/usr/lib64 --enable-lvm1_fallback --enable-fsadm --with-pool=internal --enable-write_install --with-user= --with-group= --with-device-uid=0 --with-device-gid=6 --with-device-mode=0660 --enable-pkgconfig --enable-applib --enable-cmdlib --enable-dmeventd --enable-blkid_wiping --enable-python2-bindings --with-cluster=internal --with-clvmd=corosync --enable-cmirrord --with-udevdir=/usr/lib/udev/rules' 'd --enable-udev_sync --with-thin=internal --enable-lvmetad --with-cache=internal --enable-lvmpolld --enable-lvmlockd-dlm --enable-lvmlockd-sanlock --enable-dmfilemapd'
+[    2.102912] dracut-initqueue[338]: + IFS='
+[    2.103084] dracut-initqueue[338]: '
+[    2.103294] dracut-initqueue[338]: + maj='     2'
+[    2.103441] dracut-initqueue[338]: + min=02
+[    2.103579] dracut-initqueue[338]: + sub='185(2)-RHEL7'
+[    2.103710] dracut-initqueue[338]: + sub=185
+[    2.103842] dracut-initqueue[338]: + check_lvm_ver 2 2 57 2 02 185
+[    2.104003] dracut-initqueue[338]: + maj=2
+[    2.104160] dracut-initqueue[338]: + min=2
+[    2.104318] dracut-initqueue[338]: + ver=57
+[    2.104460] dracut-initqueue[338]: + '[' 2 -lt 2 ']'
+[    2.104597] dracut-initqueue[338]: + '[' 2 -gt 2 ']'
+[    2.104743] dracut-initqueue[338]: + '[' 02 -lt 2 ']'
+[    2.104874] dracut-initqueue[338]: + '[' 02 -gt 2 ']'
+[    2.105043] dracut-initqueue[338]: + '[' 185 -ge 57 ']'
+[    2.105177] dracut-initqueue[338]: + return 0
+[    2.105325] dracut-initqueue[338]: + nopoll='--poll n'
+[    2.105466] dracut-initqueue[338]: + check_lvm_ver 2 2 65 2 2 185
+[    2.105603] dracut-initqueue[338]: + maj=2
+[    2.105733] dracut-initqueue[338]: + min=2
+[    2.105864] dracut-initqueue[338]: + ver=65
+[    2.106038] dracut-initqueue[338]: + '[' 2 -lt 2 ']'
+[    2.106175] dracut-initqueue[338]: + '[' 2 -gt 2 ']'
+[    2.106324] dracut-initqueue[338]: + '[' 2 -lt 2 ']'
+[    2.106462] dracut-initqueue[338]: + '[' 2 -gt 2 ']'
+[    2.107098] dracut-initqueue[338]: + '[' 185 -ge 65 ']'
+[    2.107641] dracut-initqueue[338]: + return 0
+[    2.108175] dracut-initqueue[338]: + sysinit=' --sysinit '
+[    2.108669] dracut-initqueue[338]: + unset extraargs
+[    2.109160] dracut-initqueue[338]: + export LVM_SUPPRESS_LOCKING_FAILURE_MESSAGES=1
+[    2.109641] dracut-initqueue[338]: + LVM_SUPPRESS_LOCKING_FAILURE_MESSAGES=1
+[    2.110334] dracut-initqueue[338]: + '[' -n '' ']'
+[    2.110576] dracut-initqueue[338]: + '[' -n 'ol/root ol/swap' ']'
+[    2.111078] dracut-initqueue[338]: + info 'Scanning devices vda2  for LVM logical volumes ol/root ol/swap'
+[    2.111219] dracut-initqueue[338]: + check_quiet
+[    2.111369] dracut-initqueue[338]: + '[' -z no ']'
+[    2.111508] dracut-initqueue[338]: + '[' no '!=' yes ']'
+[    2.111643] dracut-initqueue[338]: + echo 'Scanning devices vda2  for LVM logical volumes ol/root ol/swap'
+[    2.111771] dracut-initqueue[338]: Scanning devices vda2  for LVM logical volumes ol/root ol/swap
+[    2.111933] dracut-initqueue[338]: + vinfo
+[    2.112089] dracut-initqueue[338]: + read line
+[    2.112236] dracut-initqueue[338]: + lvm lvscan --ignorelockingfailure
+[    2.112391] dracut-initqueue[338]: + info inactive ''\''/dev/ol/swap'\''' '[1.00' 'GiB]' inherit
+[    2.112523] dracut-initqueue[338]: + check_quiet
+[    2.112654] dracut-initqueue[338]: + '[' -z no ']'
+[    2.112782] dracut-initqueue[338]: + '[' no '!=' yes ']'
+[    2.112936] dracut-initqueue[338]: + echo 'inactive '\''/dev/ol/swap'\'' [1.00 GiB] inherit'
+[    2.113088] dracut-initqueue[338]: inactive '/dev/ol/swap' [1.00 GiB] inherit
+[    2.113226] dracut-initqueue[338]: + read line
+[    2.113370] dracut-initqueue[338]: + info inactive ''\''/dev/ol/root'\''' '[<8.00' 'GiB]' inherit
+[    2.113497] dracut-initqueue[338]: + check_quiet
+[    2.113624] dracut-initqueue[338]: + '[' -z no ']'
+[    2.113750] dracut-initqueue[338]: + '[' no '!=' yes ']'
+[    2.113917] dracut-initqueue[338]: + echo 'inactive '\''/dev/ol/root'\'' [<8.00 GiB] inherit'
+[    2.114077] dracut-initqueue[338]: inactive '/dev/ol/root' [<8.00 GiB] inherit
+[    2.114209] dracut-initqueue[338]: + read line
+[    2.194908] dracut-initqueue[338]: + '[' -n '' ']'
+[    2.195126] dracut-initqueue[338]: + for LV in '$LVS'
+[    2.195277] dracut-initqueue[338]: + '[' -z ' --sysinit ' ']'
+[    2.195418] dracut-initqueue[338]: + lvm lvchange --yes -K -ay --sysinit ol/root
+[    2.195561] dracut-initqueue[338]: + vinfo
+[    2.195705] dracut-initqueue[338]: + read line
+[  OK  ] Found device /dev/mapper/ol-root.
+         Starting File System Check on /dev/mapper/ol-root...
+[  OK  ] Started File System Check on /dev/mapper/ol-root.
+[    2.225662] dracut-initqueue[338]: + '[' -n '' ']'
+[    2.225857] dracut-initqueue[338]: + for LV in '$LVS'
+[    2.226046] dracut-initqueue[338]: + '[' -z ' --sysinit ' ']'
+[    2.226198] dracut-initqueue[338]: + lvm lvchange --yes -K -ay --sysinit ol/swap
+[    2.226491] dracut-initqueue[338]: + vinfo
+[    2.226981] dracut-initqueue[338]: + read line
+[    2.262940] dracut-initqueue[338]: + '[' -n '' ']'
+[    2.263132] dracut-initqueue[338]: + '[' -z 'ol/root ol/swap' -o -n '' ']'
+[    2.263272] dracut-initqueue[338]: + '[' '' ']'
+[    2.263415] dracut-initqueue[338]: + unset lvmwritten
+[    2.263548] dracut-initqueue[338]: + udevadm settle
+[    2.267234] dracut-initqueue[338]: + need_shutdown
+[    2.267479] dracut-initqueue[338]: /bin/dracut-initqueue@47(): check_finished
+[    2.267636] dracut-initqueue[338]: /lib/dracut-lib.sh@431(check_finished): local f
+[    2.267772] dracut-initqueue[338]: /lib/dracut-lib.sh@432(check_finished): for f in '$hookdir/initqueue/finished/*.sh'
+[    2.267921] dracut-initqueue[338]: /lib/dracut-lib.sh@433(check_finished): '[' '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fmapper\x2fol-root.sh' = '/lib/dracut/hooks/initqueue/finished/*.sh' ']'
+[    2.268091] dracut-initqueue[338]: /lib/dracut-lib.sh@434(check_finished): '[' -e '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fmapper\x2fol-root.sh' ']'
+[    2.268434] dracut-initqueue[338]: /lib/dracut-lib.sh@434(check_finished): . '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fmapper\x2fol-root.sh'
+[    2.268774] dracut-initqueue[338]: //lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fmapper\x2fol-root.sh@1(source): '[' -e /dev/mapper/ol-root ']'
+[    2.269235] dracut-initqueue[338]: /lib/dracut-lib.sh@432(check_finished): for f in '$hookdir/initqueue/finished/*.sh'
+[    2.269650] dracut-initqueue[338]: /lib/dracut-lib.sh@433(check_finished): '[' '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fol\x2froot.sh' = '/lib/dracut/hooks/initqueue/finished/*.sh' ']'
+[    2.270185] dracut-initqueue[338]: /lib/dracut-lib.sh@434(check_finished): '[' -e '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fol\x2froot.sh' ']'
+[    2.270744] dracut-initqueue[338]: /lib/dracut-lib.sh@434(check_finished): . '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fol\x2froot.sh'
+[    2.271193] dracut-initqueue[338]: //lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fol\x2froot.sh@1(source): '[' -e /dev/ol/root ']'
+[    2.271678] dracut-initqueue[338]: /lib/dracut-lib.sh@432(check_finished): for f in '$hookdir/initqueue/finished/*.sh'
+[    2.272152] dracut-initqueue[338]: /lib/dracut-lib.sh@433(check_finished): '[' '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fol\x2fswap.sh' = '/lib/dracut/hooks/initqueue/finished/*.sh' ']'
+[    2.272671] dracut-initqueue[338]: /lib/dracut-lib.sh@434(check_finished): '[' -e '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fol\x2fswap.sh' ']'
+[    2.273183] dracut-initqueue[338]: /lib/dracut-lib.sh@434(check_finished): . '/lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fol\x2fswap.sh'
+[    2.273718] dracut-initqueue[338]: //lib/dracut/hooks/initqueue/finished/devexists-\x2fdev\x2fol\x2fswap.sh@1(source): '[' -e /dev/ol/swap ']'
+[    2.274261] dracut-initqueue[338]: /lib/dracut-lib.sh@436(check_finished): return 0
+[    2.274403] dracut-initqueue[338]: /bin/dracut-initqueue@47(): break 2
+[    2.274525] dracut-initqueue[338]: /bin/dracut-initqueue@80(): unset job
+[    2.274640] dracut-initqueue[338]: /bin/dracut-initqueue@81(): unset queuetriggered
+[    2.275250] dracut-initqueue[338]: /bin/dracut-initqueue@82(): unset main_loop
+[    2.275846] dracut-initqueue[338]: /bin/dracut-initqueue@83(): unset RDRETRY
+[    2.276496] dracut-initqueue[338]: /bin/dracut-initqueue@85(): export -p
+[    2.277114] dracut-initqueue[338]: /bin/dracut-initqueue@87(): exit 0
+[  OK  ] Started dracut initqueue hook.
+[  OK  ] Reached target Remote File Systems (Pre).
+[  OK  ] Reached target Remote File Systems.
+         Mounting /sysroot...
+[    2.354020] SGI XFS with ACLs, security attributes, realtime, no debug enabled
+[    2.358975] XFS (dm-0): Mounting V4 Filesystem
+[    2.374377] XFS (dm-0): Starting recovery (logdev: internal)
+[    2.401831] XFS (dm-0): Ending recovery (logdev: internal)
+[  OK  ] Mounted /sysroot.
+[  OK  ] Reached target Initrd Root File System.
+         Starting Reload Configuration from the Real Root...
+[  OK  ] Started Reload Configuration from the Real Root.
+[  OK  ] Reached target Initrd File Systems.
+[  OK  ] Reached target Initrd Default Target.
+         Starting dracut pre-pivot and cleanup hook...
+[    2.459602] dracut-pre-pivot[562]: //lib/dracut-lib.sh@421(): hookdir=/lib/dracut/hooks
+[    2.459811] dracut-pre-pivot[562]: //lib/dracut-lib.sh@422(): export hookdir
+[    2.459979] dracut-pre-pivot[562]: //lib/dracut-lib.sh@549(): command -v findmnt
+[    2.461067] dracut-pre-pivot[562]: //lib/dracut-lib.sh@1013(): command -v pidof
+[    2.461482] dracut-pre-pivot[562]: //lib/dracut-lib.sh@1203(): setmemdebug
+[    2.462230] dracut-pre-pivot[562]: //lib/dracut-lib.sh@1198(setmemdebug): '[' -z 0 ']'
+[    2.463050] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@11(): source_conf /etc/conf.d
+[    2.463200] dracut-pre-pivot[562]: /lib/dracut-lib.sh@440(source_conf): local f
+[    2.463340] dracut-pre-pivot[562]: /lib/dracut-lib.sh@441(source_conf): '[' /etc/conf.d ']'
+[    2.463478] dracut-pre-pivot[562]: /lib/dracut-lib.sh@441(source_conf): '[' -d //etc/conf.d ']'
+[    2.464292] dracut-pre-pivot[562]: /lib/dracut-lib.sh@442(source_conf): for f in '"/$1"/*.conf'
+[    2.465050] dracut-pre-pivot[562]: /lib/dracut-lib.sh@442(source_conf): '[' -e //etc/conf.d/systemd.conf ']'
+[    2.465835] dracut-pre-pivot[562]: /lib/dracut-lib.sh@442(source_conf): . //etc/conf.d/systemd.conf
+[    2.466016] dracut-pre-pivot[562]: ///etc/conf.d/systemd.conf@1(source): systemdutildir=/usr/lib/systemd
+[    2.466162] dracut-pre-pivot[562]: ///etc/conf.d/systemd.conf@2(source): systemdsystemunitdir=/usr/lib/systemd/system
+[    2.466307] dracut-pre-pivot[562]: ///etc/conf.d/systemd.conf@3(source): systemdsystemconfdir=/etc/systemd/system
+[    2.466495] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@13(): make_trace_mem 'hook pre-pivot' 1:shortmem 2+:mem 3+:slab 4+:komem
+[    2.467191] dracut-pre-pivot[562]: /lib/dracut-lib.sh@1216(make_trace_mem): local msg
+[    2.467942] dracut-pre-pivot[562]: /lib/dracut-lib.sh@1217(make_trace_mem): msg='hook pre-pivot'
+[    2.468652] dracut-pre-pivot[562]: /lib/dracut-lib.sh@1218(make_trace_mem): shift
+[    2.469319] dracut-pre-pivot[562]: /lib/dracut-lib.sh@1219(make_trace_mem): '[' -n 0 ']'
+[    2.469978] dracut-pre-pivot[562]: /lib/dracut-lib.sh@1219(make_trace_mem): '[' 0 -gt 0 ']'
+[    2.470643] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@16(): getarg rd.break=pre-pivot rdbreak=pre-pivot
+[    2.470796] dracut-pre-pivot[562]: /lib/dracut-lib.sh@187(getarg): debug_off
+[    2.471512] dracut-pre-pivot[562]: /lib/dracut-lib.sh@20(debug_off): set +x
+[    2.472121] dracut-pre-pivot[562]: /lib/dracut-lib.sh@227(getarg): return 1
+[    2.472693] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@17(): source_hook pre-pivot
+[    2.473265] dracut-pre-pivot[562]: /lib/dracut-lib.sh@425(source_hook): local _dir
+[    2.473843] dracut-pre-pivot[562]: /lib/dracut-lib.sh@426(source_hook): _dir=pre-pivot
+[    2.474410] dracut-pre-pivot[562]: /lib/dracut-lib.sh@426(source_hook): shift
+[    2.474988] dracut-pre-pivot[562]: /lib/dracut-lib.sh@427(source_hook): source_all /lib/dracut/hooks/pre-pivot
+[    2.475555] dracut-pre-pivot[562]: /lib/dracut-lib.sh@414(source_all): local f
+[    2.476089] dracut-pre-pivot[562]: /lib/dracut-lib.sh@415(source_all): local _dir
+[    2.476589] dracut-pre-pivot[562]: /lib/dracut-lib.sh@416(source_all): _dir=/lib/dracut/hooks/pre-pivot
+[    2.476735] dracut-pre-pivot[562]: /lib/dracut-lib.sh@416(source_all): shift
+[    2.477345] dracut-pre-pivot[562]: /lib/dracut-lib.sh@417(source_all): '[' /lib/dracut/hooks/pre-pivot ']'
+[    2.477808] dracut-pre-pivot[562]: /lib/dracut-lib.sh@417(source_all): '[' -d //lib/dracut/hooks/pre-pivot ']'
+[    2.478290] dracut-pre-pivot[562]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    2.478722] dracut-pre-pivot[562]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh ']'
+[    2.479191] dracut-pre-pivot[562]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh
+[    2.479668] dracut-pre-pivot[562]: ///lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh@6(source): type is_persistent_ethernet_name
+[    2.480143] dracut-pre-pivot[562]: ///lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh@6(source): . /lib/net-lib.sh
+[    2.480620] dracut-pre-pivot[562]: ///lib/net-lib.sh@697(source): type hostname
+[    2.481103] dracut-pre-pivot[562]: ///lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh@8(source): udevadm settle --timeout=30
+[    2.504280] dracut-pre-pivot[562]: ///lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh@10(source): mkdir -m 0755 -p /tmp/ifcfg/
+[    2.505151] dracut-pre-pivot[562]: ///lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh@11(source): mkdir -m 0755 -p /tmp/ifcfg-leases/
+[    2.506760] dracut-pre-pivot[562]: ///lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh@114(source): for netup in '/tmp/net.*.did-setup'
+[    2.507025] dracut-pre-pivot[562]: ///lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh@115(source): '[' -f '/tmp/net.*.did-setup' ']'
+[    2.507176] dracut-pre-pivot[562]: ///lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh@115(source): continue
+[    2.507320] dracut-pre-pivot[562]: ///lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh@286(source): mkdir -m 0755 -p /run/initramfs/state/etc/sysconfig/network-scripts
+[    2.507962] dracut-pre-pivot[562]: ///lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh@287(source): mkdir -m 0755 -p /run/initramfs/state/var/lib/dhclient
+[    2.508668] dracut-pre-pivot[562]: ///lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh@288(source): echo 'files /etc/sysconfig/network-scripts'
+[    2.508831] dracut-pre-pivot[562]: ///lib/dracut/hooks/pre-pivot/85-write-ifcfg.sh@289(source): echo 'files /var/lib/dhclient'
+[    2.519961] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@19(): cleanup_trace_mem
+[    2.520161] dracut-pre-pivot[562]: /lib/dracut-lib.sh@1208(cleanup_trace_mem): '[' 0 -eq 4 ']'
+[    2.520316] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@21(): getarg rd.break=cleanup rdbreak=cleanup
+[    2.520451] dracut-pre-pivot[562]: /lib/dracut-lib.sh@187(getarg): debug_off
+[    2.521298] dracut-pre-pivot[562]: /lib/dracut-lib.sh@20(debug_off): set +x
+[    2.522123] dracut-pre-pivot[562]: /lib/dracut-lib.sh@227(getarg): return 1
+[    2.522386] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@22(): source_hook cleanup
+[    2.523110] dracut-pre-pivot[562]: /lib/dracut-lib.sh@425(source_hook): local _dir
+[    2.523905] dracut-pre-pivot[562]: /lib/dracut-lib.sh@426(source_hook): _dir=cleanup
+[    2.524074] dracut-pre-pivot[562]: /lib/dracut-lib.sh@426(source_hook): shift
+[    2.524211] dracut-pre-pivot[562]: /lib/dracut-lib.sh@427(source_hook): source_all /lib/dracut/hooks/cleanup
+[    2.524357] dracut-pre-pivot[562]: /lib/dracut-lib.sh@414(source_all): local f
+[    2.525152] dracut-pre-pivot[562]: /lib/dracut-lib.sh@415(source_all): local _dir
+[    2.525962] dracut-pre-pivot[562]: /lib/dracut-lib.sh@416(source_all): _dir=/lib/dracut/hooks/cleanup
+[    2.526710] dracut-pre-pivot[562]: /lib/dracut-lib.sh@416(source_all): shift
+[    2.527495] dracut-pre-pivot[562]: /lib/dracut-lib.sh@417(source_all): '[' /lib/dracut/hooks/cleanup ']'
+[    2.528235] dracut-pre-pivot[562]: /lib/dracut-lib.sh@417(source_all): '[' -d //lib/dracut/hooks/cleanup ']'
+[    2.528389] dracut-pre-pivot[562]: /lib/dracut-lib.sh@418(source_all): for f in '"/$_dir"/*.sh'
+[    2.528519] dracut-pre-pivot[562]: /lib/dracut-lib.sh@418(source_all): '[' -e //lib/dracut/hooks/cleanup/10-kill-dhclient.sh ']'
+[    2.529308] dracut-pre-pivot[562]: /lib/dracut-lib.sh@418(source_all): . //lib/dracut/hooks/cleanup/10-kill-dhclient.sh
+[    2.530051] dracut-pre-pivot[562]: ///lib/dracut/hooks/cleanup/10-kill-dhclient.sh@5(source): for f in '/tmp/dhclient.*.pid'
+[    2.530811] dracut-pre-pivot[562]: ///lib/dracut/hooks/cleanup/10-kill-dhclient.sh@6(source): '[' -e '/tmp/dhclient.*.pid' ']'
+[    2.531571] dracut-pre-pivot[562]: ///lib/dracut/hooks/cleanup/10-kill-dhclient.sh@6(source): continue
+[    2.532307] dracut-pre-pivot[562]: ///lib/dracut/hooks/cleanup/10-kill-dhclient.sh@11(source): sleep 0.1
+[    2.623197] dracut-pre-pivot[562]: ///lib/dracut/hooks/cleanup/10-kill-dhclient.sh@13(source): for f in '/tmp/dhclient.*.pid'
+[    2.623371] dracut-pre-pivot[562]: ///lib/dracut/hooks/cleanup/10-kill-dhclient.sh@14(source): '[' -e '/tmp/dhclient.*.pid' ']'
+[    2.623537] dracut-pre-pivot[562]: ///lib/dracut/hooks/cleanup/10-kill-dhclient.sh@14(source): continue
+[    2.623671] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@24(): getarg rd.break -d rdbreak
+[    2.623827] dracut-pre-pivot[562]: /lib/dracut-lib.sh@187(getarg): debug_off
+[    2.624601] dracut-pre-pivot[562]: /lib/dracut-lib.sh@20(debug_off): set +x
+[    2.625325] dracut-pre-pivot[562]: /lib/dracut-lib.sh@227(getarg): return 1
+[    2.625892] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@27(): '[' -h /dev/root ']'
+[    2.626652] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@28(): '[' -h /dev/nfs ']'
+[    2.627399] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@30(): udevadm settle
+[    2.631213] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@32(): cnt=0
+[    2.631521] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@33(): udevadm settle --timeout=0
+[    2.636240] dracut-pre-pivot[562]: /bin/dracut-pre-pivot@40(): exit 0
