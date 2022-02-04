@@ -74,3 +74,14 @@ Unicast reply from 192.168.0.3 [xx:xx:xx:xx:xx:xx]  0.850ms
 Unicast reply from 192.168.0.3 [xx:xx:xx:xx:xx:xx]  0.872ms
 Unicast reply from 192.168.0.3 [xx:xx:xx:xx:xx:xx]  0.736ms
 Unicast reply from 192.168.0.3 [xx:xx:xx:xx:xx:xx]  0.688ms
+
+
+References:
+
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/virtualization_deployment_and_administration_guide/sect-virtual_networking-directly_attaching_to_physical_interface
+
+https://lists.gnu.org/archive/html/qemu-discuss/2015-10/msg00002.html
+
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1696623
+
+https://lore.kernel.org/qemu-devel/20200630145737.232095-2-lvivier@redhat.com/
