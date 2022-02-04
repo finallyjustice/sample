@@ -1,0 +1,76 @@
+macvtap: to setup the env for KVM
+
+This is about to setup the env to use macvtap for KVM.
+
+1. At hypervisor side, create two network namespaces, assign the veth to each namespace, and add macvtap0 to namespace net0.
+
+hv# iptables -F
+
+hv# ip netns add net0
+hv# ip netns add net1
+
+hv# ip link add veth_peer0 type veth peer name veth_peer1
+hv# ip link set veth_peer0 netns net0
+hv# ip link set veth_peer1 netns net1
+
+hv# ip netns exec net0 ifconfig veth_peer0 up
+hv# ip netns exec net1 ip addr add local 192.168.0.2/24 dev veth_peer1
+hv# ip netns exec net1 ifconfig veth_peer1 up
+
+hv# ip netns exec net0 ip link add link veth_peer0 name macvtap0 type macvtap mode passthru
+hv# ip netns exec net0 ifconfig macvtap0 up
+
+
+2. To obtain the index of tap device. Here the index is 2.
+
+hv# ip netns exec net0 ip -o link show macvtap0 | cut -d: -f1
+2
+
+
+3. Create a VM with 4 queues (the tap index is 2).
+
+hv# qemu-system-x86_64 -smp 16 -m 32G -enable-kvm -cpu host -vnc :7 \
+-hda /home/opc/vm/ol7.qcow2 \
+-device virtio-net-pci,netdev=tapnet,mq=true,vectors=17 \
+-netdev tap,id=tapnet,fds=37:38:39:40,queues=4 \
+37<>/dev/tap2 38<>/dev/tap2 39<>/dev/tap2 40<>/dev/tap2 \
+-serial stdio
+
+We may confirm from vhost that there are 4 queues.
+
+hv# ps aux | grep vhost-
+opc       5338  0.0  0.0 114292  2348 pts/2    S+   10:30   0:00 grep --color=auto vhost-
+root     23923  0.3  0.0      0     0 ?        S    09:39   0:11 [vhost-23918]
+root     23924  0.0  0.0      0     0 ?        S    09:39   0:01 [vhost-23918]
+root     23925  0.0  0.0      0     0 ?        S    09:39   0:00 [vhost-23918]
+root     23926  0.0  0.0      0     0 ?        S    09:39   0:01 [vhost-23918]
+
+
+4. Configure the IP at VM side.
+
+vm# iptables -F
+vm# ip addr add local 192.168.0.3/24 dev eth0
+
+
+5. Test the TCP communication between the hypervisor and VM.
+
+Run below at VM side:
+
+hv# iperf3 -s
+
+Run below at HV side:
+
+vm# ip netns exec net1 iperf3 -c 192.168.0.3
+
+
+Generate some arp requests from the hypervisor side to VM.
+
+hv# ip netns exec net1 arping 192.168.0.3
+ARPING 192.168.0.3 from 192.168.0.2 veth_peer1
+Unicast reply from 192.168.0.3 [xx:xx:xx:xx:xx:xx]  0.761ms
+Unicast reply from 192.168.0.3 [xx:xx:xx:xx:xx:xx]  0.726ms
+Unicast reply from 192.168.0.3 [xx:xx:xx:xx:xx:xx]  0.727ms
+Unicast reply from 192.168.0.3 [xx:xx:xx:xx:xx:xx]  0.850ms
+Unicast reply from 192.168.0.3 [xx:xx:xx:xx:xx:xx]  0.872ms
+Unicast reply from 192.168.0.3 [xx:xx:xx:xx:xx:xx]  0.736ms
+Unicast reply from 192.168.0.3 [xx:xx:xx:xx:xx:xx]  0.688ms
