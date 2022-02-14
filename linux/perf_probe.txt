@@ -1,0 +1,23 @@
+# perf probe -d start_xmit
+# perf probe -d napi_gro_receive
+
+
+# perf probe start_xmit
+Added new event:
+  probe:start_xmit     (on start_xmit)
+
+You can now use it in all perf tools, such as:
+
+	perf record -e probe:start_xmit -aR sleep 1
+
+
+# perf probe napi_gro_receive
+Added new event:
+  probe:napi_gro_receive (on napi_gro_receive)
+
+You can now use it in all perf tools, such as:
+
+	perf record -e probe:napi_gro_receive -aR sleep 1
+
+
+# perf record -e probe:start_xmit -e probe:napi_gro_receive -a -g -- sleep 20
