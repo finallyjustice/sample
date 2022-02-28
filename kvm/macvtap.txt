@@ -17,7 +17,7 @@ hv# ip netns exec net0 ifconfig veth_peer0 up
 hv# ip netns exec net1 ip addr add local 192.168.0.2/24 dev veth_peer1
 hv# ip netns exec net1 ifconfig veth_peer1 up
 
-hv# ip netns exec net0 ip link add link veth_peer0 name macvtap0 type macvtap mode passthru
+hv# ip netns exec net0 ip link add link veth_peer0 name macvtap0 numtxqueues 4 numrxqueues 4 type macvtap mode passthru
 hv# ip netns exec net0 ifconfig macvtap0 up
 
 

@@ -42,7 +42,9 @@ int bpf_tun_net_xmit(struct pt_regs *ctx, struct sk_buff *skb,
 	    if (icmph.type == ICMP_ECHO) {
                 bpf_trace_printk("ping echo (%s) id=%u, sequence=%u\\n",
                                  skb->dev->name, icmph.un.echo.id, icmph.un.echo.sequence);
-            }
+            } else (icmph.type == ICMP_ECHOREPLY)
+                bpf_trace_printk("ping reply (%s) id=%u, sequence=%u\\n",
+                                 skb->dev->name, icmph.un.echo.id, icmph.un.echo.sequence);
         }
     }
 

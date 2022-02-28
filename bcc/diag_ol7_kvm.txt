@@ -62,6 +62,21 @@ Total Samples:198, Total events handled time:4272023.35us.
 perf record -a -e kvm:\*
 perf report
 
+or
+
+perf record -e 'kvm:*' -a sleep 30
+perf report
+
+or
+
+perf record -e 'kvm:kvm_exit' --pid <PID>
+perf report
+
+or
+
+perf record -e 'kvm:kvm_nested_vmexit' --pid <PID>
+perf report
+
 
 
 ./tools/kvm/kvm_stat/kvm_stat -1
