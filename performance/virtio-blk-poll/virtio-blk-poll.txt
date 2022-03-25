@@ -1,0 +1,44 @@
+This is to evaluate the performance improvement of below patch.
+
+https://lore.kernel.org/all/20220324140450.33148-2-suwan.kim027@gmail.com/
+
+
+VM kernel: commit ed4643521e6a ("Merge tag 'arm-dt-5.18' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc") post 5.17.
+FIO: fio-3.29
+
+Here is the fio command with --numjobs=1, --numjobs=2, or --numjobs=4.
+
+fio --name=legacy_test --ioengine=io_uring -rw=randread --hipri --iodepth=64 --bs=512 --direct=1 --numjobs=4 --filename=/dev/vda --group_reporting --size=2G
+
+
+1. Without polling, that is, without the patch. There are 4 queues.
+
+qemu-system-x86_64 -smp 4 -m 32G -enable-kvm -vnc :5 -hda ubuntu1804.img \
+-kernel /home/zhang/img/debug/mainline-linux/arch/x86_64/boot/bzImage \
+-append "root=/dev/sda1 init=/sbin/init text console=ttyS0 loglevel=7" \
+-net nic -net user,hostfwd=tcp::5025-:22 \
+-object iothread,id=iothread0 \
+-device virtio-blk-pci,id=vblk0,num-queues=4,drive=drive0,iothread=iothread0,serial=12345678 \
+-drive file=test.raw,if=none,id=drive0,cache=writethrough
+
+
+-- numjobs=1 : IOPS = 119K,   avg latency = 536.16usec
+-- numjobs=2 : IOPS = 113.3K, avg latency = 1075.41usec
+-- numjobs=4 : IOPS = 92.4K,  avg latency = 2750.85usec
+
+
+2. With polling patch and "virtio_blk.num_poll_queues=2". There are 4 queues while 2 out of them are poll queues.
+
+qemu-system-x86_64 \
+-smp 4 -m 32G -enable-kvm -vnc :5 -hda ubuntu1804.img \
+-kernel /home/zhang/img/debug/mainline-linux/arch/x86_64/boot/bzImage \
+-append "root=/dev/sda1 init=/sbin/init text console=ttyS0 loglevel=7 virtio_blk.num_poll_queues=2" \
+-net nic -net user,hostfwd=tcp::5025-:22 \
+-object iothread,id=iothread0 \
+-device virtio-blk-pci,id=vblk0,num-queues=4,drive=drive0,iothread=iothread0,serial=12345678 \
+-drive file=test.raw,if=none,id=drive0,cache=writethrough
+
+
+-- numjobs=1 : IOPS = 136.3K, avg latency = 470.06us
+-- numjobs=2 : IOPS = 148.7K, avg latency = 814.9us
+-- numjobs=4 : IOPS = 99.7K,  avg latency = 2571.33us
