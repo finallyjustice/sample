@@ -1,0 +1,61 @@
+# trace-cmd record -b 20000 -e kvm
+
+# trace-cmd report
+CPU 8 is empty
+CPU 9 is empty
+CPU 10 is empty
+CPU 11 is empty
+CPU 20 is empty
+CPU 21 is empty
+CPU 22 is empty
+CPU 23 is empty
+cpus=24
+ qemu-system-x86-1996  [005] 543133.091035: kvm_ple_window:       vcpu 4: ple_window 4096 (shrink 4096)
+ qemu-system-x86-1996  [005] 543133.091041: kvm_vcpu_wakeup:      wait time 511899493 ns, polling valid
+ qemu-system-x86-1996  [005] 543133.091043: kvm_apic_accept_irq:  apicid 4 vec 236 (Fixed|edge)
+ qemu-system-x86-1996  [005] 543133.091046: kvm_entry:            vcpu 4
+ qemu-system-x86-1996  [005] 543133.091055: kvm_exit:             reason MSR_WRITE rip 0xffffffff8de76a88 info 0 0
+ qemu-system-x86-1996  [005] 543133.091056: kvm_apic:             apic_write APIC_TMICT = 0x5f9c6c0
+ qemu-system-x86-1996  [005] 543133.091057: kvm_hv_timer_state:   vcpu_id 4 hv_timer 1
+ qemu-system-x86-1996  [005] 543133.091059: kvm_msr:              msr_write 838 = 0x5f9c6c0
+ qemu-system-x86-1996  [005] 543133.091059: kvm_entry:            vcpu 4
+ qemu-system-x86-1996  [005] 543133.091061: kvm_exit:             reason MSR_WRITE rip 0xffffffff8de76a88 info 0 0
+ qemu-system-x86-1996  [005] 543133.091061: kvm_apic:             apic_write APIC_ICR2 = 0x5
+ qemu-system-x86-1996  [005] 543133.091062: kvm_apic:             apic_write APIC_ICR = 0xfd
+ qemu-system-x86-1996  [005] 543133.091063: kvm_apic_ipi:         dst 5 vec 253 (Fixed|physical|de-assert|edge|dst)
+ qemu-system-x86-1996  [005] 543133.091063: kvm_apic_accept_irq:  apicid 5 vec 253 (Fixed|edge)
+ qemu-system-x86-1996  [005] 543133.091065: kvm_msr:              msr_write 830 = 0x5000000fd
+ qemu-system-x86-1996  [005] 543133.091065: kvm_entry:            vcpu 4
+ qemu-system-x86-1997  [003] 543133.091067: kvm_ple_window:       vcpu 5: ple_window 4096 (shrink 4096)
+ qemu-system-x86-1996  [005] 543133.091071: kvm_exit:             reason HLT rip 0xffffffff8e8e1d51 info 0 0
+ qemu-system-x86-1996  [005] 543133.091072: kvm_hv_timer_state:   vcpu_id 4 hv_timer 0
+ qemu-system-x86-1997  [003] 543133.091072: kvm_vcpu_wakeup:      wait time 543989243 ns, polling valid
+ qemu-system-x86-1997  [003] 543133.091073: kvm_hv_timer_state:   vcpu_id 5 hv_timer 1
+ qemu-system-x86-1997  [003] 543133.091078: kvm_entry:            vcpu 5
+ qemu-system-x86-1997  [003] 543133.091084: kvm_exit:             reason MSR_WRITE rip 0xffffffff8de76a88 info 0 0
+ qemu-system-x86-1997  [003] 543133.091084: kvm_apic:             apic_write APIC_TMICT = 0x5fd9014
+ qemu-system-x86-1997  [003] 543133.091085: kvm_hv_timer_state:   vcpu_id 5 hv_timer 1
+ qemu-system-x86-1997  [003] 543133.091085: kvm_msr:              msr_write 838 = 0x5fd9014
+ qemu-system-x86-1997  [003] 543133.091086: kvm_entry:            vcpu 5
+ qemu-system-x86-1997  [003] 543133.091087: kvm_exit:             reason MSR_WRITE rip 0xffffffff8de76a88 info 0 0
+ qemu-system-x86-1997  [003] 543133.091087: kvm_apic:             apic_write APIC_TMICT = 0x3b97c
+ qemu-system-x86-1997  [003] 543133.091088: kvm_hv_timer_state:   vcpu_id 5 hv_timer 1
+ qemu-system-x86-1997  [003] 543133.091088: kvm_msr:              msr_write 838 = 0x3b97c
+ qemu-system-x86-1997  [003] 543133.091088: kvm_entry:            vcpu 5
+ qemu-system-x86-1997  [003] 543133.091090: kvm_exit:             reason MSR_READ rip 0xffffffff8de7688a info 0 0
+ qemu-system-x86-1997  [003] 543133.091090: kvm_msr:              msr_read 3b = 0x0
+ qemu-system-x86-1997  [003] 543133.091091: kvm_entry:            vcpu 5
+ qemu-system-x86-1997  [003] 543133.091093: kvm_exit:             reason MSR_WRITE rip 0xffffffff8de76a88 info 0 0
+ qemu-system-x86-1997  [003] 543133.091093: kvm_apic:             apic_write APIC_TMICT = 0x1c9b5c9
+ qemu-system-x86-1997  [003] 543133.091093: kvm_hv_timer_state:   vcpu_id 5 hv_timer 1
+ qemu-system-x86-1997  [003] 543133.091093: kvm_msr:              msr_write 838 = 0x1c9b5c9
+ qemu-system-x86-1997  [003] 543133.091094: kvm_entry:            vcpu 5
+ qemu-system-x86-1997  [003] 543133.091095: kvm_exit:             reason HLT rip 0xffffffff8e8e1d51 info 0 0
+ qemu-system-x86-1997  [003] 543133.091095: kvm_hv_timer_state:   vcpu_id 5 hv_timer 0
+ qemu-system-x86-1993  [016] 543133.219041: kvm_ple_window:       vcpu 1: ple_window 4096 (shrink 4096)
+... ...
+
+
+Reference:
+
+- https://www.linux-kvm.org/page/Tracing
