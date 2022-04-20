@@ -1,0 +1,206 @@
+This is a test of CPU hotplug on qemu-7.0.0 + linux 4.14.
+
+1. Create a VM with "-smp 4,maxcpus=8".
+
+
+2. After the creation, there are 4 vcpus available.
+
+# lsof -p 5921 | grep kvm
+qemu-syst 5921 root  txt       REG  252,2    44911704 14054147081 /home/zhang/kvm/qemu/build/qemu-system-x86_64
+qemu-syst 5921 root  mem       REG   0,13                   13759 anon_inode:kvm-vcpu:3 (stat: No such file or directory)
+qemu-syst 5921 root   11u      CHR 10,232         0t0       20902 /dev/kvm
+qemu-syst 5921 root   12u  a_inode   0,13           0       13759 kvm-vm
+qemu-syst 5921 root   14u  a_inode   0,13           0       13759 kvm-vcpu:0
+qemu-syst 5921 root   15u  a_inode   0,13           0       13759 kvm-vcpu:1
+qemu-syst 5921 root   16u  a_inode   0,13           0       13759 kvm-vcpu:2
+qemu-syst 5921 root   17u  a_inode   0,13           0       13759 kvm-vcpu:3
+
+# pidstat -p 5921 -t
+... ...
+
+03:26:31 PM   UID      TGID       TID    %usr %system  %guest    %CPU   CPU  Command
+03:26:31 PM     0      5921         -    0.00    0.00    0.00    0.00     0  qemu-system-x86
+03:26:31 PM     0         -      5921    0.00    0.00    0.00    0.00     0  |__qemu-system-x86
+03:26:31 PM     0         -      5922    0.00    0.00    0.00    0.00    15  |__qemu-system-x86
+03:26:31 PM     0         -      5927    0.00    0.00    0.00    0.00    12  |__CPU 0/KVM
+03:26:31 PM     0         -      5928    0.00    0.00    0.00    0.00    16  |__CPU 1/KVM
+03:26:31 PM     0         -      5929    0.00    0.00    0.00    0.00    13  |__CPU 2/KVM
+03:26:31 PM     0         -      5930    0.00    0.00    0.00    0.00    15  |__CPU 3/KVM
+03:26:31 PM     0         -      5932    0.00    0.00    0.00    0.00    21  |__vnc_worker
+03:26:31 PM     0         -      5949    0.00    0.00    0.00    0.00     2  |__worker
+
+(qemu) info cpus
+* CPU #0: thread_id=5927
+  CPU #1: thread_id=5928
+  CPU #2: thread_id=5929
+  CPU #3: thread_id=5930
+
+# ls /sys/kernel/debug/kvm/5921-12 | grep vcpu
+vcpu0
+vcpu1
+vcpu2
+vcpu3
+
+
+3. Add a new vcpu "cpu05" (skip "cpu04" on purpose).
+
+(qemu) device_add host-x86_64-cpu,id=cpu05,socket-id=0,core-id=5,thread-id=0
+
+# lsof -p 5921 | grep kvm
+qemu-syst 5921 root  txt       REG  252,2    44911704 14054147081 /home/zhang/kvm/qemu/build/qemu-system-x86_64
+qemu-syst 5921 root  mem       REG   0,13                   13759 anon_inode:kvm-vcpu:5 (stat: No such file or directory)
+qemu-syst 5921 root   11u      CHR 10,232         0t0       20902 /dev/kvm
+qemu-syst 5921 root   12u  a_inode   0,13           0       13759 kvm-vm
+qemu-syst 5921 root   14u  a_inode   0,13           0       13759 kvm-vcpu:0
+qemu-syst 5921 root   15u  a_inode   0,13           0       13759 kvm-vcpu:1
+qemu-syst 5921 root   16u  a_inode   0,13           0       13759 kvm-vcpu:2
+qemu-syst 5921 root   17u  a_inode   0,13           0       13759 kvm-vcpu:3
+qemu-syst 5921 root   32u  a_inode   0,13           0       13759 kvm-vcpu:5
+
+# pidstat -p 5921 -t
+... ...
+
+03:29:26 PM   UID      TGID       TID    %usr %system  %guest    %CPU   CPU  Command
+03:29:26 PM     0      5921         -    0.00    0.00    0.00    0.00     4  qemu-system-x86
+03:29:26 PM     0         -      5921    0.00    0.00    0.00    0.00     4  |__qemu-system-x86
+03:29:26 PM     0         -      5922    0.00    0.00    0.00    0.00    16  |__qemu-system-x86
+03:29:26 PM     0         -      5927    0.00    0.00    0.00    0.00    12  |__CPU 0/KVM
+03:29:26 PM     0         -      5928    0.00    0.00    0.00    0.00    16  |__CPU 1/KVM
+03:29:26 PM     0         -      5929    0.00    0.00    0.00    0.00    14  |__CPU 2/KVM
+03:29:26 PM     0         -      5930    0.00    0.00    0.00    0.00    15  |__CPU 3/KVM
+03:29:26 PM     0         -      5932    0.00    0.00    0.00    0.00    21  |__vnc_worker
+03:29:26 PM     0         -      5982    0.00    0.00    0.00    0.00     5  |__CPU 5/KVM
+03:29:26 PM     0         -      5992    0.00    0.00    0.00    0.00    17  |__worker
+
+(qemu) info cpus
+* CPU #0: thread_id=5927
+  CPU #1: thread_id=5928
+  CPU #2: thread_id=5929
+  CPU #3: thread_id=5930
+  CPU #5: thread_id=5982
+
+# ls /sys/kernel/debug/kvm/5921-12 | grep vcpu
+vcpu0
+vcpu1
+vcpu2
+vcpu3
+vcpu5
+
+
+4. Remove the vcpu "cpu05": (1) the 'fd' is not removed; (2) the QEMU thread is removed; (3) the KVM vcpu debugfs is not removed; (4) The thread is removed from "info cpus".
+
+(qemu) device_del cpu05
+
+# lsof -p 5921 | grep kvm
+qemu-syst 5921 root  txt       REG  252,2    44911704 14054147081 /home/zhang/kvm/qemu/build/qemu-system-x86_64
+qemu-syst 5921 root  mem       REG   0,13                   13759 anon_inode:kvm-vcpu:3 (stat: No such file or directory)
+qemu-syst 5921 root   11u      CHR 10,232         0t0       20902 /dev/kvm
+qemu-syst 5921 root   12u  a_inode   0,13           0       13759 kvm-vm
+qemu-syst 5921 root   14u  a_inode   0,13           0       13759 kvm-vcpu:0
+qemu-syst 5921 root   15u  a_inode   0,13           0       13759 kvm-vcpu:1
+qemu-syst 5921 root   16u  a_inode   0,13           0       13759 kvm-vcpu:2
+qemu-syst 5921 root   17u  a_inode   0,13           0       13759 kvm-vcpu:3
+qemu-syst 5921 root   32u  a_inode   0,13           0       13759 kvm-vcpu:5
+
+# pidstat -p 5921 -t
+... ...
+
+03:31:29 PM   UID      TGID       TID    %usr %system  %guest    %CPU   CPU  Command
+03:31:29 PM     0      5921         -    0.00    0.00    0.00    0.00     5  qemu-system-x86
+03:31:29 PM     0         -      5921    0.00    0.00    0.00    0.00     5  |__qemu-system-x86
+03:31:29 PM     0         -      5922    0.00    0.00    0.00    0.00    16  |__qemu-system-x86
+03:31:29 PM     0         -      5927    0.00    0.00    0.00    0.00    12  |__CPU 0/KVM
+03:31:29 PM     0         -      5928    0.00    0.00    0.00    0.00    16  |__CPU 1/KVM
+03:31:29 PM     0         -      5929    0.00    0.00    0.00    0.00    14  |__CPU 2/KVM
+03:31:29 PM     0         -      5930    0.00    0.00    0.00    0.00    17  |__CPU 3/KVM
+03:31:29 PM     0         -      5932    0.00    0.00    0.00    0.00    21  |__vnc_worker
+03:31:29 PM     0         -      6013    0.00    0.00    0.00    0.00    13  |__worker
+
+# ls /sys/kernel/debug/kvm/5921-12 | grep vcpu
+vcpu0
+vcpu1
+vcpu2
+vcpu3
+vcpu5
+
+(qemu) info cpus
+* CPU #0: thread_id=5927
+  CPU #1: thread_id=5928
+  CPU #2: thread_id=5929
+  CPU #3: thread_id=5930
+
+
+5. Add the "vcpu05" again.
+
+(qemu) device_add host-x86_64-cpu,id=cpu05,socket-id=0,core-id=5,thread-id=0
+
+# lsof -p 5921 | grep kvm
+qemu-syst 5921 root  txt       REG  252,2    44911704 14054147081 /home/zhang/kvm/qemu/build/qemu-system-x86_64
+qemu-syst 5921 root  mem       REG   0,13                   13759 anon_inode:kvm-vcpu:5 (stat: No such file or directory)
+qemu-syst 5921 root   11u      CHR 10,232         0t0       20902 /dev/kvm
+qemu-syst 5921 root   12u  a_inode   0,13           0       13759 kvm-vm
+qemu-syst 5921 root   14u  a_inode   0,13           0       13759 kvm-vcpu:0
+qemu-syst 5921 root   15u  a_inode   0,13           0       13759 kvm-vcpu:1
+qemu-syst 5921 root   16u  a_inode   0,13           0       13759 kvm-vcpu:2
+qemu-syst 5921 root   17u  a_inode   0,13           0       13759 kvm-vcpu:3
+qemu-syst 5921 root   32u  a_inode   0,13           0       13759 kvm-vcpu:5
+
+# pidstat -p 5921 -t
+... ...
+
+03:47:01 PM   UID      TGID       TID    %usr %system  %guest    %CPU   CPU  Command
+03:47:01 PM     0      5921         -    0.00    0.00    0.00    0.00    22  qemu-system-x86
+03:47:01 PM     0         -      5921    0.00    0.00    0.00    0.00    22  |__qemu-system-x86
+03:47:01 PM     0         -      5922    0.00    0.00    0.00    0.00    16  |__qemu-system-x86
+03:47:01 PM     0         -      5927    0.00    0.00    0.00    0.00    21  |__CPU 0/KVM
+03:47:01 PM     0         -      5928    0.00    0.00    0.00    0.00    20  |__CPU 1/KVM
+03:47:01 PM     0         -      5929    0.00    0.00    0.00    0.00    23  |__CPU 2/KVM
+03:47:01 PM     0         -      5930    0.00    0.00    0.00    0.00     6  |__CPU 3/KVM
+03:47:01 PM     0         -      5932    0.00    0.00    0.00    0.00    21  |__vnc_worker
+03:47:01 PM     0         -      6272    0.00    0.00    0.00    0.00    18  |__CPU 5/KVM
+
+# ls /sys/kernel/debug/kvm/5921-12 | grep vcpu
+vcpu0
+vcpu1
+vcpu2
+vcpu3
+vcpu5
+
+(qemu) info cpus
+* CPU #0: thread_id=5927
+  CPU #1: thread_id=5928
+  CPU #2: thread_id=5929
+  CPU #3: thread_id=5930
+  CPU #5: thread_id=6272
+
+
+
+The vcpu thread is created via kvm_start_vcpu_thread().
+
+kvm_vcpu_thread_fn()
+-> kvm_init_vcpu()
+   -> kvm_get_vcpu()
+
+
+The kvm_get_vcpu() may re-use existing fd as line 450. That's why the 'fd' is not removed during hot-remove.
+
+446 static int kvm_get_vcpu(KVMState *s, unsigned long vcpu_id)
+447 {
+448     struct KVMParkedVcpu *cpu;
+449    
+450     QLIST_FOREACH(cpu, &s->kvm_parked_vcpus, node) {
+451         if (cpu->vcpu_id == vcpu_id) {
+452             int kvm_fd;
+453 
+454             QLIST_REMOVE(cpu, node);
+455             kvm_fd = cpu->kvm_fd;
+456             g_free(cpu);
+457             return kvm_fd;
+458         }
+459     }
+460    
+461     return kvm_vm_ioctl(s, KVM_CREATE_VCPU, (void *)vcpu_id);
+462 }
+
+
+When the vcpu is removed, it is 'parked' on s->kvm_parked_vcpus by do_kvm_destroy_vcpu(), so that the 'fd' can be re-used later.

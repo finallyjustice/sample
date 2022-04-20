@@ -1,0 +1,69 @@
+This is about to use "profile=kvm" as in below link:
+
+https://lore.kernel.org/all/20220412195846.3692374-1-zhanwei@google.com/
+
+1. Add "profile=kvm" to KVM hypervisor kernel.
+
+2. Reboot hypervisor so that "/proc/profile" will be available.
+
+3. Boot a VM.
+
+4. Profiling ...
+
+# readprofile  
+     1 setup_pebs_adaptive_sample_data            0.0010
+   104 pt_event_addr_filters_validate             0.4643
+     1 nhm_uncore_msr_enable_event                0.0125
+     6 snb_uncore_pci_init                        0.1250
+     5 pmu_msr_write                              0.0164
+     3 xen_pmu_irq_handler                        0.0082
+     2 xen_write_cr0                              0.0054
+     2 xen_release_pte                            0.0022
+    58 xen_alloc_pud                              0.0906
+    15 xen_set_pte                                0.0199
+... ...
+269789 __sys_shutdown                           1686.1813
+    84 __x64_sys_shutdown                         2.6250
+     1 __sys_sendmsg                              0.0057
+     6 __x64_sys_sendmsg                          0.1250
+   150 __sys_recvmsg                              0.9375
+    15 __x64_sys_recvmsg                          0.3125
+    77 __ia32_sys_recvmsg                         2.4062
+   262 __sys_recvmmsg                             0.8618
+     3 __ia32_sys_recvmmsg                        0.0469
+     2 __x64_sys_recvmmsg_time32                  0.0312
+    16 __ia32_sys_recvmmsg_time32                 0.2500
+     4 __ia32_sys_socketcall                      0.0045
+   431 skb_recv_datagram                          4.4896
+   516 sk_stream_wait_connect                     1.1944
+   796 sk_stream_wait_close                       3.1094
+     5 sk_stream_error                            0.0521
+     9 sk_stream_wait_memory                      0.0112
+   398 __scm_send                                 0.3769
+   129 put_cmsg                                   0.4243
+     1 __peernet2id_alloc                         0.0069
+     1 netns_get                                  0.0104
+   412 rtnl_net_newid                             0.6959
+     2 net_alloc_generic                          0.0417
+     7 ops_init                                   0.0257
+   152 setup_net                                  0.2568
+   229 register_pernet_operations                 0.4473
+     1 cleanup_net                                0.0013
+   160 copy_net_ns                                0.4167
+    50 secure_tcpv6_ts_off                        0.2604
+     2 secure_tcp_seq                             0.0096
+     1 skb_flow_dissect_tunnel_info               0.0022
+     2 skb_flow_dissect_ct                        0.0179
+     3 flow_get_u32_dst                           0.0469
+     1 __skb_flow_get_ports                       0.0045
+     8 flow_hash_from_keys                        0.0208
+     2 native_usergs_sysret64                     0.1250
+     1 entry_SYSCALL_64                           0.0179
+     4 entry_SYSCALL_64_after_hwframe             0.0085
+     1 syscall_return_via_sysret                  0.0061
+   116 interrupt_entry                            0.2275
+     1 swapgs_restore_regs_and_return_to_usermode   0.0057
+     1 kvm_posted_intr_nested_ipi                 0.0312
+     2 divide_error                               0.0066
+1911437 *unknown*
+736301 total                                      0.0585

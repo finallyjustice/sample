@@ -1,0 +1,9 @@
+-> when return a bool
+
+"return !!(eax & feature);" but not " return eax & feat;"
+
+
+-> likely vs. unlikely
+
+
+-> xmas declare order
