@@ -1,0 +1,5 @@
+Boot 16 while loop on guest with 32 vcpus. The load average finally increases to 16.
+
+Boot 32 while loop on guest with 32 vcpus. The load average finally increases to 32.
+
+https://www.ruanyifeng.com/blog/2011/07/linux_load_average_explained.html
