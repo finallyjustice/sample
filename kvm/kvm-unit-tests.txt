@@ -1,0 +1,2 @@
+
+# sudo ./x86-run x86/smptest.flat -smp 8 -cpu host -m 4G
