@@ -61,3 +61,7 @@ Add another line to resume regular paragraph text. \
 Add another line to resume regular paragraph text. \
 Add another line to resume regular paragraph text. \
 </td></tr></table>
+
+| funny | bunny | sunny |
+|-------|-------|-------|
+| cat   | hat   | sat   |
