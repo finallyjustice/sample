@@ -1,0 +1,62 @@
+
+Install pm-utils
+
+
+S3:
+
+sleep
+
+# pm-suspend
+
+wakeup
+
+either "system-wakeup" or press keyboard in vnc
+
+
+
+S4:
+
+# pm-hibernate
+
+wakeup
+
+boot VM with the same commandline
+
+------------------------------------------------
+
+This is from below link:
+
+https://gist.github.com/archerslaw/1faed583eb8fed82035f
+
+e.g.:...-global PIIX4_PM.disable_s3=0 -global PIIX4_PM.disable_s4=0
+
+I. How to do S3
+Linux guest:
+# pm-suspend
+Windows guest :
+Preparation: For do S3,install qxl driver:
+Control panel--->Device manager--->Display Adapters-->update
+a.win7,winXP,win2003: Click Start-->Turn Off computer-->choose Sleep
+b.win2012 win8 win2008:Control panel-->Power Options-->Change what the power buttons do-->Power button settins-->select "Sleep"-->save changes
+(qemu)system_powerdown
+II. How to do S4
+Linux guest:
+# pm-hibernate
+Windows guest:
+a.win7,winXP,win2003: Click Start-->Turn Off computer-->choose hibernate
+b.win2012 win8 win2008:Control panel-->Power Options-->Change what the power buttons do-->Power button settins-->select "hibernate"-->save changes
+(qemu)system_powerdown
+
+I.For S3 resume:
+(1) Press the keyboard.
+(2) Send "system_wakeup" qemu command.
+(3) Click the mouse in the guest. (Need to use the PS/2 mouse, USB mouse is not supported.)
+(4) RTC to wakeup guest:
+For linux guest: For example:  #rtcwake  -m mem -t 20s  (Guest will wakeup automatically after 20s)
+For windows guest:   "start" -> "control-panel" -> "System and Security" -> "Administrative Tools"-> "Task Scheduler". Select "Create Task..." and create a task as following:
+   in the "General" tab, fill in "Name" and "Description", check "Run with highest privileges".
+   in the "Action" tab, new a action with "Display a message"
+   in the "Conditions" tab check "Wake the computer to run this task".
+   in the "Triggers" tab, new a trigger, set one time and select "enabled".
+II.For S4 resume:
+Boot guest with same CLI.
