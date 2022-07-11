@@ -1,0 +1,13 @@
+This is about to build static kvm selftest binary on ol8.
+
+1. Please enable below on ol7 or ol8.
+
+OL8: "ol8_codeready_builder"
+
+OL7: "ol7_optional_latest"
+
+2. Install glibc-static. Now code can build via "-static".
+
+3. Append "-static" to CFLAGS in below file.
+
+tools/testing/selftests/kvm/Makefile
