@@ -1,0 +1,15 @@
+https://github.com/brendangregg/perf-tools
+
+
+# sudo ./bin/functrace __vmx_vcpu_run
+Tracing "__vmx_vcpu_run"... Ctrl-C to end.
+^C qemu-system-x86-7374  [017] d... 20652.532141: __vmx_vcpu_run <-vmx_vcpu_run.part.71
+ qemu-system-x86-7374  [017] d... 20652.532148: __vmx_vcpu_run <-vmx_vcpu_run.part.71
+ qemu-system-x86-7374  [017] d... 20652.532158: __vmx_vcpu_run <-vmx_vcpu_run.part.71
+ qemu-system-x86-7374  [017] d... 20652.532159: __vmx_vcpu_run <-vmx_vcpu_run.part.71
+ qemu-system-x86-7374  [017] d... 20652.532163: __vmx_vcpu_run <-vmx_vcpu_run.part.71
+ qemu-system-x86-7374  [017] d... 20652.532263: __vmx_vcpu_run <-vmx_vcpu_run.part.71
+ qemu-system-x86-7374  [017] d... 20652.532267: __vmx_vcpu_run <-vmx_vcpu_run.part.71
+ qemu-system-x86-7374  [017] d... 20652.532329: __vmx_vcpu_run <-vmx_vcpu_run.part.71
+
+# sudo ./bin/functrace -d 1 __vmx_vcpu_run > out.txt
