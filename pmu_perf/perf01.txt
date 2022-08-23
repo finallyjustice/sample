@@ -1,0 +1,58 @@
+perf and PMU 01
+
+
+1. Create below program at both VM and hypervisor side.
+
+#include <stdio.h>
+#include <unistd.h>
+
+int main(int argc, char **argv)
+{
+        int i;
+
+        for (i = 0; i < 10; i++) {
+                sleep(1);
+        }
+
+        return 0;
+}
+
+
+2. Run the code at hypervisor side.
+
+# perf stat ./sleep
+
+ Performance counter stats for './sleep':
+
+          0.458413      task-clock (msec)         #    0.000 CPUs utilized
+                10      context-switches          #    0.022 M/sec
+                 0      cpu-migrations            #    0.000 K/sec
+                43      page-faults               #    0.094 M/sec
+         1,079,449      cycles                    #    2.355 GHz
+           732,148      instructions              #    0.68  insn per cycle
+           143,192      branches                  #  312.365 M/sec
+             7,033      branch-misses             #    4.91% of all branches
+
+      10.002411930 seconds time elapsed
+
+
+
+3. Run the code at VM side.
+
+# perf stat ./sleep
+
+ Performance counter stats for './sleep':
+
+              0.96 msec task-clock                #    0.000 CPUs utilized
+                10      context-switches          #    0.010 M/sec
+                 0      cpu-migrations            #    0.000 K/sec
+                41      page-faults               #    0.043 M/sec
+         1,655,922      cycles                    #    1.725 GHz
+           681,581      instructions              #    0.41  insn per cycle
+           137,922      branches                  #  143.659 M/sec
+             9,049      branch-misses             #    6.56% of all branches
+
+      10.045076953 seconds time elapsed
+
+       0.000000000 seconds user
+       0.043766000 seconds sys

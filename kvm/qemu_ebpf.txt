@@ -1,0 +1,86 @@
+QEMU (mainline) and ebpf
+
+This is about how to use ebpf to trace QEMU.
+
+1. Build the qemu-7.0.0 with:
+
+# cd qemu-7.0.0
+# mkdir build
+# ../configure --target-list=x86_64-softmmu --enable-debug
+# make -j24
+
+Suppose the QEMU binary is at:
+
+/home/zhang/kvm/test/qemu-7.0.0/build/x86_64-softmmu/qemu-system-x86_64
+
+
+2. Boot the VM with below:
+
+qemu-system-x86_64 -smp 4 -m 6G -enable-kvm -cpu host -vnc :7 \
+-device virtio-scsi-pci,id=vscsi0,num_queues=4 \
+-device scsi-hd,drive=drive0,bus=vscsi0.0,channel=0,scsi-id=0,lun=0 \
+-drive file=ol7.qcow2,if=none,id=drive0 \
+-net nic -net user,hostfwd=tcp::5027-:22 \
+-monitor stdio -name testvm,debug-threads=on -msg timestamp=on
+
+
+3. Run below script.
+
+#!/usr/bin/python
+
+# ./qemu_virtio_scsi_handle_cmd_vq.py --pid 6360
+# Tracing virtio_scsi_handle_cmd_vq() ... Ctrl-C to end.
+#  qemu-system-x86-6360  [006] .... 495876.993656: 0x00000001: virtio_scsi_handle_cmd_vq()
+#  qemu-system-x86-6360  [020] .... 495878.743906: 0x00000001: virtio_scsi_handle_cmd_vq()
+#  qemu-system-x86-6360  [019] .... 495879.054429: 0x00000001: virtio_scsi_handle_cmd_vq()
+#  qemu-system-x86-6360  [000] .... 495882.430792: 0x00000001: virtio_scsi_handle_cmd_vq()
+
+from bcc import BPF
+from bcc import USDT
+import argparse
+
+examples = """examples:
+    ./qemu_virtio_scsi_handle_cmd_vq.py --pid   # trace this QEMU PID
+"""
+parser = argparse.ArgumentParser(
+    description="Track the exec of virtio_scsi_handle_cmd_vq()",
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    epilog=examples)
+ 
+parser.add_argument("-p", "--pid", type=int,
+		    help="trace this PID only")
+args = parser.parse_args()
+
+prog = """
+#include <uapi/linux/ptrace.h>
+
+int bpf_virtio_scsi_handle_cmd_vq(struct pt_regs *ctx)
+{
+    bpf_trace_printk("virtio_scsi_handle_cmd_vq()\\n");
+    return 0;
+}
+"""
+
+qemu_binary = "/home/zhang/kvm/test/qemu-7.0.0/build/x86_64-softmmu/qemu-system-x86_64"
+
+u = USDT(pid=args.pid)
+b = BPF(text=prog, usdt_contexts=[u])
+b.attach_uprobe(name=qemu_binary, sym="virtio_scsi_handle_cmd_vq", fn_name="bpf_virtio_scsi_handle_cmd_vq")
+
+print("Tracing virtio_scsi_handle_cmd_vq() ... Ctrl-C to end.")
+b.trace_print()
+
+
+4. The output is like below.
+
+# ./qemu_virtio_scsi_handle_cmd_vq.py --pid 6360
+Tracing virtio_scsi_handle_cmd_vq() ... Ctrl-C to end.
+ qemu-system-x86-6360  [006] .... 495876.993656: 0x00000001: virtio_scsi_handle_cmd_vq()
+ qemu-system-x86-6360  [020] .... 495878.743906: 0x00000001: virtio_scsi_handle_cmd_vq()
+ qemu-system-x86-6360  [019] .... 495879.054429: 0x00000001: virtio_scsi_handle_cmd_vq()
+ qemu-system-x86-6360  [000] .... 495882.430792: 0x00000001: virtio_scsi_handle_cmd_vq()
+ qemu-system-x86-6360  [006] .... 495882.431137: 0x00000001: virtio_scsi_handle_cmd_vq()
+ qemu-system-x86-6360  [006] .... 495882.431561: 0x00000001: virtio_scsi_handle_cmd_vq()
+ qemu-system-x86-6360  [000] .... 495884.686449: 0x00000001: virtio_scsi_handle_cmd_vq()
+ qemu-system-x86-6360  [000] .... 495889.263819: 0x00000001: virtio_scsi_handle_cmd_vq()
+
