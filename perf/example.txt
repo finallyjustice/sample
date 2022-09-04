@@ -1,0 +1,14 @@
+
+# perf record -e skb:kfree_skb -a sleep 10
+# perf script
+            sudo  9319 [027] 149617.858931: skb:kfree_skb: skbaddr=0xffff8b7e9d67ea00 protocol=0 location=0xffff
+            sudo  9319 [027] 149617.858956: skb:kfree_skb: skbaddr=0xffff8b7e9d67ea00 protocol=0 location=0xffff
+            sudo  9319 [027] 149617.864943: skb:kfree_skb: skbaddr=0xffff8b7e9d67ea00 protocol=0 location=0xffff
+            sudo  9319 [027] 149617.864964: skb:kfree_skb: skbaddr=0xffff8b7e9d67ea00 protocol=0 location=0xffff
+            sudo  9319 [027] 149617.865277: skb:kfree_skb: skbaddr=0xffff8b7e9d67ea00 protocol=0 location=0xffff
+     unix_chkpwd  9320 [029] 149617.875334: skb:kfree_skb: skbaddr=0xffff8b7f7f5b9000 protocol=0 location=0xffff
+     unix_chkpwd  9320 [029] 149617.875356: skb:kfree_skb: skbaddr=0xffff8b7f7f5b9000 protocol=0 location=0xffff
+ systemd-journal  1098 [016] 149617.876989: skb:kfree_skb: skbaddr=0xffff8b4ced74bd00 protocol=0 location=0xffff
+ systemd-journal  1098 [016] 149617.886402: skb:kfree_skb: skbaddr=0xffff8b4ced74bd00 protocol=0 location=0xffff
+ systemd-journal  1098 [016] 149617.887199: skb:kfree_skb: skbaddr=0xffff8b4ced74bd00 protocol=0 location=0xffff
+ systemd-journal  1098 [016] 149617.893748: skb:kfree_skb: skbaddr=0xffff8b4ced74bd00 protocol=0 location=0xffff
