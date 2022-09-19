@@ -1,0 +1,101 @@
+NMI and VM kernel panic
+
+This is to test that nmi cannot be masked.
+
+1. Add buggy code to linux-5.19 to disable interrupt permanently at line 1475.
+
+1471 static __always_inline void
+1472 handle_page_fault(struct pt_regs *regs, unsigned long error_code,
+1473                               unsigned long address)
+1474 {
+1475         while(1);
+1476
+1477         trace_page_fault_entries(regs, error_code, address);
+1478
+1479         if (unlikely(kmmio_fault(regs, address)))
+1480                 return;
+1481
+1482         /* Was the fault on kernel-controlled part of the address space? */
+1483         if (unlikely(fault_in_kernel_space(address))) {
+1484                 do_kern_addr_fault(regs, error_code, address);
+1485         } else {
+1486                 do_user_addr_fault(regs, error_code, address);
+1487                 /*
+1488                  * User address page fault handling might have reenabled
+1489                  * interrupts. Fixing up all potential exit points of
+1490                  * do_user_addr_fault() and its leaf functions is just not
+1491                  * doable w/o creating an unholy mess or turning the code
+1492                  * upside down.
+1493                  */
+1494                 local_irq_disable();
+1495         }
+1496 }
+
+
+2. Create a VM with 1 CPU. Once the interrupt is disabled, no other CPU can accept nmi.
+
+qemu-system-x86_64 -smp 1 -m 8G -enable-kvm -vnc :5 \
+-hda ubuntu1804.img -cpu host -serial stdio \
+-kernel /path-to/linux-5.19/arch/x86_64/boot/bzImage \
+-append "root=/dev/sda1 init=/sbin/init text console=ttyS0 loglevel=7" \
+-net nic -net user,hostfwd=tcp::5025-:22 \
+-chardev socket,id=monitor0,server,path=monitor.sock,nowait \
+-mon monitor0,mode=control
+
+
+3. Configure the kernel to panic on nmi.
+
+# echo 1 > /proc/sys/kernel/unknown_nmi_panic
+
+4. Inject the buggy code as in step 1 so that the only CPU is stuck.
+
+5. To inject nmi.
+
+# nc -U monitor.sock
+{"QMP": {"version": {"qemu": {"micro": 0, "minor": 0, "major": 7}, "package": ""}, "capabilities": ["oob"]}}
+{ "execute": "qmp_capabilities" }
+{"return": {}}
+
+{ "execute": "inject-nmi" }
+{"return": {}}
+
+
+6. The VM is panic!
+
+[  390.304758] Uhhuh. NMI received for unknown reason 10 on CPU 0.
+[  390.304779] Kernel panic - not syncing: NMI: Not continuing
+[  390.304799] CPU: 0 PID: 103 Comm: systemd-journal Not tainted 5.19.0+ #2
+[  390.304804] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+[  390.304816] Call Trace:
+[  390.304845]  <NMI>
+[  390.304849]  dump_stack_lvl+0x45/0x5e
+[  390.304874]  panic+0x107/0x285
+[  390.304883]  ? _printk+0x53/0x6e
+[  390.304890]  nmi_panic.cold+0xc/0xc
+[  390.304893]  unknown_nmi_error+0x81/0x90
+[  390.304902]  exc_nmi+0x11a/0x140
+[  390.304919]  end_repeat_nmi+0x16/0x67
+[  390.304934] RIP: 0010:exc_page_fault+0x41/0x160
+... ...
+[  390.304945] RSP: 0000:ffffbe9500297f30 EFLAGS: 00000002
+[  390.304953] RAX: 0000000000000001 RBX: 0000000000000000 RCX: 0000000000000000
+[  390.304956] RDX: 0000000000000000 RSI: 0000000000000007 RDI: ffffbe9500297f58
+[  390.304958] RBP: ffffbe9500297f58 R08: 0000000000000000 R09: 0000000000000000
+[  390.304960] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000007
+[  390.304962] R13: 00007fef9e0b62f0 R14: 0000000000000000 R15: 0000000000000000
+[  390.304966]  ? exc_page_fault+0x41/0x160
+[  390.304972]  ? exc_page_fault+0x41/0x160
+[  390.304976]  </NMI>
+[  390.304977]  <TASK>
+[  390.304979]  asm_exc_page_fault+0x22/0x30
+[  390.304990] RIP: 0033:0x7fefa23d9e1e
+... ...
+[  390.305002] RSP: 002b:00007ffdbe7fc280 EFLAGS: 00010246
+[  390.305005] RAX: 00007fef9e0b62f0 RBX: 0000556278114d40 RCX: 00000000000376e3
+[  390.305007] RDX: 0000000000000000 RSI: 0000556278114d40 RDI: 00007fef9e48d8b0
+[  390.305009] RBP: 0000000000000025 R08: 00000000000cfd10 R09: 00000000004a8870
+[  390.305012] R10: 0000000000000000 R11: 0000000000000001 R12: 000055627811de60
+[  390.305014] R13: 00007ffdbe7fc2b8 R14: 00000000004a8870 R15: 00007ffdbe7fc428
+[  390.305018]  </TASK>
+[  390.305316] Kernel Offset: 0x29a00000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+[  390.330960] ---[ end Kernel panic - not syncing: NMI: Not continuing ]---
