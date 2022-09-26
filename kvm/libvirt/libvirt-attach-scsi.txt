@@ -1,0 +1,127 @@
+There are some options to attach a disk.
+
+1. To attach via command line.
+
+hv# virsh attach-disk 9 /home/libvirt/ol7/image04.img sde
+
+[ 8020.144633] scsi 4:0:0:4: Direct-Access     QEMU     QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+[ 8020.147715] sd 4:0:0:4: Attached scsi generic sg4 type 0
+[ 8020.147960] sd 4:0:0:4: [sde] 2097152 512-byte logical blocks: (1.07 GB/1.00 GiB)
+[ 8020.149850] sd 4:0:0:4: [sde] Write Protect is off
+[ 8020.150528] sd 4:0:0:4: [sde] Mode Sense: 63 00 00 08
+[ 8020.150631] sd 4:0:0:4: [sde] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[ 8020.155181] sd 4:0:0:4: [sde] Attached SCSI disk
+
+
+2. To attach via xml.
+
+hv# virsh attach-device 9 config.xml --live
+
+hv# cat config.xml 
+<disk type='file' device='disk'>
+    <driver name='qemu' type='raw'/>
+    <source file='/home/libvirt/ol7/image05.img'/>
+    <backingStore/>
+    <target dev='sdf' bus='scsi'/>
+    <alias name='scsi0-0-5'/>
+    <address type='drive' controller='4' bus='0' target='0' unit='5'/>
+</disk>
+
+
+hv# virsh qemu-monitor-command 9 --hmp "info block"
+libvirt-4-format: /home/libvirt/ol7/disk.qcow2 (qcow2)
+    Attached to:      scsi0-0-0-0
+    Cache mode:       writethrough
+
+libvirt-3-format: /home/libvirt/ol7/image01.img (raw)
+    Attached to:      scsi0-0-0-1
+    Cache mode:       writethrough
+
+libvirt-2-format: /home/libvirt/ol7/image02.img (raw)
+    Attached to:      scsi0-0-0-2
+    Cache mode:       writethrough
+
+libvirt-1-format: /home/libvirt/ol7/image03.img (raw)
+    Attached to:      scsi0-0-0-3
+    Cache mode:       writeback
+
+libvirt-5-format: /home/libvirt/ol7/image04.img (raw)
+    Attached to:      scsi0-0-0-4
+    Cache mode:       writeback
+
+libvirt-6-format: /home/libvirt/ol7/image05.img (raw)
+    Attached to:      scsi4-0-0-5
+    Cache mode:       writeback
+
+
+hv# virsh qemu-monitor-command 9 --hmp "info pci"
+... ...
+  Bus 255, device   0, function 0:
+    SCSI controller: PCI device 1af4:1048
+      PCI subsystem 108e:1100
+      IRQ 0.
+      BAR1: 32 bit memory at 0xfc000000 [0xfc000fff].
+      BAR4: 64 bit prefetchable memory at 0xfd600000 [0xfd603fff].
+      id "scsi4"
+... ...
+  Bus  5, device   0, function 0:
+    SCSI controller: PCI device 1af4:1048
+      PCI subsystem 108e:1100
+      IRQ 10.
+      BAR1: 32 bit memory at 0xfca00000 [0xfca00fff].
+      BAR4: 64 bit prefetchable memory at 0xfe000000 [0xfe003fff].
+      id "scsi0"
+... ...
+  Bus  6, device   0, function 0:
+    SCSI controller: PCI device 1af4:1048
+      PCI subsystem 108e:1100
+      IRQ 10.
+      BAR1: 32 bit memory at 0xfc800000 [0xfc800fff].
+      BAR4: 64 bit prefetchable memory at 0xfde00000 [0xfde03fff].
+      id "scsi1"
+... ...
+  Bus  7, device   0, function 0:
+    SCSI controller: PCI device 1af4:1048
+      PCI subsystem 108e:1100
+      IRQ 10.
+      BAR1: 32 bit memory at 0xfc600000 [0xfc600fff].
+      BAR4: 64 bit prefetchable memory at 0xfdc00000 [0xfdc03fff].
+      id "scsi2"
+... ...
+  Bus  8, device   0, function 0:
+    SCSI controller: PCI device 1af4:1048
+      PCI subsystem 108e:1100
+      IRQ 10.
+      BAR1: 32 bit memory at 0xfc400000 [0xfc400fff].
+      BAR4: 64 bit prefetchable memory at 0xfda00000 [0xfda03fff].
+      id "scsi3"
+... ...
+
+
+
+[ 8786.530266] pciehp 0000:fe:00.0:pcie004: Slot(0-9): Attention button pressed
+[ 8786.531144] pciehp 0000:fe:00.0:pcie004: Slot(0-9): Card present
+[ 8786.531965] pciehp 0000:fe:00.0:pcie004: Slot(0-9) Powering on due to button press
+[ 8786.767370] pci 0000:ff:00.0: [1af4:1048] type 00 class 0x010000
+[ 8786.767559] pci 0000:ff:00.0: reg 0x14: [mem 0x00000000-0x00000fff]
+[ 8786.767709] pci 0000:ff:00.0: reg 0x20: [mem 0x00000000-0x00003fff 64bit pref]
+[ 8786.768560] iommu: Adding device 0000:ff:00.0 to group 24
+[ 8786.769452] pcieport 0000:fe:00.0: bridge window [io  0x1000-0x0fff] to [bus ff] add_size 1000
+[ 8786.769456] pcieport 0000:fe:00.0: BAR 13: no space for [io  size 0x1000]
+[ 8786.770295] pcieport 0000:fe:00.0: BAR 13: failed to assign [io  size 0x1000]
+[ 8786.771363] pcieport 0000:fe:00.0: BAR 13: no space for [io  size 0x1000]
+[ 8786.772263] pcieport 0000:fe:00.0: BAR 13: failed to assign [io  size 0x1000]
+[ 8786.773183] pci 0000:ff:00.0: BAR 4: assigned [mem 0xfd600000-0xfd603fff 64bit pref]
+[ 8786.774226] pci 0000:ff:00.0: BAR 1: assigned [mem 0xfc000000-0xfc000fff]
+[ 8786.775065] pcieport 0000:fe:00.0: PCI bridge to [bus ff]
+[ 8786.781557] pcieport 0000:fe:00.0:   bridge window [mem 0xfc000000-0xfc1fffff]
+[ 8786.786124] pcieport 0000:fe:00.0:   bridge window [mem 0xfd600000-0xfd7fffff 64bit pref]
+[ 8786.793656] virtio-pci 0000:ff:00.0: enabling device (0000 -> 0002)
+[ 8786.818278] scsi host10: Virtio SCSI HBA
+[ 8786.848414] scsi 10:0:0:5: Direct-Access     QEMU     QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+[ 8788.908704] sd 10:0:0:5: Attached scsi generic sg5 type 0
+[ 8788.910293] sd 10:0:0:5: [sdf] 2097152 512-byte logical blocks: (1.07 GB/1.00 GiB)
+[ 8788.911329] sd 10:0:0:5: [sdf] Write Protect is off
+[ 8788.911922] sd 10:0:0:5: [sdf] Mode Sense: 63 00 00 08
+[ 8788.912202] sd 10:0:0:5: [sdf] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[ 8788.915863] sd 10:0:0:5: [sdf] Attached SCSI disk

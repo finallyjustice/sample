@@ -1,0 +1,48 @@
+$ perf stat -e '{slots,topdown-bad-spec,topdown-be-bound,topdown-fe-bound,topdown-retiring,branch-instructions,branch-misses,bus-cycles,cache-misses,cache-references,cpu-cycles,instructions,mem-loads,mem-stores,ref-cycles,baclears.any,ARITH.DIVIDER_ACTIVE}:W' -a sleep 1
+
+ Performance counter stats for 'system wide':
+
+    47,867,188,483      slots                                                         (92.27%)
+   <not supported>      topdown-bad-spec
+   <not supported>      topdown-be-bound
+   <not supported>      topdown-fe-bound
+   <not supported>      topdown-retiring
+     2,173,346,937      branch-instructions                                           (92.27%)
+        10,540,253      branch-misses             #    0.48% of all branches          (92.29%)
+        96,291,140      bus-cycles                                                    (92.29%)
+         6,214,202      cache-misses              #   20.120 % of all cache refs      (92.29%)
+        30,886,082      cache-references                                              (76.91%)
+    11,773,726,641      cpu-cycles                                                    (84.62%)
+    11,807,585,307      instructions              #    1.00  insn per cycle           (92.31%)
+                 0      mem-loads                                                     (92.32%)
+     2,212,928,573      mem-stores                                                    (84.69%)
+    10,024,403,118      ref-cycles                                                    (92.35%)
+        16,232,978      baclears.any                                                  (92.35%)
+        23,832,633      ARITH.DIVIDER_ACTIVE                                          (84.59%)
+
+       0.981070734 seconds time elapsed
+
+
+$ perf stat -e '{slots,topdown-bad-spec,topdown-be-bound,topdown-fe-bound,topdown-retiring,branch-instructions,branch-misses,bus-cycles,cache-misses,cache-references,cpu-cycles,instructions,mem-loads,mem-stores,ref-cycles,baclears.any,ARITH.DIVIDER_ACTIVE}:W' -a sleep 1
+
+ Performance counter stats for 'system wide':
+
+       31040189283      slots                                                         (92.27%)
+        8997514811      topdown-bad-spec          #     28.2% bad speculation         (92.27%)
+       10997536028      topdown-be-bound          #     34.5% backend bound           (92.27%)
+        4778060526      topdown-fe-bound          #     15.0% frontend bound          (92.27%)
+        7086628768      topdown-retiring          #     22.2% retiring                (92.27%)
+        1417611942      branch-instructions                                           (92.26%)
+           5285529      branch-misses             #    0.37% of all branches          (92.28%)
+          62922469      bus-cycles                                                    (92.29%)
+           1440708      cache-misses              #    8.292 % of all cache refs      (92.30%)
+          17374098      cache-references                                              (76.94%)
+        8040889520      cpu-cycles                                                    (84.63%)
+        7709992319      instructions              #    0.96  insn per cycle           (92.32%)
+                 0      mem-loads                                                     (92.32%)
+        1515669558      mem-stores                                                    (84.68%)
+        6542411177      ref-cycles                                                    (92.35%)
+           4154149      baclears.any                                                  (92.35%)
+          20556152      ARITH.DIVIDER_ACTIVE                                          (84.59%)
+
+       1.010799593 seconds time elapsed

@@ -1,0 +1,139 @@
+
+Here are some data collected from libvirt VM.
+
+hv# virsh domblklist 9
+ Target   Source
+-----------------------------------------
+ sda      /home/libvirt/ol7/disk.qcow2
+ sdb      /home/libvirt/ol7/image01.img
+ sdc      /home/libvirt/ol7/image02.img
+ sdd      /home/libvirt/ol7/image03.img
+
+
+hv# virsh qemu-monitor-command 9 --hmp "info block"
+libvirt-4-format: /home/libvirt/ol7/disk.qcow2 (qcow2)
+    Attached to:      scsi0-0-0-0
+    Cache mode:       writethrough
+
+libvirt-3-format: /home/libvirt/ol7/image01.img (raw)
+    Attached to:      scsi0-0-0-1
+    Cache mode:       writethrough
+
+libvirt-2-format: /home/libvirt/ol7/image02.img (raw)
+    Attached to:      scsi0-0-0-2
+    Cache mode:       writethrough
+
+libvirt-1-format: /home/libvirt/ol7/image03.img (raw)
+    Attached to:      scsi0-0-0-3
+    Cache mode:       writeback
+
+
+hv# virsh qemu-monitor-command 9 --hmp "info pci"
+... ...
+  Bus  5, device   0, function 0:
+    SCSI controller: PCI device 1af4:1048
+      PCI subsystem 108e:1100
+      IRQ 10.
+      BAR1: 32 bit memory at 0xfca00000 [0xfca00fff].
+      BAR4: 64 bit prefetchable memory at 0xfe000000 [0xfe003fff].
+      id "scsi0"
+... ...
+  Bus  6, device   0, function 0:
+    SCSI controller: PCI device 1af4:1048
+      PCI subsystem 108e:1100
+      IRQ 10.
+      BAR1: 32 bit memory at 0xfc800000 [0xfc800fff].
+      BAR4: 64 bit prefetchable memory at 0xfde00000 [0xfde03fff].
+      id "scsi1"
+... ...
+  Bus  7, device   0, function 0:
+    SCSI controller: PCI device 1af4:1048
+      PCI subsystem 108e:1100
+      IRQ 10.
+      BAR1: 32 bit memory at 0xfc600000 [0xfc600fff].
+      BAR4: 64 bit prefetchable memory at 0xfdc00000 [0xfdc03fff].
+      id "scsi2"
+... ...
+  Bus  8, device   0, function 0:
+    SCSI controller: PCI device 1af4:1048
+      PCI subsystem 108e:1100
+      IRQ 10.
+      BAR1: 32 bit memory at 0xfc400000 [0xfc400fff].
+      BAR4: 64 bit prefetchable memory at 0xfda00000 [0xfda03fff].
+      id "scsi3"
+... ...
+
+
+
+vm# lspci
+... ...
+05:00.0 SCSI storage controller: Red Hat, Inc. Virtio SCSI (rev 01)
+06:00.0 SCSI storage controller: Red Hat, Inc. Virtio SCSI (rev 01)
+07:00.0 SCSI storage controller: Red Hat, Inc. Virtio SCSI (rev 01)
+08:00.0 SCSI storage controller: Red Hat, Inc. Virtio SCSI (rev 01)
+... ...
+
+
+vm# lsscsi
+[4:0:0:0]    disk    QEMU     QEMU HARDDISK    2.5+  /dev/sda 
+[4:0:0:1]    disk    QEMU     QEMU HARDDISK    2.5+  /dev/sdd 
+[4:0:0:2]    disk    QEMU     QEMU HARDDISK    2.5+  /dev/sdc 
+[4:0:0:3]    disk    QEMU     QEMU HARDDISK    2.5+  /dev/sdb
+
+
+vm# lsblk
+NAME        MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+sdd           8:48   0   1G  0 disk 
+sdb           8:16   0   1G  0 disk 
+sdc           8:32   0   1G  0 disk 
+sda           8:0    0  30G  0 disk 
+├─sda2        8:2    0  29G  0 part 
+│ ├─ol-swap 252:1    0   3G  0 lvm  [SWAP]
+│ └─ol-root 252:0    0  26G  0 lvm  /
+└─sda1        8:1    0   1G  0 part /boot
+
+
+vm# dmesg | egrep "scsi|SCSI|sd"
+[    0.532128] SCSI subsystem initialized
+[    1.065800] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 248)
+[    2.168671] scsi host0: ahci
+[    2.169465] scsi host1: ahci
+[    2.170182] scsi host2: ahci
+[    2.170841] scsi host3: ahci
+[    2.171597] scsi host5: ahci
+[    2.172676] scsi host6: ahci
+[    2.176589] scsi host4: Virtio SCSI HBA
+[    2.184243] scsi 4:0:0:0: Direct-Access     QEMU     QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+[    2.189282] scsi 4:0:0:3: Direct-Access     QEMU     QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+[    2.190949] scsi 4:0:0:2: Direct-Access     QEMU     QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+[    2.192572] scsi host7: Virtio SCSI HBA
+[    2.192658] scsi 4:0:0:1: Direct-Access     QEMU     QEMU HARDDISK    2.5+ PQ: 0 ANSI: 5
+[    2.214664] scsi host8: Virtio SCSI HBA
+[    2.295324] scsi host9: Virtio SCSI HBA
+[    4.469305] sd 4:0:0:2: [sdc] 2097152 512-byte logical blocks: (1.07 GB/1.00 GiB)
+[    4.469379] sd 4:0:0:1: [sdd] 2097152 512-byte logical blocks: (1.07 GB/1.00 GiB)
+[    4.469384] sd 4:0:0:0: [sda] 62914560 512-byte logical blocks: (32.2 GB/30.0 GiB)
+[    4.469413] sd 4:0:0:0: [sda] Write Protect is off
+[    4.469414] sd 4:0:0:0: [sda] Mode Sense: 63 00 00 08
+[    4.469422] sd 4:0:0:3: [sdb] 2097152 512-byte logical blocks: (1.07 GB/1.00 GiB)
+[    4.469460] sd 4:0:0:3: [sdb] Write Protect is off
+[    4.469461] sd 4:0:0:3: [sdb] Mode Sense: 63 00 00 08
+[    4.469485] sd 4:0:0:0: [sda] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[    4.469537] sd 4:0:0:3: [sdb] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[    4.470742]  sda: sda1 sda2
+[    4.471400] sd 4:0:0:2: [sdc] Write Protect is off
+[    4.472695] sd 4:0:0:0: [sda] Attached SCSI disk
+[    4.472756] sd 4:0:0:3: [sdb] Attached SCSI disk
+[    4.472980] sd 4:0:0:1: [sdd] Write Protect is off
+[    4.474042] sd 4:0:0:2: [sdc] Mode Sense: 63 00 00 08
+[    4.474177] sd 4:0:0:2: [sdc] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[    4.474834] sd 4:0:0:1: [sdd] Mode Sense: 63 00 00 08
+[    4.474959] sd 4:0:0:1: [sdd] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[    4.478734] sd 4:0:0:2: [sdc] Attached SCSI disk
+[    4.481304] sd 4:0:0:1: [sdd] Attached SCSI disk
+[    9.980157] sd 4:0:0:0: Attached scsi generic sg0 type 0
+[    9.981479] sd 4:0:0:3: Attached scsi generic sg1 type 0
+[    9.982612] sd 4:0:0:2: Attached scsi generic sg2 type 0
+[    9.983686] sd 4:0:0:1: Attached scsi generic sg3 type 0
+[   10.135824] XFS (sda1): Mounting V4 Filesystem
+[   10.235530] XFS (sda1): Ending clean mount

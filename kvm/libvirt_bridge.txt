@@ -1,0 +1,58 @@
+This is about how to add an extra libvirt bridge.
+
+The default NAT bridge is:
+
+# cat /etc/libvirt/qemu/networks/default.xml
+<!--
+WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
+OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
+  virsh net-edit default
+or other application using the libvirt API.
+-->
+
+<network>
+  <name>default</name>
+  <uuid>66274336-b2a9-4853-a2d6-5f1a4761c3a5</uuid>
+  <forward mode='nat'/>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:70:49:3d'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.122.2' end='192.168.122.254'/>
+    </dhcp>
+  </ip>
+</network>
+
+
+Here is to add the 2nd one.
+
+# cat /etc/libvirt/qemu/networks/net01.xml 
+<!--
+WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
+OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
+  virsh net-edit net01
+or other application using the libvirt API.
+-->
+
+<network>
+  <name>net01</name>
+  <uuid>66274336-b2a9-4853-a2d6-5f1a4761c301</uuid>
+  <forward mode='nat'/>
+  <bridge name='virbr1' stp='on' delay='0'/>
+  <mac address='52:54:00:70:49:01'/>
+  <ip address='192.168.124.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.124.2' end='192.168.124.254'/>
+    </dhcp>
+  </ip>
+</network>
+
+
+
+# virsh net-define /etc/libvirt/qemu/networks/net01.xml
+
+# virsh net-start net01
+
+# virsh net-autostart net01
+
+# virsh net-create net01
