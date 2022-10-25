@@ -1,0 +1,117 @@
+ublk on ubuntu 22.04
+
+1. Install prerequisite packages. The 'pkgconf' is a necessary.
+
+$ sudo apt-get install -y build-essential
+$ sudo apt-get install -y pkgconf
+$ sudo apt-get install -y autoconf
+$ sudo apt-get install -y autoconf-archive
+$ sudo apt-get install -y libtool
+$ sudo apt-get install -y flex
+$ sudo apt-get install -y bison
+$ sudo apt-get install -y libncurses-dev
+$ sudo apt-get install -y libelf-dev
+$ sudo apt-get install -y libssl-dev
+$ sudo apt-get install -y qemu-utils
+
+
+2. Download liburing2 2.2-2 and liburing-dev 2.2-2 from the below link ...
+
+https://launchpad.net/ubuntu/+source/liburing/2.2-2
+
+... and install via:
+
+$ sudo dpkg -i liburing2_2.2-2_amd64.deb
+
+$ sudo dpkg -i liburing-dev_2.2-2_amd64.deb
+
+
+3. Download the source code of linux-6.0.tar.xz and ubdsrv. The ubdsrv is at the commit 37cb8f0d8be3 ("qcow2: allocate l2 slices according to device size").
+
+$ git clone https://github.com/ming1/ubdsrv
+
+
+4. Build ubdsrv.
+
+$ cd ubdsrv
+
+$ autoreconf -i
+
+$ ./configure
+
+$ make
+
+The output binary is ./ublk.
+
+
+5. Build the linux-6.0.
+
+$ tar xvf linux-6.0.tar.xz
+
+$ cd linux-6.0/
+
+$ make defconfig
+
+$ make xen.config
+
+Run "make menuconfig" ...
+
+$ make menuconfig
+
+... and enable below configs.
+
+- iSCSI Initiator over TCP/IP
+- iSCSI Boot Sysfs Interface
+- virtio-scsi support
+- Virtio network driver
+- Userspace block driver (Experimental)
+
+
+$ make -j32 > /dev/null
+
+$ sudo make modules_install
+
+$ sudo make install
+
+
+Reboot into the new kernel.
+
+$ uname  -r
+6.0.0
+
+
+6. Test ublk.
+
+$ sudo modprobe ublk_drv
+
+$ dd if=/dev/zero of=/home/ubuntu/disk.raw bs=1M count=100 oflag=direct
+
+$ sudo ./ublk add -t loop -f /home/ubuntu/disk.raw -q 8
+dev id 0: nr_hw_queues 8 queue_depth 256 block size 4096 dev_capacity 204800
+	max rq size 524288 daemon pid 1324 flags 0x0 state LIVE
+	queue 0: tid 1326 affinity(0 8 9 24 25 )
+	queue 1: tid 1327 affinity(1 10 11 26 27 )
+	queue 2: tid 1328 affinity(2 12 13 28 29 )
+	queue 3: tid 1329 affinity(3 14 15 30 31 )
+	queue 4: tid 1330 affinity(4 16 17 )
+	queue 5: tid 1331 affinity(5 18 19 )
+	queue 6: tid 1332 affinity(6 20 21 )
+	queue 7: tid 1333 affinity(7 22 23 )
+	target {"backing_file":"/home/ubuntu/disk.raw","dev_size":104857600,"direct_io":1,"name":"loop","type":1}
+
+
+There will be a /dev/ublkb0.
+
+$ ls /sys/block/ublkb0/mq/
+0  1  2  3  4  5  6  7
+
+$ sudo mkfs.ext4 /dev/ublkb0
+mke2fs 1.46.5 (30-Dec-2021)
+Discarding device blocks: done                            
+Creating filesystem with 25600 4k blocks and 25600 inodes
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (1024 blocks): done
+Writing superblocks and filesystem accounting information: done
+

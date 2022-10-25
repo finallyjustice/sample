@@ -1,0 +1,200 @@
+1. Enable ol8_codeready_builder and install below packages.
+
+$ cat /etc/yum.repos.d/oracle-linux-ol8.repo 
+... ...
+[ol8_codeready_builder]
+name=Oracle Linux 8 CodeReady Builder ($basearch) - Unsupported
+baseurl=https://yum$ociregion.$ocidomain/repo/OracleLinux/OL8/codeready/builder/$basearch/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
+gpgcheck=1
+enabled=1
+... ...
+
+$ sudo yum install -y git
+$ sudo yum install -y gcc-toolset-10
+$ sudo yum install -y autoconf
+$ sudo yum install -y automake
+$ sudo yum install -y autoconf-archive
+$ sudo yum install -y libtool
+$ sudo yum install -y openssl-devel
+$ sudo yum install -y flex
+$ sudo yum install -y bison
+$ sudo yum install -y ncurses-devel
+$ sudo yum install -y patch
+
+
+2. Configure gcc and git.
+
+$ scl enable gcc-toolset-10 bash
+
+
+3. Download linux-6.0.tar.xz and the below. 
+
+$ git clone https://github.com/ming1/ubdsrv
+
+$ git clone https://github.com/axboe/liburing
+
+
+4. Build and install liburing.
+
+$ cd liburing
+$ ./configure --libdir=/usr/lib64
+$ make
+$ sudo make install
+$ sudo cp /usr/lib/pkgconfig/liburing.pc /usr/lib64/pkgconfig/
+
+
+5. Patch ubdsrv, to replace all gettid() with syscall(SYS_gettid).
+
+diff --git a/demo_event.c b/demo_event.c
+index ab3fc9e..0eeb64f 100644
+--- a/demo_event.c
+
+ 	ctx->ctx_data = (void *)&ring;
+ 
+ 	fprintf(stdout, "ublk dev %d aio(io_uring submitter) context started tid %d\n",
+-			dev_id, gettid());
++			dev_id, syscall(SYS_gettid));
+ 
+ 	queue_event(ctx);
+ 	io_uring_submit_and_wait(&ring, 0);
+@@ -272,7 +272,7 @@ static void *demo_event_real_io_handler_fn(void *data)
+ 	}
+ 
+ 	fprintf(stdout, "ublk dev %d aio context(sync io submitter) started tid %d\n",
+-			dev_id, gettid());
++			dev_id, syscall(SYS_gettid));
+ 
+ 	read_event.events = EPOLLIN;
+ 	read_event.data.fd = ctx->efd;
+@@ -311,7 +311,7 @@ static void *demo_event_io_handler_fn(void *data)
+ 
+ 	pthread_mutex_lock(&jbuf_lock);
+ 	ublksrv_json_write_queue_info(dev->ctrl_dev, jbuf, sizeof jbuf,
+-			q_id, gettid());
++			q_id, syscall(SYS_gettid));
+ 	pthread_mutex_unlock(&jbuf_lock);
+ 
+ 	q = ublksrv_queue_init(dev, q_id, info);
+diff --git a/demo_null.c b/demo_null.c
+index d518eeb..a546970 100644
+--- a/demo_null.c
++++ b/demo_null.c
+@@ -45,7 +45,7 @@ static void *demo_null_io_handler_fn(void *data)
+ 
+ 	pthread_mutex_lock(&jbuf_lock);
+ 	ublksrv_json_write_queue_info(dev->ctrl_dev, jbuf, sizeof jbuf,
+-			q_id, gettid());
++			q_id, syscall(SYS_gettid));
+ 	pthread_mutex_unlock(&jbuf_lock);
+ 	q = ublksrv_queue_init(dev, q_id, NULL);
+ 	if (!q) {
+diff --git a/lib/ublksrv.c b/lib/ublksrv.c
+index de1225a..0f095e9 100644
+--- a/lib/ublksrv.c
++++ b/lib/ublksrv.c
+@@ -565,7 +565,7 @@ struct ublksrv_queue *ublksrv_queue_init(struct ublksrv_dev *dev,
+ 	q->io_cmd_buf = NULL;
+ 	q->cmd_inflight = 0;
+ 	q->tgt_io_inflight = 0;
+-	q->tid = gettid();
++	q->tid = syscall(SYS_gettid);
+ 
+ 	cmd_buf_size = ublksrv_queue_cmd_buf_sz(q);
+ 	off = UBLKSRV_CMD_BUF_OFFSET +
+diff --git a/ublksrv_tgt.cpp b/ublksrv_tgt.cpp
+index e9b7bfe..8587312 100644
+--- a/ublksrv_tgt.cpp
++++ b/ublksrv_tgt.cpp
+@@ -185,7 +185,7 @@ static void *ublksrv_io_handler_fn(void *data)
+ 	do {
+ 		buf = __ublksrv_tgt_realloc_json_buf(dev, &buf_size);
+ 		ret = ublksrv_json_write_queue_info(dev->ctrl_dev, buf, buf_size,
+-				q_id, gettid());
++				q_id, syscall(SYS_gettid));
+ 	} while (ret < 0);
+ 	queues_stored++;
+
+
+6. Build ubdsrv.
+
+$ cd ubdsrv
+$ autoreconf -i
+$ LDFLAGS=-lpthread ./configure
+$ make
+
+The ./ublk is available.
+
+$ ./ublk help
+/home/opc/ubdsrv/.libs/lt-ublk add -t {null|loop|qcow2} -n DEV_ID -q NR_HW_QUEUES -d QUEUE_DEPTH -u URING_COMP -g NEED_GET_DATA
+           loop: -f backing_file
+           qcow2: -f backing_file
+/home/opc/ubdsrv/.libs/lt-ublk del -n DEV_ID [-a | --all]
+/home/opc/ubdsrv/.libs/lt-ublk list [-n DEV_ID]
+
+
+7. Build and install linux-6.0.
+
+$ tar xvf linux-6.0.tar.xz
+$ cd linux-6.0/
+$ make defconfig
+$ make xen.config
+
+Run "make menuconfig" ...
+
+$ make menuconfig
+
+... and enable below configs.
+
+- iSCSI Initiator over TCP/IP
+- iSCSI Boot Sysfs Interface
+- Virtio-scsi support
+- Virtio network driver
+- XFS filesystem support
+- Userspace block driver (Experimental)
+
+
+$ make -j32 > /dev/null
+$ sudo make modules_install
+$ sudo make install
+
+Reboot into the new kernel. It may take a while as "A start job is running for Generate... NFS client ID" is slow.
+
+$ uname -r
+6.0.0
+
+
+8. Test ublk.
+
+$ sudo modprobe ublk_drv
+$ dd if=/dev/zero of=/home/opc/disk.raw bs=1M count=100 oflag=direct
+
+$ sudo ./ublk add -t loop -f /home/opc/disk.raw -q 8
+dev id 0: nr_hw_queues 8 queue_depth 256 block size 4096 dev_capacity 204800
+	max rq size 524288 daemon pid 6536 flags 0x0 state LIVE
+	queue 0: tid 6538 affinity(0 8 9 24 25 )
+	queue 1: tid 6539 affinity(1 10 11 26 27 )
+	queue 2: tid 6540 affinity(2 12 13 28 29 )
+	queue 3: tid 6541 affinity(3 14 15 30 31 )
+	queue 4: tid 6542 affinity(4 16 17 )
+	queue 5: tid 6543 affinity(5 18 19 )
+	queue 6: tid 6544 affinity(6 20 21 )
+	queue 7: tid 6545 affinity(7 22 23 )
+	target {"backing_file":"/home/opc/disk.raw","dev_size":104857600,"direct_io":1,"name":"loop","type":1}
+
+
+There will be a /dev/ublkb0.
+
+$ ls /sys/block/ublkb0/mq/
+0  1  2  3  4  5  6  7
+
+$ sudo mkfs.ext4 /dev/ublkb0
+mke2fs 1.45.6 (20-Mar-2020)
+Discarding device blocks: done                            
+Creating filesystem with 25600 4k blocks and 25600 inodes
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (1024 blocks): done
+Writing superblocks and filesystem accounting information: done
+
