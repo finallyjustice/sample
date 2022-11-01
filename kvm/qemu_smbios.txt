@@ -1,0 +1,42 @@
+QEMU: edit smbios information
+
+Create the VM from the command line.
+
+qemu-7.1.0/build/x86_64-softmmu/qemu-system-x86_64 -smp 4,maxcpus=8 -m 6G \
+-enable-kvm -cpu host -vnc :7 -hda ol7.qcow2 \
+-net nic -net user,hostfwd=tcp::5027-:22 -serial stdio \
+-smbios type=0,vendor=testvendor01,version=1.2.1,date="2022/02/02",release=2.2.1 \
+-smbios type=1,manufacturer=testvendor02,product=goodproduction,version=1.2.2,serial=helloworld,sku=oh!,family=that,uuid=12345678-1234-1234-1234-123456789012
+
+
+The below is from the VM dmidecode.
+
+Handle 0x0000, DMI type 0, 24 bytes
+BIOS Information
+	Vendor: testvendor01
+	Version: 1.2.1
+	Release Date: 2022/02/02
+	Address: 0xE8000
+	Runtime Size: 96 kB
+	ROM Size: 64 kB
+	Characteristics:
+		BIOS characteristics not supported
+		Targeted content distribution is supported
+		System is a virtual machine
+	BIOS Revision: 2.2
+
+Handle 0x0100, DMI type 1, 27 bytes
+System Information
+	Manufacturer: testvendor02
+	Product Name: goodproduction
+	Version: 1.2.2
+	Serial Number: helloworld
+	UUID: 12345678-1234-1234-1234-123456789012
+	Wake-up Type: Power Switch
+	SKU Number: oh!
+	Family: that
+
+
+Reference:
+
+https://gist.github.com/smoser/290f74c256c89cb3f3bd434a27b9f64c
