@@ -1,0 +1,40 @@
+
+
+aarch64 VFIO PCI passthrough
+
+1. Assign the device to vfio.
+
+hv# echo 0006:01:00.0 > /sys/bus/pci/devices/0006\:01\:00.0/driver/unbind
+
+[1451930.375636] mlx5_core 0006:01:00.0: E-Switch: Unload vfs: mode(LEGACY), nvfs(0), necvfs(0), active vports(0)
+[1451930.401250] mlx5_core 0006:01:00.0: E-Switch: Disable: mode(LEGACY), nvfs(0), necvfs(0), active vports(0)
+[1451932.325228] mlx5_core 0006:01:00.0: E-Switch: Disable: mode(LEGACY), nvfs(0), necvfs(0), active vports(0)
+[1451941.685617] mlx5_core 0006:01:00.0: E-Switch: cleanup
+
+
+hv# lspci -ns 0006:01:00.0
+0006:01:00.0 0200: 15b3:101d
+
+hv# echo "15b3 101d" > /sys/bus/pci/drivers/vfio-pci/new_id
+
+2. Create the VM.
+
+/usr/libexec/qemu-kvm \
+-machine type=virt,accel=kvm,gic-version=3,dump-guest-core=off \
+-m 6144 -cpu host -smp 4 \
+-hda ubuntu.qcow2 \
+-drive file=pflash0.img,index=0,if=pflash,format=raw,readonly \
+-drive file=pflash1.img,index=1,if=pflash,format=raw \
+-kernel /u01/donglzha/ubuntu22.04/linux-6.7/arch/arm64/boot/Image \
+-append "root=/dev/vda2 text console=ttyS0 loglevel=7" \
+-net nic -net user,hostfwd=tcp::5026-:22 \
+-serial stdio -vnc :7  \
+-device vfio-pci,host=0006:01:00.0
+
+3. The VM side can detect the PCI device.
+
+vm# $ lspci
+00:00.0 Host bridge: Red Hat, Inc. QEMU PCIe Host bridge
+00:01.0 Ethernet controller: Red Hat, Inc. Virtio network device
+00:02.0 Ethernet controller: Mellanox Technologies MT2892 Family [ConnectX-6 Dx]
+00:03.0 SCSI storage controller: Red Hat, Inc. Virtio block device
