@@ -1,0 +1,94 @@
+Usage of cgroup v2.
+
+Add 'systemd.unified_cgroup_hierarchy=1' to kernel command line, to enable cgroup v2.
+
+$ mount | grep cgroup
+cgroup2 on /sys/fs/cgroup type cgroup2 (rw,nosuid,nodev,noexec,relatime,seclabel,nsdelegate)
+
+
+Both cpu and memory are supported.
+
+# cat /sys/fs/cgroup/cgroup.controllers 
+cpuset cpu io memory hugetlb pids rdma misc
+
+# cat /sys/fs/cgroup/cgroup.subtree_control
+cpu memory pids
+
+# echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
+
+Create a cgroup.
+
+# mkdir /sys/fs/cgroup/mytest
+
+# ls -l /sys/fs/cgroup/mytest
+total 0
+-r--r--r--. 1 root root 0 May  7 23:13 cgroup.controllers
+-r--r--r--. 1 root root 0 May  7 23:13 cgroup.events
+-rw-r--r--. 1 root root 0 May  7 23:13 cgroup.freeze
+--w-------. 1 root root 0 May  7 23:13 cgroup.kill
+-rw-r--r--. 1 root root 0 May  7 23:13 cgroup.max.depth
+-rw-r--r--. 1 root root 0 May  7 23:13 cgroup.max.descendants
+-rw-r--r--. 1 root root 0 May  7 23:13 cgroup.procs
+-r--r--r--. 1 root root 0 May  7 23:13 cgroup.stat
+-rw-r--r--. 1 root root 0 May  7 23:13 cgroup.subtree_control
+-rw-r--r--. 1 root root 0 May  7 23:13 cgroup.threads
+-rw-r--r--. 1 root root 0 May  7 23:13 cgroup.type
+-rw-r--r--. 1 root root 0 May  7 23:13 cpu.idle
+-rw-r--r--. 1 root root 0 May  7 23:13 cpu.max
+-rw-r--r--. 1 root root 0 May  7 23:13 cpu.max.burst
+-rw-r--r--. 1 root root 0 May  7 23:13 cpu.pressure
+-rw-r--r--. 1 root root 0 May  7 23:14 cpuset.cpus
+-r--r--r--. 1 root root 0 May  7 23:13 cpuset.cpus.effective
+-rw-r--r--. 1 root root 0 May  7 23:13 cpuset.cpus.partition
+-rw-r--r--. 1 root root 0 May  7 23:13 cpuset.mems
+-r--r--r--. 1 root root 0 May  7 23:13 cpuset.mems.effective
+-r--r--r--. 1 root root 0 May  7 23:13 cpu.stat
+-rw-r--r--. 1 root root 0 May  7 23:13 cpu.weight
+-rw-r--r--. 1 root root 0 May  7 23:13 cpu.weight.nice
+-rw-r--r--. 1 root root 0 May  7 23:13 io.pressure
+-r--r--r--. 1 root root 0 May  7 23:13 memory.current
+-r--r--r--. 1 root root 0 May  7 23:13 memory.events
+-r--r--r--. 1 root root 0 May  7 23:13 memory.events.local
+-rw-r--r--. 1 root root 0 May  7 23:13 memory.high
+-rw-r--r--. 1 root root 0 May  7 23:13 memory.low
+-rw-r--r--. 1 root root 0 May  7 23:13 memory.max
+-rw-r--r--. 1 root root 0 May  7 23:13 memory.min
+-r--r--r--. 1 root root 0 May  7 23:13 memory.numa_stat
+-rw-r--r--. 1 root root 0 May  7 23:13 memory.oom.group
+-r--r--r--. 1 root root 0 May  7 23:13 memory.peak
+-rw-r--r--. 1 root root 0 May  7 23:13 memory.pressure
+-r--r--r--. 1 root root 0 May  7 23:13 memory.stat
+-r--r--r--. 1 root root 0 May  7 23:13 memory.swap.current
+-r--r--r--. 1 root root 0 May  7 23:13 memory.swap.events
+-rw-r--r--. 1 root root 0 May  7 23:13 memory.swap.high
+-rw-r--r--. 1 root root 0 May  7 23:13 memory.swap.max
+-r--r--r--. 1 root root 0 May  7 23:13 pids.current
+-r--r--r--. 1 root root 0 May  7 23:13 pids.events
+-rw-r--r--. 1 root root 0 May  7 23:13 pids.max
+
+
+# echo "10,12" > /sys/fs/cgroup/mytest/cpuset.cpus
+
+
+# cat /sys/fs/cgroup/mytest/cpu.max
+max 100000
+
+# echo "50000 100000" > /sys/fs/cgroup/mytest/cpu.max
+
+Add the below loop script to cgroup. The usage is always 50%.
+
+#!/bin/bash
+
+while true;
+do
+    :
+done
+
+echo 4578 >  /sys/fs/cgroup/mytest/cgroup.procs
+
+
+11:18:23 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command
+11:18:24 PM  1000      4578   50.00    0.00    0.00   49.00   50.00    10  loop.sh
+11:18:25 PM  1000      4578   50.00    0.00    0.00   50.00   50.00    10  loop.sh
+11:18:26 PM  1000      4578   50.00    0.00    0.00   50.00   50.00    10  loop.sh
+11:18:27 PM  1000      4578   50.00    0.00    0.00   50.00   50.00    10  loop.sh
