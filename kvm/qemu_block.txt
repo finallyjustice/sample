@@ -1,0 +1,16 @@
+Managing the New Block Layer
+https://events.static.linuxfound.org/sites/events/files/slides/talk_11.pdf
+
+
+-blockdev node-name=node1,driver=qcow2,file.driver=file,file.filename=test.qcow2 \
+-device virtio-blk,drive=node1
+
+
+-blockdev node-name=file1,driver=file,filename=test.qcow2 \
+-blockdev node-name=node1,driver=qcow2,file=file1 \
+-device virtio-blk,drive=node1
+
+
+-device virtio-blk-pci,id=vblk01,num-queues=8,drive=drive01,iothread=iothread01 \
+-blockdev node-name=file01,driver=file,aio=threads,filename=test01.qcow2,cache.direct=on,cache.no-flush=off \
+-blockdev node-name=drive01,driver=qcow2,cache.direct=on,cache.no-flush=off,file=file01 \
