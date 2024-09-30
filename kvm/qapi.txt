@@ -71,6 +71,10 @@ Escape character is '^]'.
 ===============================================
 
 
+{"execute": "device_add", "arguments": {"id": "cpu4", "driver": "host-x86_64-cpu", "socket-id": 0, "core-id": 4, "thread-id": 0}}
+{"execute": "device_del", "arguments": {"id": "cpu4"}}
+
+
 
 Reference:
 
