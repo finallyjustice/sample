@@ -1,0 +1,8 @@
+alias ls='ls -G'
+alias ll='ls -l'
+export CLICOLOR=1
+export LSCOLORS=gxFxCxDxBxegedabagaced
+
+autoload -Uz compinit && compinit -C
+setopt noautomenu
+#setopt nomenucomplete

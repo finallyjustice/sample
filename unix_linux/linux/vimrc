@@ -1,0 +1,26 @@
+set noeb vb t_vb=
+syntax enable
+syntax on
+"set textwidth=75
+set tabstop=8
+set softtabstop=8
+set shiftwidth=8
+set autoindent
+set cindent
+set nu
+set ai
+"let Tlist_Auto_open=1
+let Tlist_Exit_OnlyWindow=1
+set cscopequickfix=s-,c-,d-,i-,t-,e-
+
+if has("cscope")
+set csprg=/usr/bin/cscope
+set csto=1
+set cst
+set nocsverb
+" add any database in current directory
+if filereadable("cscope.out")
+cs add cscope.out
+endif
+set csverb
+endif
