@@ -1,3 +1,7 @@
+# Default prompt
+#PS1="%n@%m %1~ %# "
+PS1="%F{red}%n@:%~ $ %f"
+
 alias ls='ls -G'
 alias ll='ls -l'
 export CLICOLOR=1
