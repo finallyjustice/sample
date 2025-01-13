@@ -1,0 +1,139 @@
+vhost-vsock usage
+
+Create VM.
+
+qemu-system-x86_64 \
+-machine q35,accel=kvm -smp 4 -m 8G -cpu host \
+-hda ol89.qcow2 \
+-vnc :8 \
+-net nic -net user,hostfwd=tcp::5028-:22 \
+-device vhost-vsock-pci,id=vsock01,guest-cid=666 \
+-serial stdio
+
+
+The client is at VM.
+The server is at host.
+
+host# cat host_server.py
+#!/usr/bin/env python3
+
+import socket
+
+CID = socket.VMADDR_CID_HOST
+PORT = 9999
+
+s = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
+s.bind((CID, PORT))
+s.listen()
+(conn, (remote_cid, remote_port)) = s.accept()
+
+print(f"Connection opened by cid={remote_cid} port={remote_port}")
+
+while True:
+    buf = conn.recv(64)
+    if not buf:
+        break
+
+    print(f"Received bytes: {buf}")
+
+
+vm# cat vm_client.py 
+#!/usr/bin/env python3
+
+import socket
+
+CID = socket.VMADDR_CID_HOST
+PORT = 9999
+
+s = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
+s.connect((CID, PORT))
+s.sendall(b"Hello, world!")
+s.close()
+
+
+host# python3.11 host_server.py 
+Connection opened by cid=666 port=1447795872
+Received bytes: b'Hello, world!'
+
+
+vm# python3.11 vm_client.py
+
+
+Now we reverse the direction.
+
+The server is at VM.
+The client is at host.
+
+
+vm# cat vm_server.py
+#!/usr/bin/env python3
+
+import socket
+
+CID = 666
+PORT = 9999
+
+s = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
+s.bind((CID, PORT))
+s.listen()
+(conn, (remote_cid, remote_port)) = s.accept()
+
+print(f"Connection opened by cid={remote_cid} port={remote_port}")
+
+while True:
+    buf = conn.recv(64)
+    if not buf:
+        break
+
+    print(f"Received bytes: {buf}")
+
+
+host# cat host_client.py 
+#!/usr/bin/env python3
+
+import socket
+
+CID = 666
+PORT = 9999
+
+s = socket.socket(socket.AF_VSOCK, socket.SOCK_STREAM)
+s.connect((CID, PORT))
+s.sendall(b"Hello, world!")
+s.close()
+
+
+
+vm# python3.11 vm_server.py
+Connection opened by cid=2 port=2712712614
+Received bytes: b'Hello, world!'
+
+host# python3.11 host_client.py
+# python3.11 host_client.py
+
+
+
+We may use the below to tcpdump.
+
+ip link add type vsockmon
+ip link set vsockmon0 up
+
+ip link set vsockmon0 down
+ip link del vsockmon0
+
+14:49:55.105446 VIRTIO (len 0, type STREAM, op REQUEST, flags 0, buf_alloc 262144, fwd_cnt 0)
+	666.40098 > 2.9999 CONNECT, length 76
+14:49:55.105570 VIRTIO (len 0, type STREAM, op RESPONSE, flags 0, buf_alloc 262144, fwd_cnt 0)
+	2.9999 > 666.40098 CONNECT, length 76
+14:49:55.108422 VIRTIO (len 13, type STREAM, op RW, flags 0, buf_alloc 262144, fwd_cnt 0)
+	666.40098 > 2.9999 PAYLOAD, length 89
+	0x0000:  4865 6c6c 6f2c 2077 6f72 6c64 21
+14:49:55.108430 VIRTIO (len 0, type STREAM, op SHUTDOWN, flags 3, buf_alloc 262144, fwd_cnt 0)
+	666.40098 > 2.9999 DISCONNECT, length 76
+14:49:55.108506 VIRTIO (len 0, type STREAM, op CREDIT UPDATE, flags 0, buf_alloc 262144, fwd_cnt 13)
+	2.9999 > 666.40098 CONTROL, length 76
+14:49:55.109397 VIRTIO (len 0, type STREAM, op RST, flags 0, buf_alloc 262144, fwd_cnt 13)
+	2.9999 > 666.40098 DISCONNECT, length 76
+
+
+Reference:
+https://gist.github.com/nrdmn/7971be650919b112343b1cb2757a3fe6

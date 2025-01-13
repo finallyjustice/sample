@@ -1,0 +1,96 @@
+QEMU and console usage examples
+
+chardev supports: file, socket, stdio, pipe, tty.
+
+qemu-system-x86_64 \
+-machine q35,accel=kvm -smp 4 -m 8G -cpu host \
+-hda ol94_boot.qcow2 \
+-vnc :5 \
+-kernel /home/zhang/img/debug/linux-6.12/arch/x86_64/boot/bzImage \
+-append "root=/dev/sda1 init=/sbin/init text loglevel=7 console=ttyS0" \
+-net nic -net user,hostfwd=tcp::5025-:22 \
+-device virtio-serial-pci,id=virtio-serial0 \
+-chardev socket,id=charconsole0,server,path=/tmp/serial.sock,nowait \
+-device isa-serial,chardev=charconsole0,id=console0
+
+
+qemu-system-x86_64 \
+-machine q35,accel=kvm -smp 4 -m 8G -cpu host \
+-hda ol94_boot.qcow2 \
+-vnc :5 \
+-kernel /home/zhang/img/debug/linux-6.12/arch/x86_64/boot/bzImage \
+-append "root=/dev/sda1 init=/sbin/init text loglevel=7 console=ttyS0" \
+-net nic -net user,hostfwd=tcp::5025-:22 \
+-device virtio-serial-pci,id=virtio-serial0 \
+-chardev stdio,id=charconsole0 \
+-device isa-serial,chardev=charconsole0,id=console0
+
+
+qemu-system-x86_64 \
+-machine q35,accel=kvm -smp 4 -m 8G -cpu host \
+-hda ol94_boot.qcow2 \
+-vnc :5 \
+-kernel /home/zhang/img/debug/linux-6.12/arch/x86_64/boot/bzImage \
+-append "root=/dev/sda1 init=/sbin/init text loglevel=7 console=ttyS0" \
+-net nic -net user,hostfwd=tcp::5025-:22 \
+-device virtio-serial-pci,id=virtio-serial0 \
+-chardev file,id=charconsole0,path=/tmp/console.txt \
+-device isa-serial,chardev=charconsole0,id=console0
+
+
+qemu-system-x86_64 \
+-machine q35,accel=kvm -smp 4 -m 8G -cpu host \
+-hda ol94_boot.qcow2 \
+-vnc :5 \
+-kernel /home/zhang/img/debug/linux-6.12/arch/x86_64/boot/bzImage \
+-append "root=/dev/sda1 init=/sbin/init text loglevel=7 console=hvc0" \
+-net nic -net user,hostfwd=tcp::5025-:22 \
+-device virtio-serial-pci,id=virtio-serial0 \
+-chardev socket,id=charconsole0,server,path=/tmp/serial.sock,nowait \
+-device virtconsole,chardev=charconsole0,id=console0
+
+
+qemu-system-x86_64 \
+-machine q35,accel=kvm -smp 4 -m 8G -cpu host \
+-hda ol94_boot.qcow2 \
+-vnc :5 \
+-kernel /home/zhang/img/debug/linux-6.12/arch/x86_64/boot/bzImage \
+-append "root=/dev/sda1 init=/sbin/init text loglevel=7 console=hvc0" \
+-net nic -net user,hostfwd=tcp::5025-:22 \
+-device virtio-serial-pci,id=virtio-serial0 \
+-chardev stdio,id=charconsole0 \
+-device virtconsole,chardev=charconsole0,id=console0
+
+
+qemu-system-x86_64 \
+-machine q35,accel=kvm -smp 4 -m 8G -cpu host \
+-hda ol94_boot.qcow2 \
+-vnc :5 \
+-kernel /home/zhang/img/debug/linux-6.12/arch/x86_64/boot/bzImage \
+-append "root=/dev/sda1 init=/sbin/init text loglevel=7 console=hvc0" \
+-net nic -net user,hostfwd=tcp::5025-:22 \
+-device virtio-serial-pci,id=virtio-serial0 \
+-chardev file,id=charconsole0,path=/tmp/console.txt \
+-device virtconsole,chardev=charconsole0,id=console0
+
+
+qemu-system-x86_64 \
+-machine q35,accel=kvm -smp 4 -m 8G -cpu host \
+-hda ol94_boot.qcow2 \
+-vnc :5 \
+-kernel /home/zhang/img/debug/linux-6.12/arch/x86_64/boot/bzImage \
+-append "root=/dev/sda1 init=/sbin/init text loglevel=7 console=ttyS0" \
+-net nic -net user,hostfwd=tcp::5025-:22 \
+-global isa-debugcon.iobase=0x402 \
+-debugcon stdio
+
+
+qemu-system-x86_64 \
+-machine q35,accel=kvm -smp 4 -m 8G -cpu host \
+-hda ol94_boot.qcow2 \
+-vnc :5 \
+-kernel /home/zhang/img/debug/linux-6.12/arch/x86_64/boot/bzImage \
+-append "root=/dev/sda1 init=/sbin/init text loglevel=7 console=ttyS0" \
+-net nic -net user,hostfwd=tcp::5025-:22 \
+-global isa-debugcon.iobase=0x402 \
+-debugcon file:/tmp/console.txt

@@ -1,0 +1,117 @@
+RDS and SoftRoCE on Oracle Linux 8
+
+We don't have rxe_cfg since the commit:
+
+https://github.com/linux-rdma/rdma-core/commit/0d2ff0e1502ebc63346bc9ffd37deb3c4fd0dbc9
+
+1. Create two VMs with Oracle Linux 8.
+
+2. Enable the below in /etc/yum.repos.d/uek-ol8.repo.
+
+[ol8_UEKR7_RDMA]
+name=Oracle Linux 8 UEK7 RDMA ($basearch)
+baseurl=https://yum$ociregion.$ocidomain/repo/OracleLinux/OL8/UEKR7/RDMA/$basearch/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-oracle
+gpgcheck=1
+enabled=1
+
+Install software. (Maybe some aren't required)
+
+sudo yum install -y rdma-core-devel
+sudo yum install -y libibverbs-utils
+sudo yum install -y rds-tools
+sudo yum install -y infiniband-diags
+
+
+3. Disable firewall.
+
+# iptables -F
+# systemctl stop firewalld.service
+
+
+4. Enable RDMA via SoftRoCE.
+
+# modprobe rdma_rxe
+
+# rdma link add rxe_ens3 type rxe netdev ens3
+
+# rdma link show
+link rxe_ens3/1 state ACTIVE physical_state LINK_UP netdev ens3
+
+
+5. rds-ping remove VM.
+
+server# rds-ping xxx.xxx.xxx.xxx
+   1: 447 usec
+   2: 440 usec
+   3: 470 usec
+   4: 471 usec
+   5: 447 usec
+   6: 428 usec
+   7: 505 usec
+
+
+6. To stress between VMs.
+
+server# rds-stress -p 8000
+waiting for incoming connection on 0.0.0.0:8000
+accepted connection from yyy.yyy.yyy.yyy:41727 on xxx.xxx.xxx.xxx:8000
+negotiated options, tasks will start in 2 seconds
+Starting up....
+tsks   tx/s   rx/s  tx+rx K/s    mbi K/s    mbo K/s tx us/c   rtt us cpu %
+   1   4626   4623    9807.83       0.00       0.00   20.41   208.41 -1.00
+   1   4670   4675    9898.34       0.00       0.00   19.83   206.19 -1.00
+   1   4661   4666    9890.13       0.00       0.00   20.05   206.76 -1.00
+   1   4667   4666    9896.22       0.00       0.00   20.01   206.82 -1.00
+   1   4680   4668    9912.30       0.00       0.00   19.96   206.05 -1.00
+   1   4611   4602    9768.87       0.00       0.00   19.86   208.94 -1.00
+   1   4654   4650    9865.69       0.00       0.00   19.94   207.13 -1.00
+   1   4674   4687    9926.01       0.00       0.00   19.98   206.19 -1.00
+   1   4609   4615    9780.67       0.00       0.00   19.96   209.19 -1.00
+   1   4619   4614    9799.42       0.00       0.00   19.93   208.84 -1.00
+   1   4574   4564    9689.66       0.00       0.00   19.85   210.83 -1.00
+   1   4528   4518    9592.06       0.00       0.00   20.14   213.31 -1.00
+   1   4370   4355    9251.84       0.00       0.00   20.07   221.31 -1.00
+   1   4673   4670    9905.65       0.00       0.00   20.11   206.56 -1.00
+   1   4667   4660    9890.05       0.00       0.00   19.82   206.73 -1.00
+   1   4637   4642    9840.80       0.00       0.00   20.25   208.02 -1.00
+   1   4608   4620    9784.99       0.00       0.00   20.15   209.00 -1.00
+   1   4534   4525    9604.89       0.00       0.00   20.53   212.70 -1.00
+   1   4571   4555    9676.14       0.00       0.00   20.38   211.16 -1.00
+   1   4581   4574    9707.68       0.00       0.00   20.51   210.34 -1.00
+   1   4596   4601    9752.22       0.00       0.00   20.74   209.97 -1.00
+---------------------------------------------
+   1   4604   4602    9773.41       0.00       0.00   20.14   209.44 -1.00  (average)
+
+
+client# rds-stress -s xxx.xxx.xxx.xxx -p 8000
+connecting to xxx.xxx.xxx.xxx:8000
+negotiated options, tasks will start in 2 seconds
+Starting up....
+tsks   tx/s   rx/s  tx+rx K/s    mbi K/s    mbo K/s tx us/c   rtt us cpu %
+   1   4619   4622    9808.54       0.00       0.00   20.03   208.58 -1.00
+   1   4670   4666    9897.04       0.00       0.00   19.89   206.37 -1.00
+   1   4662   4657    9890.79       0.00       0.00   20.00   206.77 -1.00
+   1   4663   4664    9899.31       0.00       0.00   19.77   206.60 -1.00
+   1   4663   4673    9908.94       0.00       0.00   19.83   206.69 -1.00
+   1   4598   4607    9769.90       0.00       0.00   19.81   209.25 -1.00
+   1   4644   4650    9864.30       0.00       0.00   19.84   207.58 -1.00
+   1   4684   4671    9929.18       0.00       0.00   20.05   206.14 -1.00
+   1   4612   4603    9780.65       0.00       0.00   20.20   209.40 -1.00
+   1   4611   4617    9793.79       0.00       0.00   20.32   208.93 -1.00
+   1   4562   4574    9696.61       0.00       0.00   20.24   211.07 -1.00
+   1   4520   4529    9604.22       0.00       0.00   19.96   213.15 -1.00
+   1   4341   4356    9230.36       0.00       0.00   22.25   220.39 -1.00
+   1   4665   4668    9905.75       0.00       0.00   20.11   206.75 -1.00
+   1   4660   4667    9899.42       0.00       0.00   19.90   207.19 -1.00
+   1   4637   4631    9836.62       0.00       0.00   19.95   207.96 -1.00
+   1   4612   4601    9778.15       0.00       0.00   19.91   208.95 -1.00
+   1   4524   4533    9612.23       0.00       0.00   20.05   212.90 -1.00
+   1   4549   4567    9675.42       0.00       0.00   20.23   211.95 -1.00
+   1   4570   4574    9705.10       0.00       0.00   20.03   210.74 -1.00
+   1   4598   4595    9757.10       0.00       0.00   20.26   209.76 -1.00
+
+
+Cleanup:
+
+# rdma link delete rxe_ens3
