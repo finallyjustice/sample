@@ -36,3 +36,8 @@ multiqueue:
 
 virtio-scsi:
 # qemu-system-x86_64 -m 3000M -smp 2 -enable-kvm -drive file=/home/zhang/img/ocfs1.img,format=raw,if=none,id=virt1 -device virtio-scsi-pci,id=virt1,iothread=iothread0 -object iothread,id=iothread0 -device scsi-hd,drive=virt1
+
+
+-device virtio-blk-pci,id=vblk01,num-queues=8,drive=drive01 \
+-blockdev node-name=file01,driver=file,aio=threads,filename=test.qcow2,cache.direct=on,cache.no-flush=off \
+-blockdev node-name=drive01,driver=qcow2,cache.direct=on,cache.no-flush=off,file=file01
